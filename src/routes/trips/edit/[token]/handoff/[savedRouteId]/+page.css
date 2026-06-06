@@ -133,10 +133,19 @@ dd {
   font-weight: 900;
 }
 
-ul {
+ul,
+.manual-stops {
   display: grid;
   gap: 0.4rem;
   padding-left: 1.1rem;
+}
+
+.manual-stops {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding-block: 0.85rem;
+  padding-right: 0.85rem;
+  background: white;
 }
 
 @media (min-width: 800px) {
