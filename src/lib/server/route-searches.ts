@@ -120,12 +120,17 @@ async function generateRouteOptions(leg: Leg) {
   const to = leg.to.routingPlace;
   const routes = await fetchDrivingRoutes({ from, to });
 
-  const anchor = await findRoutingPlaceBySearchLabel('Colorado National Monument, Colorado');
-  if (anchor && anchor.id !== from.id && anchor.id !== to.id) {
-    try {
-      routes.push(...(await fetchDrivingRoutes({ from, to, via: anchor })));
-    } catch {
-      // Keep the direct Route Search useful even if the tracer-bullet Anchor route fails.
+  for (const anchorLabel of [
+    'Colorado National Monument, Colorado',
+    'Black Canyon of the Gunnison, Colorado'
+  ]) {
+    const anchor = await findRoutingPlaceBySearchLabel(anchorLabel);
+    if (anchor && anchor.id !== from.id && anchor.id !== to.id) {
+      try {
+        routes.push(...(await fetchDrivingRoutes({ from, to, via: anchor })));
+      } catch {
+        // Keep the direct Route Search useful even if a tracer-bullet Anchor route fails.
+      }
     }
   }
 

@@ -27,6 +27,6 @@ VALUES
   ('denver-co', 'Denver', 'Colorado', 'city', 39.7392, -104.9903, 'Denver, Colorado'),
   ('moab-ut', 'Moab', 'Utah', 'city', 38.5733, -109.5498, 'Moab, Utah'),
   ('rocky-mountain-national-park-co', 'Rocky Mountain National Park', 'Colorado', 'national_park', 40.3428, -105.6836, 'Rocky Mountain National Park, Colorado'),
-  ('colorado-national-monument-co', 'Colorado National Monument', 'Colorado', 'national_monument', 39.0503, -108.6921, 'Colorado National Monument, Colorado'),
+  ('colorado-national-monument-co', 'Colorado National Monument', 'Colorado', 'national_monument', 39.1008, -108.7335, 'Colorado National Monument, Colorado'),
   ('dinosaur-national-monument-ut-co', 'Dinosaur National Monument', 'Utah / Colorado', 'national_monument', 40.5070, -108.9330, 'Dinosaur National Monument, Utah / Colorado'),
-  ('black-canyon-of-the-gunnison-co', 'Black Canyon of the Gunnison', 'Colorado', 'national_park', 38.5754, -107.7416, 'Black Canyon of the Gunnison, Colorado');
+  ('black-canyon-of-the-gunnison-co', 'Black Canyon of the Gunnison', 'Colorado', 'national_park', 38.5543, -107.6866, 'Black Canyon of the Gunnison, Colorado');
