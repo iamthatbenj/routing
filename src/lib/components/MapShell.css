@@ -1,0 +1,52 @@
+.map-shell {
+  position: relative;
+  min-height: 20rem;
+  overflow: hidden;
+  border: 1px solid rgba(72, 62, 47, 0.12);
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(135deg, rgba(35, 99, 75, 0.25), rgba(31, 74, 92, 0.18)),
+    #dfe9df;
+}
+
+.map-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.map-overlay {
+  position: absolute;
+  inset: 1rem;
+  display: grid;
+  align-content: end;
+  gap: 0.35rem;
+  border-radius: 1rem;
+  padding: 1rem;
+  background: linear-gradient(180deg, transparent 0%, rgba(255, 250, 241, 0.92) 58%);
+  pointer-events: none;
+}
+
+.map-overlay.error {
+  align-content: center;
+  background: rgba(255, 233, 223, 0.94);
+}
+
+.map-overlay .eyebrow {
+  margin: 0;
+  color: var(--brand);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.map-overlay strong {
+  color: var(--ink);
+  font-size: 1.2rem;
+}
+
+.map-overlay span {
+  max-width: 26rem;
+  color: var(--muted);
+  line-height: 1.45;
+}

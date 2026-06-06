@@ -8,7 +8,8 @@
 
 .trip-card,
 .planner,
-.legs {
+.legs,
+.map-panel {
   display: grid;
   gap: 1rem;
   border: 1px solid rgba(72, 62, 47, 0.12);
@@ -396,6 +397,22 @@ p {
   color: var(--ink);
 }
 
+.map-panel {
+  align-content: start;
+}
+
+.map-attribution-note {
+  max-width: none;
+  font-size: 0.86rem;
+}
+
+.map-attribution-note code {
+  border-radius: 0.35rem;
+  padding: 0.1rem 0.25rem;
+  color: var(--brand-strong);
+  background: var(--sky);
+}
+
 @media (min-width: 760px) {
   .trip-page {
     grid-template-columns: 0.9fr 1.1fr;
@@ -407,7 +424,8 @@ p {
     grid-template-columns: 1fr 1fr;
   }
 
-  .legs {
+  .legs,
+  .map-panel {
     grid-column: 1 / -1;
   }
 }
@@ -417,7 +435,8 @@ p {
     grid-template-columns: 0.8fr 1fr 0.85fr;
   }
 
-  .legs {
+  .legs,
+  .map-panel {
     grid-column: auto;
   }
 }

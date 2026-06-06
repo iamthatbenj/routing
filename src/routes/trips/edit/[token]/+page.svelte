@@ -1,4 +1,6 @@
 <script lang="ts">
+  import MapShell from '$lib/components/MapShell.svelte';
+
   let { data, form } = $props();
 
   function formatDuration(seconds: number) {
@@ -215,5 +217,20 @@
         {/each}
       </div>
     {/if}
+  </section>
+
+  <section class="map-panel" aria-labelledby="map-heading">
+    <div class="section-heading">
+      <p class="eyebrow">Map preview</p>
+      <h2 id="map-heading">Corridors will land here</h2>
+      <p>
+        This MapLibre foundation keeps the Trip page card-first while making room for TB2 route
+        geometry, Highlights, and Shaping Stops.
+      </p>
+    </div>
+    <MapShell label="Leg comparison map preview" />
+    <p class="map-attribution-note">
+      Map style comes from <code>PUBLIC_MAP_STYLE_URL</code>. Check provider attribution and terms before production use.
+    </p>
   </section>
 </main>
