@@ -22,9 +22,26 @@
     endpointContextPlaceId: string | null;
   };
 
+  export type MapStop = {
+    id: string;
+    label: string;
+    kind: 'endpoint' | 'shaping';
+    latitude: number;
+    longitude: number;
+  };
+
   type LineStringGeometry = {
     type: 'LineString';
     coordinates: [number, number][];
+  };
+
+  type PointFeatureCollection = {
+    type: 'FeatureCollection';
+    features: Array<{
+      type: 'Feature';
+      geometry: { type: 'Point'; coordinates: [number, number] };
+      properties: Record<string, string | boolean>;
+    }>;
   };
 
   type RouteFeatureCollection = {
@@ -36,21 +53,6 @@
     }>;
   };
 
-  type HighlightFeatureCollection = {
-    type: 'FeatureCollection';
-    features: Array<{
-      type: 'Feature';
-      geometry: { type: 'Point'; coordinates: [number, number] };
-      properties: {
-        id: string;
-        name: string;
-        category: string;
-        visitEffort: string;
-        endpointContext: boolean;
-      };
-    }>;
-  };
-
   let {
     label = 'Route map',
     center = [-107.2, 39.0],
@@ -59,6 +61,7 @@
     routeOptions = [],
     selectedRouteId = undefined,
     highlights = [],
+    stops = [],
     onRouteSelect = undefined
   }: {
     label?: string;
@@ -68,6 +71,7 @@
     routeOptions?: MapRouteOption[];
     selectedRouteId?: string;
     highlights?: MapHighlight[];
+    stops?: MapStop[];
     onRouteSelect?: (routeId: string) => void;
   } = $props();
 
@@ -78,16 +82,20 @@
   let errorMessage = $state('');
   let renderedRouteCount = $state(0);
   let renderedHighlightCount = $state(0);
+  let renderedStopCount = $state(0);
   let renderedSignature = '';
   let renderedHighlightSignature = '';
+  let renderedStopSignature = '';
   let routeClickHandlersAttached = false;
   let highlightClickHandlersAttached = false;
+  let stopClickHandlersAttached = false;
 
   $effect(() => {
     if (status === 'ready') {
       try {
         renderRouteOptions();
         renderHighlights();
+        renderStops();
       } catch (error) {
         status = 'error';
         errorMessage = error instanceof Error ? error.message : 'Map content could not be rendered.';
@@ -132,10 +140,7 @@
       .map((option) => ({ option, geometry: parseLineString(option.geometryJson) }))
       .filter((route): route is { option: MapRouteOption; geometry: LineStringGeometry } => Boolean(route.geometry));
     const primaryRouteId = selectedRouteId ?? parsedRoutes.find((route) => route.option.source !== 'ors-fastest')?.option.id ?? parsedRoutes[0]?.option.id;
-    const signature = JSON.stringify({
-      ids: parsedRoutes.map((route) => route.option.id),
-      primaryRouteId
-    });
+    const signature = JSON.stringify({ ids: parsedRoutes.map((route) => route.option.id), primaryRouteId });
 
     renderedRouteCount = parsedRoutes.length;
 
@@ -148,21 +153,14 @@
       features: parsedRoutes.map(({ option, geometry }) => ({
         type: 'Feature',
         geometry,
-        properties: {
-          id: option.id,
-          source: option.source,
-          primary: option.id === primaryRouteId
-        }
+        properties: { id: option.id, source: option.source, primary: option.id === primaryRouteId }
       }))
     };
 
     if (source) {
       source.setData(geojson);
     } else {
-      map.addSource('route-options', {
-        type: 'geojson',
-        data: geojson
-      });
+      map.addSource('route-options', { type: 'geojson', data: geojson });
       addRouteLayers();
       attachRouteClickHandlers();
     }
@@ -183,14 +181,11 @@
     renderedHighlightSignature = signature;
 
     const source = map.getSource('highlights') as import('maplibre-gl').GeoJSONSource | undefined;
-    const geojson: HighlightFeatureCollection = {
+    const geojson: PointFeatureCollection = {
       type: 'FeatureCollection',
       features: validHighlights.map((highlight) => ({
         type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [highlight.longitude, highlight.latitude]
-        },
+        geometry: { type: 'Point', coordinates: [highlight.longitude, highlight.latitude] },
         properties: {
           id: highlight.id,
           name: highlight.name,
@@ -204,12 +199,39 @@
     if (source) {
       source.setData(geojson);
     } else {
-      map.addSource('highlights', {
-        type: 'geojson',
-        data: geojson
-      });
+      map.addSource('highlights', { type: 'geojson', data: geojson });
       addHighlightLayers();
       attachHighlightClickHandlers();
+    }
+  }
+
+  function renderStops() {
+    if (!map) return;
+
+    const validStops = stops.filter((stop) => Number.isFinite(stop.latitude) && Number.isFinite(stop.longitude));
+    const signature = JSON.stringify(validStops.map((stop) => `${stop.id}:${stop.kind}`));
+
+    renderedStopCount = validStops.length;
+
+    if (signature === renderedStopSignature) return;
+    renderedStopSignature = signature;
+
+    const source = map.getSource('handoff-stops') as import('maplibre-gl').GeoJSONSource | undefined;
+    const geojson: PointFeatureCollection = {
+      type: 'FeatureCollection',
+      features: validStops.map((stop) => ({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [stop.longitude, stop.latitude] },
+        properties: { id: stop.id, label: stop.label, kind: stop.kind }
+      }))
+    };
+
+    if (source) {
+      source.setData(geojson);
+    } else {
+      map.addSource('handoff-stops', { type: 'geojson', data: geojson });
+      addStopLayers();
+      attachStopClickHandlers();
     }
   }
 
@@ -260,17 +282,26 @@
       source: 'highlights',
       paint: {
         'circle-radius': ['case', ['==', ['get', 'category'], 'scenic_segment'], 7, ['boolean', ['get', 'endpointContext'], false], 6, 7],
-        'circle-color': [
-          'case',
-          ['==', ['get', 'category'], 'scenic_segment'],
-          '#5d80a6',
-          ['boolean', ['get', 'endpointContext'], false],
-          '#8f7b58',
-          '#23634b'
-        ],
+        'circle-color': ['case', ['==', ['get', 'category'], 'scenic_segment'], '#5d80a6', ['boolean', ['get', 'endpointContext'], false], '#8f7b58', '#23634b'],
         'circle-stroke-color': '#fffaf1',
         'circle-stroke-width': ['case', ['boolean', ['get', 'endpointContext'], false], 2, 3],
         'circle-opacity': ['case', ['boolean', ['get', 'endpointContext'], false], 0.72, 0.92]
+      }
+    });
+  }
+
+  function addStopLayers() {
+    if (!map) return;
+
+    map.addLayer({
+      id: 'handoff-stop-markers',
+      type: 'circle',
+      source: 'handoff-stops',
+      paint: {
+        'circle-radius': ['case', ['==', ['get', 'kind'], 'endpoint'], 8, 7],
+        'circle-color': ['case', ['==', ['get', 'kind'], 'endpoint'], '#17211b', '#d98b2b'],
+        'circle-stroke-color': '#fffaf1',
+        'circle-stroke-width': 3
       }
     });
   }
@@ -281,9 +312,7 @@
     for (const layerId of ['route-options-fastest', 'route-options-interesting']) {
       map.on('click', layerId, (event) => {
         const routeId = event.features?.[0]?.properties?.id;
-        if (typeof routeId === 'string') {
-          onRouteSelect?.(routeId);
-        }
+        if (typeof routeId === 'string') onRouteSelect?.(routeId);
       });
       map.on('mouseenter', layerId, () => {
         if (map) map.getCanvas().style.cursor = 'pointer';
@@ -318,14 +347,39 @@
         )
         .addTo(activeMap);
     });
-    map.on('mouseenter', 'highlight-markers', () => {
+    setPointerCursor('highlight-markers');
+    highlightClickHandlersAttached = true;
+  }
+
+  function attachStopClickHandlers() {
+    if (!map || !maplibreModule || stopClickHandlersAttached) return;
+
+    map.on('click', 'handoff-stop-markers', (event) => {
+      if (!map || !maplibreModule) return;
+      const activeMap = map;
+      const activeMaplibre = maplibreModule;
+      const feature = event.features?.[0];
+      const coordinates = (feature?.geometry as { coordinates?: [number, number] } | undefined)?.coordinates;
+      if (!feature?.properties || !coordinates) return;
+
+      const kind = String(feature.properties.kind) === 'endpoint' ? 'Endpoint' : 'Shaping Stop';
+      new activeMaplibre.Popup()
+        .setLngLat(coordinates)
+        .setHTML(`<strong>${escapeHtml(String(feature.properties.label))}</strong><br>${kind}`)
+        .addTo(activeMap);
+    });
+    setPointerCursor('handoff-stop-markers');
+    stopClickHandlersAttached = true;
+  }
+
+  function setPointerCursor(layerId: string) {
+    if (!map) return;
+    map.on('mouseenter', layerId, () => {
       if (map) map.getCanvas().style.cursor = 'pointer';
     });
-    map.on('mouseleave', 'highlight-markers', () => {
+    map.on('mouseleave', layerId, () => {
       if (map) map.getCanvas().style.cursor = '';
     });
-
-    highlightClickHandlersAttached = true;
   }
 
   function parseLineString(value: string): LineStringGeometry | null {
@@ -349,12 +403,7 @@
   }
 
   function escapeHtml(value: string) {
-    return value
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
+    return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
   }
 </script>
 
@@ -380,6 +429,10 @@
       <strong>{renderedRouteCount} Corridors</strong>
       <span><i class="legend-fastest"></i> Fastest baseline</span>
       <span><i class="legend-interesting"></i> Interesting Route</span>
+      {#if renderedStopCount > 0}
+        <span><i class="legend-endpoint"></i> Endpoint</span>
+        <span><i class="legend-shaping"></i> Shaping Stop</span>
+      {/if}
       {#if renderedHighlightCount > 0}
         <span><i class="legend-highlight"></i> Highlight</span>
         <span><i class="legend-scenic"></i> Scenic Segment</span>

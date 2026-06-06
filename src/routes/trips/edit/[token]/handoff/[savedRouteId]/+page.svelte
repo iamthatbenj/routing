@@ -1,4 +1,6 @@
 <script lang="ts">
+  import MapShell from '$lib/components/MapShell.svelte';
+
   let { data } = $props();
 
   function formatDuration(seconds: number) {
@@ -26,6 +28,17 @@
       Use this handoff to launch the preferred Saved Route in a navigation app while keeping this
       app's route context, Highlights, and warnings nearby.
     </p>
+  </section>
+
+  <section class="handoff-card handoff-map-card" aria-labelledby="handoff-map-heading">
+    <p class="eyebrow">Route map</p>
+    <h2 id="handoff-map-heading">Verify the handoff shape</h2>
+    <MapShell
+      label="Leg Handoff route map"
+      routeOptions={[data.mapRouteOption]}
+      selectedRouteId={data.mapRouteOption.id}
+      stops={data.mapStops}
+    />
   </section>
 
   <section class="handoff-card warning" aria-label="Route geometry warning">
