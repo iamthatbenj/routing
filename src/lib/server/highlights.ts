@@ -26,6 +26,17 @@ function rowToHighlight(row: Record<string, unknown>): Highlight {
   };
 }
 
+export async function listHighlights() {
+  const result = await db.execute(`
+    SELECT id, name, category, latitude, longitude, strength, visit_effort,
+      endpoint_context_place_id, description
+    FROM highlights
+    ORDER BY strength DESC
+  `);
+
+  return result.rows.map(rowToHighlight);
+}
+
 export async function findHighlightsByH3Cells(cells: string[], resolution: number) {
   if (cells.length === 0) return [];
 

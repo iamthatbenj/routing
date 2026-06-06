@@ -92,3 +92,25 @@
 .legend-interesting {
   border-top-color: #d98b2b;
 }
+
+.legend-highlight,
+.legend-scenic,
+.legend-context {
+  width: 0.65rem !important;
+  height: 0.65rem !important;
+  border: 2px solid #fffaf1;
+  border-radius: 50%;
+}
+
+.legend-highlight {
+  background: #23634b;
+}
+
+.legend-scenic {
+  background: #5d80a6;
+}
+
+.legend-context {
+  background: #8f7b58;
+  opacity: 0.72;
+}

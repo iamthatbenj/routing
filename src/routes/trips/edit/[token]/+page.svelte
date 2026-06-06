@@ -268,10 +268,11 @@
         label={`${mapLeg.from.routingPlace.name} to ${mapLeg.to.routingPlace.name} Leg comparison map`}
         routeOptions={mapLeg.routeSearch?.options ?? []}
         selectedRouteId={selectedMapRouteId}
+        highlights={data.highlights}
         onRouteSelect={selectMapRoute}
       />
     {:else}
-      <MapShell label="Leg comparison map preview" />
+      <MapShell label="Leg comparison map preview" highlights={data.highlights} />
     {/if}
     <p class="map-attribution-note">
       Map style comes from <code>PUBLIC_MAP_STYLE_URL</code>. Check provider attribution and terms before production use.
