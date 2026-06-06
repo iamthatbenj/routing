@@ -1,4 +1,5 @@
 import { error, fail } from '@sveltejs/kit';
+import { listHighlights } from '$lib/server/highlights';
 import { latestSearchForLeg, listRouteSearchesForTrip, startRouteSearch } from '$lib/server/route-searches';
 import type { Directness } from '$lib/server/route-searches';
 import { listSavedRoutesForTrip, markSavedRoutePreferred, saveRouteOption } from '$lib/server/saved-routes';
@@ -27,6 +28,7 @@ export const load = async ({ params }) => {
     trip,
     editToken: params.token,
     routingPlaces: await listRoutingPlaces(),
+    highlights: await listHighlights(),
     stops,
     legs: legs.map((leg) => ({
       ...leg,

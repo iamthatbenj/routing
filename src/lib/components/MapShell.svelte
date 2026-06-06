@@ -12,6 +12,16 @@
     geometryJson: string;
   };
 
+  export type MapHighlight = {
+    id: string;
+    name: string;
+    category: string;
+    latitude: number;
+    longitude: number;
+    visitEffort: string;
+    endpointContextPlaceId: string | null;
+  };
+
   type LineStringGeometry = {
     type: 'LineString';
     coordinates: [number, number][];
@@ -26,6 +36,21 @@
     }>;
   };
 
+  type HighlightFeatureCollection = {
+    type: 'FeatureCollection';
+    features: Array<{
+      type: 'Feature';
+      geometry: { type: 'Point'; coordinates: [number, number] };
+      properties: {
+        id: string;
+        name: string;
+        category: string;
+        visitEffort: string;
+        endpointContext: boolean;
+      };
+    }>;
+  };
+
   let {
     label = 'Route map',
     center = [-107.2, 39.0],
@@ -33,6 +58,7 @@
     styleUrl = env.PUBLIC_MAP_STYLE_URL || 'https://demotiles.maplibre.org/style.json',
     routeOptions = [],
     selectedRouteId = undefined,
+    highlights = [],
     onRouteSelect = undefined
   }: {
     label?: string;
@@ -41,6 +67,7 @@
     styleUrl?: string;
     routeOptions?: MapRouteOption[];
     selectedRouteId?: string;
+    highlights?: MapHighlight[];
     onRouteSelect?: (routeId: string) => void;
   } = $props();
 
@@ -50,16 +77,20 @@
   let status: MapStatus = $state('loading');
   let errorMessage = $state('');
   let renderedRouteCount = $state(0);
+  let renderedHighlightCount = $state(0);
   let renderedSignature = '';
+  let renderedHighlightSignature = '';
   let routeClickHandlersAttached = false;
+  let highlightClickHandlersAttached = false;
 
   $effect(() => {
     if (status === 'ready') {
       try {
         renderRouteOptions();
+        renderHighlights();
       } catch (error) {
         status = 'error';
-        errorMessage = error instanceof Error ? error.message : 'Route geometry could not be rendered.';
+        errorMessage = error instanceof Error ? error.message : 'Map content could not be rendered.';
       }
     }
   });
@@ -140,6 +171,48 @@
     fitRouteBounds((selectedRoute ? [selectedRoute] : parsedRoutes).flatMap((route) => route.geometry.coordinates));
   }
 
+  function renderHighlights() {
+    if (!map) return;
+
+    const validHighlights = highlights.filter((highlight) => Number.isFinite(highlight.latitude) && Number.isFinite(highlight.longitude));
+    const signature = JSON.stringify(validHighlights.map((highlight) => highlight.id));
+
+    renderedHighlightCount = validHighlights.length;
+
+    if (signature === renderedHighlightSignature) return;
+    renderedHighlightSignature = signature;
+
+    const source = map.getSource('highlights') as import('maplibre-gl').GeoJSONSource | undefined;
+    const geojson: HighlightFeatureCollection = {
+      type: 'FeatureCollection',
+      features: validHighlights.map((highlight) => ({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [highlight.longitude, highlight.latitude]
+        },
+        properties: {
+          id: highlight.id,
+          name: highlight.name,
+          category: highlight.category,
+          visitEffort: highlight.visitEffort,
+          endpointContext: Boolean(highlight.endpointContextPlaceId)
+        }
+      }))
+    };
+
+    if (source) {
+      source.setData(geojson);
+    } else {
+      map.addSource('highlights', {
+        type: 'geojson',
+        data: geojson
+      });
+      addHighlightLayers();
+      attachHighlightClickHandlers();
+    }
+  }
+
   function addRouteLayers() {
     if (!map) return;
 
@@ -178,6 +251,30 @@
     });
   }
 
+  function addHighlightLayers() {
+    if (!map) return;
+
+    map.addLayer({
+      id: 'highlight-markers',
+      type: 'circle',
+      source: 'highlights',
+      paint: {
+        'circle-radius': ['case', ['==', ['get', 'category'], 'scenic_segment'], 7, ['boolean', ['get', 'endpointContext'], false], 6, 7],
+        'circle-color': [
+          'case',
+          ['==', ['get', 'category'], 'scenic_segment'],
+          '#5d80a6',
+          ['boolean', ['get', 'endpointContext'], false],
+          '#8f7b58',
+          '#23634b'
+        ],
+        'circle-stroke-color': '#fffaf1',
+        'circle-stroke-width': ['case', ['boolean', ['get', 'endpointContext'], false], 2, 3],
+        'circle-opacity': ['case', ['boolean', ['get', 'endpointContext'], false], 0.72, 0.92]
+      }
+    });
+  }
+
   function attachRouteClickHandlers() {
     if (!map || routeClickHandlersAttached) return;
 
@@ -199,6 +296,38 @@
     routeClickHandlersAttached = true;
   }
 
+  function attachHighlightClickHandlers() {
+    if (!map || !maplibreModule || highlightClickHandlersAttached) return;
+
+    map.on('click', 'highlight-markers', (event) => {
+      if (!map || !maplibreModule) return;
+      const activeMap = map;
+      const activeMaplibre = maplibreModule;
+      const feature = event.features?.[0];
+      const coordinates = (feature?.geometry as { coordinates?: [number, number] } | undefined)?.coordinates;
+      if (!feature?.properties || !coordinates) return;
+
+      const category = String(feature.properties.category).replaceAll('_', ' ');
+      const endpointContext = feature.properties.endpointContext === true || feature.properties.endpointContext === 'true';
+      new activeMaplibre.Popup()
+        .setLngLat(coordinates)
+        .setHTML(
+          `<strong>${escapeHtml(String(feature.properties.name))}</strong><br>` +
+            `${escapeHtml(category)} · ${escapeHtml(String(feature.properties.visitEffort))}` +
+            (endpointContext ? '<br><em>Destination context, not scored</em>' : '')
+        )
+        .addTo(activeMap);
+    });
+    map.on('mouseenter', 'highlight-markers', () => {
+      if (map) map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', 'highlight-markers', () => {
+      if (map) map.getCanvas().style.cursor = '';
+    });
+
+    highlightClickHandlersAttached = true;
+  }
+
   function parseLineString(value: string): LineStringGeometry | null {
     try {
       const geometry = JSON.parse(value) as LineStringGeometry;
@@ -217,6 +346,15 @@
       new maplibreModule.LngLatBounds(coordinates[0], coordinates[0])
     );
     map.fitBounds(bounds, { padding: 42, duration: 0, maxZoom: 9 });
+  }
+
+  function escapeHtml(value: string) {
+    return value
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
   }
 </script>
 
@@ -242,6 +380,11 @@
       <strong>{renderedRouteCount} Corridors</strong>
       <span><i class="legend-fastest"></i> Fastest baseline</span>
       <span><i class="legend-interesting"></i> Interesting Route</span>
+      {#if renderedHighlightCount > 0}
+        <span><i class="legend-highlight"></i> Highlight</span>
+        <span><i class="legend-scenic"></i> Scenic Segment</span>
+        <span><i class="legend-context"></i> Destination context</span>
+      {/if}
     </div>
   {/if}
 </div>
