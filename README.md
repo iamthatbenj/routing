@@ -35,6 +35,11 @@ Build for production:
 npm run build
 ```
 
+## Map configuration
+
+MapLibre maps read a MapLibre-compatible style URL from `PUBLIC_MAP_STYLE_URL`.
+If it is not set, local development falls back to MapLibre demo tiles. Do not assume the demo tile service is suitable for production traffic; choose a provider and follow its attribution, rate-limit, and terms requirements before deployment.
+
 ## Project guidance
 
 Before coding, read:
