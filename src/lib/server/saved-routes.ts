@@ -131,7 +131,7 @@ export async function markSavedRoutePreferred(tripId: string, savedRouteId: stri
   await touchTrip(tripId);
 }
 
-async function findSavedRoute(tripId: string, savedRouteId: string) {
+export async function findSavedRoute(tripId: string, savedRouteId: string) {
   const result = await db.execute({
     sql: `
       SELECT id, trip_id, from_trip_stop_id, to_trip_stop_id, route_option_id, title,

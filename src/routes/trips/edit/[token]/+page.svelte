@@ -198,7 +198,9 @@
                           {savedRoute.snapshot.interestScore}
                         </p>
                       </div>
-                      {#if !savedRoute.isPreferred}
+                      {#if savedRoute.isPreferred}
+                        <a class="save-route" href={`/trips/edit/${data.editToken}/handoff/${savedRoute.id}`}>Open Leg Handoff</a>
+                      {:else}
                         <form method="POST" action="?/preferSavedRoute">
                           <input type="hidden" name="savedRouteId" value={savedRoute.id} />
                           <button class="save-route" type="submit">Mark preferred</button>
