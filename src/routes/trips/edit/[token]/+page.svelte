@@ -1,5 +1,16 @@
 <script lang="ts">
   let { data, form } = $props();
+
+  function formatDuration(seconds: number) {
+    const totalMinutes = Math.round(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return hours > 0 ? `${hours} hr ${minutes} min` : `${minutes} min`;
+  }
+
+  function formatDistance(meters: number) {
+    return `${Math.round(meters / 1609.344)} mi`;
+  }
 </script>
 
 <svelte:head>
@@ -111,11 +122,49 @@
       <div class="leg-list">
         {#each data.legs as leg}
           <article class="leg-card">
-            <span>Ready for Route Search</span>
+            <span>{leg.routeSearch ? `Route Search ${leg.routeSearch.status}` : 'Ready for Route Search'}</span>
             <h3>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</h3>
             <p>
-              TB1.04 will compare Route Options for this Leg using a real external routing provider.
+              Compare real route geometry from OpenRouteService. Balanced is the default Directness
+              for this tracer bullet.
             </p>
+
+            <form class="route-search-form" method="POST" action="?/startRouteSearch">
+              <input type="hidden" name="fromStopId" value={leg.from.id} />
+              <input type="hidden" name="toStopId" value={leg.to.id} />
+              <label for={`directness-${leg.id}`}>Directness</label>
+              <select id={`directness-${leg.id}`} name="directness">
+                <option>Direct</option>
+                <option selected>Balanced</option>
+                <option>Adventurous</option>
+              </select>
+              <button class="primary" type="submit">Compare Route Options</button>
+            </form>
+
+            {#if leg.routeSearch?.status === 'failed'}
+              <p class="route-error">{leg.routeSearch.errorMessage}</p>
+            {:else if leg.routeSearch?.options.length}
+              <div class="route-options">
+                {#each leg.routeSearch.options as option}
+                  <section class:baseline={option.source === 'ors-fastest'} class="route-option-card">
+                    <div>
+                      <span>{option.source === 'ors-fastest' ? 'Fastest baseline' : 'Route Option'}</span>
+                      <h4>{option.name}</h4>
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>Time</dt>
+                        <dd>{formatDuration(option.durationSeconds)}</dd>
+                      </div>
+                      <div>
+                        <dt>Distance</dt>
+                        <dd>{formatDistance(option.distanceMeters)}</dd>
+                      </div>
+                    </dl>
+                  </section>
+                {/each}
+              </div>
+            {/if}
           </article>
         {/each}
       </div>

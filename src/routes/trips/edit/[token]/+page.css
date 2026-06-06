@@ -220,7 +220,98 @@ p {
 
 .leg-card {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.75rem;
+}
+
+.route-search-form {
+  display: grid;
+  gap: 0.55rem;
+  border-radius: 1rem;
+  padding: 0.75rem;
+  background: var(--accent-soft);
+}
+
+.route-search-form label {
+  font-weight: 900;
+}
+
+.route-search-form select {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+  background: white;
+  font: inherit;
+}
+
+.route-search-form button {
+  justify-self: start;
+}
+
+.route-error {
+  border-radius: 1rem;
+  padding: 0.75rem;
+  color: #8a2f20;
+  background: #ffe4dc;
+  font-weight: 800;
+}
+
+.route-options {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.route-option-card {
+  display: grid;
+  gap: 0.7rem;
+  border: 1px solid rgba(35, 99, 75, 0.18);
+  border-radius: 1rem;
+  padding: 0.85rem;
+  background: var(--surface-strong);
+}
+
+.route-option-card.baseline {
+  background: #f9f7f1;
+}
+
+.route-option-card span {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.route-option-card h4 {
+  margin: 0.15rem 0 0;
+  color: var(--ink);
+  font-size: 1.15rem;
+  letter-spacing: -0.035em;
+}
+
+.route-option-card dl {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.route-option-card dl div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.route-option-card dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.route-option-card dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 900;
 }
 
 @media (min-width: 760px) {

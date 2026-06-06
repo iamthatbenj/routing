@@ -1,4 +1,6 @@
 import { error, fail } from '@sveltejs/kit';
+import { latestSearchForLeg, listRouteSearchesForTrip, startRouteSearch } from '$lib/server/route-searches';
+import type { Directness } from '$lib/server/route-searches';
 import { findRoutingPlaceBySearchLabel, listRoutingPlaces } from '$lib/server/routing-places';
 import { addTripStop, deriveLegs, listTripStops, moveTripStop } from '$lib/server/trip-stops';
 import { findTripByEditToken } from '$lib/server/trips';
@@ -16,13 +18,18 @@ async function loadEditableTrip(token: string) {
 export const load = async ({ params }) => {
   const trip = await loadEditableTrip(params.token);
   const stops = await listTripStops(trip.id);
+  const legs = deriveLegs(stops);
+  const routeSearches = await listRouteSearchesForTrip(trip.id);
 
   return {
     trip,
     editToken: params.token,
     routingPlaces: await listRoutingPlaces(),
     stops,
-    legs: deriveLegs(stops)
+    legs: legs.map((leg) => ({
+      ...leg,
+      routeSearch: latestSearchForLeg(routeSearches, leg) ?? null
+    }))
   };
 };
 
@@ -59,5 +66,33 @@ export const actions = {
 
     await moveTripStop(trip.id, stopId, direction);
     return { success: true };
+  },
+
+  startRouteSearch: async ({ request, params }) => {
+    const trip = await loadEditableTrip(params.token);
+    const formData = await request.formData();
+    const fromStopId = formData.get('fromStopId');
+    const toStopId = formData.get('toStopId');
+    const rawDirectness = formData.get('directness');
+
+    if (typeof fromStopId !== 'string' || typeof toStopId !== 'string') {
+      return fail(400, { message: 'Choose a Leg for Route Search.' });
+    }
+
+    const directness = parseDirectness(rawDirectness);
+    const stops = await listTripStops(trip.id);
+    const legs = deriveLegs(stops);
+    const leg = legs.find((candidate) => candidate.from.id === fromStopId && candidate.to.id === toStopId);
+
+    if (!leg) {
+      return fail(400, { message: 'That Leg does not belong to this Trip.' });
+    }
+
+    await startRouteSearch({ leg, directness });
+    return { success: true };
   }
 };
+
+function parseDirectness(value: FormDataEntryValue | null): Directness {
+  return value === 'Direct' || value === 'Adventurous' ? value : 'Balanced';
+}
