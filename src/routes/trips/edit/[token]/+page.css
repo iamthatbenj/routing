@@ -1,9 +1,9 @@
 .trip-page {
   display: grid;
   gap: 1rem;
-  width: min(1120px, 100%);
+  width: min(1280px, 100%);
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 .trip-card,
@@ -13,8 +13,8 @@
   display: grid;
   gap: 1rem;
   border: 1px solid rgba(72, 62, 47, 0.12);
-  border-radius: 1.5rem;
-  padding: 1rem;
+  border-radius: 1.35rem;
+  padding: 0.85rem;
   background: rgba(255, 250, 241, 0.9);
   box-shadow: var(--shadow);
 }
@@ -412,6 +412,11 @@ p {
 
 .map-panel {
   align-content: start;
+  order: 4;
+}
+
+.map-panel :global(.map-shell) {
+  min-height: clamp(18rem, 58vh, 30rem);
 }
 
 .map-attribution-note {
@@ -430,7 +435,15 @@ p {
   .trip-page {
     grid-template-columns: 0.9fr 1.1fr;
     align-items: start;
-    padding: 1.5rem;
+    padding: 1.25rem;
+  }
+
+  .trip-card,
+  .planner,
+  .legs,
+  .map-panel {
+    border-radius: 1.5rem;
+    padding: 1rem;
   }
 
   .meta-grid {
@@ -445,11 +458,21 @@ p {
 
 @media (min-width: 1060px) {
   .trip-page {
-    grid-template-columns: 0.8fr 1fr 0.85fr;
+    grid-template-columns: minmax(17rem, 0.78fr) minmax(26rem, 1.06fr) minmax(22rem, 0.96fr);
   }
 
   .legs,
   .map-panel {
     grid-column: auto;
+  }
+
+  .map-panel {
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+
+  .map-panel :global(.map-shell) {
+    min-height: min(62vh, 42rem);
   }
 }
