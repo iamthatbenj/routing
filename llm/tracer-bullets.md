@@ -44,3 +44,37 @@ A traveler can create an anonymous Trip, add Denver and Moab as Trip Stops, comp
 - Analytics.
 - Account/auth system.
 - Production routing-provider commitment ADR.
+
+## TB2 — Map-backed Leg comparison
+
+Goal: make Route Options visually understandable by showing Corridors, Highlights, and Shaping Stops on MapLibre maps, starting on Leg comparison and reusing the same map foundation on Leg Handoff.
+
+A traveler comparing Route Options for a Leg can see the fastest baseline, Interesting Route Options, seeded Highlights, and handoff Shaping Stops on a map before saving or opening the Leg Handoff.
+
+### Scope
+
+- MapLibre-compatible map foundation.
+- Environment-based vector map style/provider configuration.
+- Route Option geometry rendering from stored ORS LineStrings.
+- Card-to-map Route Option selection.
+- Seeded Highlight and Scenic Segment markers.
+- Leg Handoff map showing preferred Saved Route, endpoints, and Shaping Stops.
+- Mobile and desktop layout review for map-backed planning.
+- Free vector tile provider review.
+
+### GitHub issues
+
+1. [TB2.01 Add MapLibre map foundation](https://github.com/iamthatbenj/routing/issues/19)
+2. [TB2.02 Render Route Option Corridors on the Leg map](https://github.com/iamthatbenj/routing/issues/20)
+3. [TB2.03 Select Route Options from cards and map](https://github.com/iamthatbenj/routing/issues/21)
+4. [TB2.04 Show seeded Highlights on the Leg map](https://github.com/iamthatbenj/routing/issues/22)
+5. [TB2.05 Show Shaping Stops and endpoints on Leg Handoff maps](https://github.com/iamthatbenj/routing/issues/23)
+6. [TB2.06 Mobile map layout pass](https://github.com/iamthatbenj/routing/issues/24)
+7. [TB2.07 Map provider review](https://github.com/iamthatbenj/routing/issues/25)
+
+### Deferred from TB2
+
+- Manual route dragging/editing.
+- Full Highlight enrichment pipeline.
+- Map-based Trip Stop picking.
+- Production map provider commitment ADR unless the review produces a concrete decision.
