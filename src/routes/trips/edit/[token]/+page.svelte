@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { data } = $props();
+  let { data, form } = $props();
 </script>
 
 <svelte:head>
@@ -13,7 +13,7 @@
     <h1 id="trip-title">{data.trip.title}</h1>
     <p>
       This Trip was loaded from a long, unguessable edit token. Keep this link private; anyone
-      with it will be able to edit this Trip as later planning features arrive.
+      with it can edit this Trip.
     </p>
 
     <div class="meta-grid" aria-label="Trip metadata">
@@ -33,11 +33,92 @@
     </div>
   </section>
 
-  <section class="placeholder" aria-label="Trip planning placeholder">
-    <p class="eyebrow">Next slice</p>
-    <h2>Add Routing Places as Trip Stops</h2>
-    <p>
-      TB1.03 will replace this placeholder with Denver and Moab Trip Stop entry and a derived Leg.
-    </p>
+  <section class="planner" aria-labelledby="trip-stops-heading">
+    <div class="section-heading">
+      <p class="eyebrow">Trip Stops</p>
+      <h2 id="trip-stops-heading">Build the Denver → Moab Leg</h2>
+      <p>
+        Add Routing Places from the app-owned gazetteer. Adjacent Trip Stops automatically form
+        Legs for route comparison.
+      </p>
+    </div>
+
+    {#if form?.message}
+      <p class="form-error" role="alert">{form.message}</p>
+    {/if}
+
+    <form class="add-stop" method="POST" action="?/addStop">
+      <label for="routing-place">Routing Place</label>
+      <input
+        id="routing-place"
+        name="routingPlace"
+        list="routing-places"
+        placeholder="Try Denver, Colorado"
+        autocomplete="off"
+      />
+      <datalist id="routing-places">
+        {#each data.routingPlaces as place}
+          <option value={place.searchLabel}>{place.kind}</option>
+        {/each}
+      </datalist>
+
+      <label for="stop-details">Stop details</label>
+      <input id="stop-details" name="details" placeholder="Optional lodging area or notes" />
+
+      <button class="primary" type="submit">Add Trip Stop</button>
+    </form>
+
+    {#if data.stops.length === 0}
+      <div class="empty-state">
+        <strong>No Trip Stops yet</strong>
+        <p>Add Denver, then Moab, to create the first Leg.</p>
+      </div>
+    {:else}
+      <ol class="stops" aria-label="Trip Stops">
+        {#each data.stops as stop, index}
+          <li>
+            <span class="stop-index">{index + 1}</span>
+            <div class="stop-copy">
+              <strong>{stop.routingPlace.name}</strong>
+              <p>{stop.routingPlace.region} · {stop.routingPlace.kind.replaceAll('_', ' ')}</p>
+              {#if stop.details}
+                <p>{stop.details}</p>
+              {/if}
+            </div>
+            <form class="reorder" method="POST" action="?/moveStop" aria-label={`Reorder ${stop.routingPlace.name}`}>
+              <input type="hidden" name="stopId" value={stop.id} />
+              <button type="submit" name="direction" value="up" disabled={index === 0}>↑</button>
+              <button type="submit" name="direction" value="down" disabled={index === data.stops.length - 1}>↓</button>
+            </form>
+          </li>
+        {/each}
+      </ol>
+    {/if}
+  </section>
+
+  <section class="legs" aria-labelledby="legs-heading">
+    <div class="section-heading">
+      <p class="eyebrow">Legs</p>
+      <h2 id="legs-heading">Derived from adjacent Trip Stops</h2>
+    </div>
+
+    {#if data.legs.length === 0}
+      <div class="empty-state">
+        <strong>No Leg yet</strong>
+        <p>Add at least two Trip Stops to derive the first Leg.</p>
+      </div>
+    {:else}
+      <div class="leg-list">
+        {#each data.legs as leg}
+          <article class="leg-card">
+            <span>Ready for Route Search</span>
+            <h3>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</h3>
+            <p>
+              TB1.04 will compare Route Options for this Leg using a real external routing provider.
+            </p>
+          </article>
+        {/each}
+      </div>
+    {/if}
   </section>
 </main>
