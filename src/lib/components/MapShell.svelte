@@ -47,11 +47,17 @@
   let maplibreModule: typeof import('maplibre-gl') | null = null;
   let status: MapStatus = $state('loading');
   let errorMessage = $state('');
+  let renderedRouteCount = $state(0);
   let renderedSignature = '';
 
   $effect(() => {
     if (status === 'ready') {
-      renderRouteOptions();
+      try {
+        renderRouteOptions();
+      } catch (error) {
+        status = 'error';
+        errorMessage = error instanceof Error ? error.message : 'Route geometry could not be rendered.';
+      }
     }
   });
 
@@ -97,6 +103,8 @@
       primaryRouteId
     });
 
+    renderedRouteCount = parsedRoutes.length;
+
     if (signature === renderedSignature) return;
     renderedSignature = signature;
 
@@ -121,37 +129,48 @@
         type: 'geojson',
         data: geojson
       });
-      map.addLayer({
-        id: 'route-options-casing',
-        type: 'line',
-        source: 'route-options',
-        paint: {
-          'line-color': '#fffaf1',
-          'line-width': ['case', ['boolean', ['get', 'primary'], false], 8, 5],
-          'line-opacity': 0.92
-        }
-      });
-      map.addLayer({
-        id: 'route-options-line',
-        type: 'line',
-        source: 'route-options',
-        paint: {
-          'line-color': [
-            'case',
-            ['boolean', ['get', 'primary'], false],
-            '#d98b2b',
-            ['==', ['get', 'source'], 'ors-fastest'],
-            '#5f6b61',
-            '#23634b'
-          ],
-          'line-width': ['case', ['boolean', ['get', 'primary'], false], 5, 3],
-          'line-dasharray': ['case', ['==', ['get', 'source'], 'ors-fastest'], ['literal', [1.5, 1.25]], ['literal', [1, 0]]],
-          'line-opacity': ['case', ['boolean', ['get', 'primary'], false], 0.95, 0.72]
-        }
-      });
+      addRouteLayers();
     }
 
     fitRouteBounds(parsedRoutes.flatMap((route) => route.geometry.coordinates));
+  }
+
+  function addRouteLayers() {
+    if (!map) return;
+
+    map.addLayer({
+      id: 'route-options-casing',
+      type: 'line',
+      source: 'route-options',
+      paint: {
+        'line-color': '#fffaf1',
+        'line-width': ['case', ['boolean', ['get', 'primary'], false], 10, 6],
+        'line-opacity': 0.95
+      }
+    });
+    map.addLayer({
+      id: 'route-options-fastest',
+      type: 'line',
+      source: 'route-options',
+      filter: ['==', ['get', 'source'], 'ors-fastest'],
+      paint: {
+        'line-color': '#5f6b61',
+        'line-width': ['case', ['boolean', ['get', 'primary'], false], 5, 3],
+        'line-dasharray': [1.5, 1.25],
+        'line-opacity': ['case', ['boolean', ['get', 'primary'], false], 0.95, 0.68]
+      }
+    });
+    map.addLayer({
+      id: 'route-options-interesting',
+      type: 'line',
+      source: 'route-options',
+      filter: ['!=', ['get', 'source'], 'ors-fastest'],
+      paint: {
+        'line-color': ['case', ['boolean', ['get', 'primary'], false], '#d98b2b', '#23634b'],
+        'line-width': ['case', ['boolean', ['get', 'primary'], false], 6, 3.5],
+        'line-opacity': ['case', ['boolean', ['get', 'primary'], false], 0.98, 0.74]
+      }
+    });
   }
 
   function parseLineString(value: string): LineStringGeometry | null {
@@ -190,6 +209,13 @@
         <strong>Route map ready</strong>
         <span>Run a Route Search to draw fastest and interesting Corridors here.</span>
       {/if}
+    </div>
+  {/if}
+  {#if status === 'ready' && renderedRouteCount > 0}
+    <div class="map-legend" aria-live="polite">
+      <strong>{renderedRouteCount} Corridors</strong>
+      <span><i class="legend-fastest"></i> Fastest baseline</span>
+      <span><i class="legend-interesting"></i> Interesting Route</span>
     </div>
   {/if}
 </div>
