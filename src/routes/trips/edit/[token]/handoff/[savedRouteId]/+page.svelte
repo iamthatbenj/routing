@@ -51,14 +51,21 @@
     <p class="eyebrow">Navigation links</p>
     <h2 id="nav-heading">Open in your navigation app</h2>
     <div class="button-row">
-      <a class="primary" href={data.googleMapsUrl} target="_blank" rel="noreferrer">Google Maps</a>
-      <a class="secondary" href={data.appleMapsUrl} target="_blank" rel="noreferrer">Apple Maps</a>
+      <a class="primary" href={data.googleMapsUrl} target="_blank" rel="noreferrer">Google Maps with Shaping Stops</a>
+      <a class="secondary" href={data.appleMapsUrl} target="_blank" rel="noreferrer">Apple Maps endpoints only</a>
     </div>
     {#if data.savedRoute.snapshot.handoffStops.length}
       <p>
-        Google Maps receives the Shaping Stops as waypoints. Apple Maps links may not preserve
-        intermediate stops from the web URL, so verify the route before driving.
+        Google Maps receives the Shaping Stops as waypoints. Apple Maps web links do not reliably
+        support intermediate stops, so this Apple Maps link opens endpoints only.
       </p>
+      <ol class="manual-stops" aria-label="Stops to add manually in Apple Maps">
+        <li>{data.savedRoute.snapshot.endpoints.from}</li>
+        {#each data.savedRoute.snapshot.handoffStops as stop}
+          <li>{stop.label}</li>
+        {/each}
+        <li>{data.savedRoute.snapshot.endpoints.to}</li>
+      </ol>
     {/if}
   </section>
 

@@ -29,7 +29,7 @@ export function routeGeometryWarning(savedRoute: SavedRoute) {
   const hasHandoffStops = savedRoute.snapshot.handoffStops.length > 0;
 
   if (hasHandoffStops) {
-    return 'This Saved Route uses visible Shaping Stops to encourage external navigation apps to follow the intended Corridor. Confirm the full route before driving.';
+    return 'This Saved Route uses visible Shaping Stops to encourage external navigation apps to follow the intended Corridor. Google Maps receives those stops as waypoints; Apple Maps web links open endpoints only, so add Shaping Stops manually there. Confirm the full route before driving.';
   }
 
   return isFastest
