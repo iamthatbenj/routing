@@ -2,6 +2,10 @@
   import MapShell from '$lib/components/MapShell.svelte';
 
   let { data, form } = $props();
+  let mapLeg = $derived(data.legs.find((leg) => leg.routeSearch?.options.length));
+  let selectedMapRouteId = $derived(
+    mapLeg?.routeSearch?.options.find((option) => option.source !== 'ors-fastest')?.id
+  );
 
   function formatDuration(seconds: number) {
     const totalMinutes = Math.round(seconds / 60);
@@ -228,7 +232,15 @@
         geometry, Highlights, and Shaping Stops.
       </p>
     </div>
-    <MapShell label="Leg comparison map preview" />
+    {#if mapLeg}
+      <MapShell
+        label={`${mapLeg.from.routingPlace.name} to ${mapLeg.to.routingPlace.name} Leg comparison map`}
+        routeOptions={mapLeg.routeSearch?.options ?? []}
+        selectedRouteId={selectedMapRouteId}
+      />
+    {:else}
+      <MapShell label="Leg comparison map preview" />
+    {/if}
     <p class="map-attribution-note">
       Map style comes from <code>PUBLIC_MAP_STYLE_URL</code>. Check provider attribution and terms before production use.
     </p>
