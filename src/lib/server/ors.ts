@@ -52,7 +52,7 @@ export async function fetchDrivingRoutes({
     preference: 'recommended'
   };
 
-  if (!via) {
+  if (!via && approximateDistanceMeters(from, to) <= 100_000) {
     body.alternative_routes = {
       target_count: 2,
       share_factor: 0.6,
@@ -106,4 +106,22 @@ export async function fetchDrivingRoutes({
 
 function toCoordinate(place: RoutingPlace) {
   return [place.longitude, place.latitude];
+}
+
+function approximateDistanceMeters(from: RoutingPlace, to: RoutingPlace) {
+  const earthRadiusMeters = 6_371_000;
+  const fromLatitude = toRadians(from.latitude);
+  const toLatitude = toRadians(to.latitude);
+  const latitudeDelta = toRadians(to.latitude - from.latitude);
+  const longitudeDelta = toRadians(to.longitude - from.longitude);
+
+  const a =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(fromLatitude) * Math.cos(toLatitude) * Math.sin(longitudeDelta / 2) ** 2;
+
+  return earthRadiusMeters * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function toRadians(degrees: number) {
+  return (degrees * Math.PI) / 180;
 }
