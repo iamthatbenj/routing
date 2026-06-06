@@ -41,6 +41,12 @@
       <a class="primary" href={data.googleMapsUrl} target="_blank" rel="noreferrer">Google Maps</a>
       <a class="secondary" href={data.appleMapsUrl} target="_blank" rel="noreferrer">Apple Maps</a>
     </div>
+    {#if data.savedRoute.snapshot.handoffStops.length}
+      <p>
+        Google Maps receives the Shaping Stops as waypoints. Apple Maps links may not preserve
+        intermediate stops from the web URL, so verify the route before driving.
+      </p>
+    {/if}
   </section>
 
   <section class="handoff-card" aria-labelledby="context-heading">
@@ -86,10 +92,24 @@
 
   <section class="handoff-card" aria-labelledby="shaping-heading">
     <p class="eyebrow">Shaping Stops</p>
-    <h2 id="shaping-heading">Coming after the handoff stub</h2>
-    <p>
-      Future Leg Handoffs will show visible, removable Shaping Stops when extra stops are needed
-      to encourage Google or Apple Maps to follow the intended Corridor.
-    </p>
+    <h2 id="shaping-heading">
+      {data.savedRoute.snapshot.handoffStops.length ? 'Included in the navigation handoff' : 'No Shaping Stops yet'}
+    </h2>
+    {#if data.savedRoute.snapshot.handoffStops.length}
+      <p>
+        These visible Shaping Stops are included where the navigation app supports waypoints. Remove
+        or change them in the navigation app if they do not match your plan.
+      </p>
+      <ol>
+        {#each data.savedRoute.snapshot.handoffStops as stop}
+          <li>{stop.label}</li>
+        {/each}
+      </ol>
+    {:else}
+      <p>
+        This handoff does not need a known Shaping Stop yet. Future Leg Handoffs will support more
+        editable Shaping Stops when extra stops are needed to preserve the intended Corridor.
+      </p>
+    {/if}
   </section>
 </main>

@@ -3,8 +3,18 @@ import type { SavedRoute } from './server/saved-routes';
 export function googleMapsUrl(savedRoute: SavedRoute) {
   const origin = savedRoute.snapshot.endpoints.from;
   const destination = savedRoute.snapshot.endpoints.to;
+  const params = new URLSearchParams({
+    api: '1',
+    travelmode: 'driving',
+    origin,
+    destination
+  });
 
-  return `https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
+  if (savedRoute.snapshot.handoffStops.length > 0) {
+    params.set('waypoints', savedRoute.snapshot.handoffStops.map((stop) => stop.label).join('|'));
+  }
+
+  return `https://www.google.com/maps/dir/?${params.toString()}`;
 }
 
 export function appleMapsUrl(savedRoute: SavedRoute) {
@@ -16,8 +26,13 @@ export function appleMapsUrl(savedRoute: SavedRoute) {
 
 export function routeGeometryWarning(savedRoute: SavedRoute) {
   const isFastest = savedRoute.snapshot.source === 'ors-fastest';
+  const hasHandoffStops = savedRoute.snapshot.handoffStops.length > 0;
+
+  if (hasHandoffStops) {
+    return 'This Saved Route uses visible Shaping Stops to encourage external navigation apps to follow the intended Corridor. Confirm the full route before driving.';
+  }
 
   return isFastest
     ? 'External navigation apps may still change the planned route because of traffic, closures, or app settings.'
-    : 'This Saved Route was chosen for its Corridor. Google or Apple Maps may choose a different path unless later Shaping Stops are added.';
+    : 'This Saved Route was chosen for its Corridor, but this handoff does not yet have Shaping Stops. Google or Apple Maps may choose a different path.';
 }
