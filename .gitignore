@@ -7,3 +7,5 @@ build
 !.env.example
 .DS_Store
 npm-debug.log*
+local.db
+local.db-*

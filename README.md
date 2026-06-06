@@ -10,6 +10,13 @@ Install dependencies:
 npm install
 ```
 
+Copy environment defaults and run migrations:
+
+```sh
+cp .env.example .env
+npm run db:migrate
+```
+
 Run the app locally:
 
 ```sh

@@ -1,4 +1,6 @@
 <script lang="ts">
+  let { form } = $props();
+
   type TripStop = {
     name: string;
     detail: string;
@@ -56,10 +58,15 @@
         hand off the preferred Saved Route to a navigation app when it is time to drive.
       </p>
     </div>
-    <div class="hero-actions" aria-label="Trip actions">
-      <button class="primary" type="button">Create Trip</button>
-      <button class="secondary" type="button">Open edit link</button>
-    </div>
+    <form class="hero-actions" method="POST" action="?/createTrip" aria-label="Trip actions">
+      <label class="sr-only" for="trip-title">Trip title</label>
+      <input id="trip-title" name="title" value="Western parks sampler" />
+      <button class="primary" type="submit">Create Trip</button>
+      <a class="secondary" href="#open-edit-link">Open edit link</a>
+      {#if form?.message}
+        <p class="form-error">{form.message}</p>
+      {/if}
+    </form>
   </section>
 
   <section class="workspace" aria-label="Trip planning workspace">
