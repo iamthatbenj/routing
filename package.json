@@ -1,0 +1,22 @@
+{
+  "name": "routing",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "lint": "npm run check"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^6.1.0",
+    "@sveltejs/kit": "^2.48.4",
+    "@types/node": "^25.9.2",
+    "svelte": "^5.40.0",
+    "svelte-check": "^4.3.2",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0"
+  }
+}
