@@ -3,9 +3,31 @@
 
   let { data, form } = $props();
   let mapLeg = $derived(data.legs.find((leg) => leg.routeSearch?.options.length));
-  let selectedMapRouteId = $derived(
-    mapLeg?.routeSearch?.options.find((option) => option.source !== 'ors-fastest')?.id
-  );
+  let selectedMapRouteId = $state<string | undefined>();
+
+  $effect(() => {
+    const routeOptions = mapLeg?.routeSearch?.options ?? [];
+    if (routeOptions.length === 0) {
+      selectedMapRouteId = undefined;
+      return;
+    }
+
+    if (!selectedMapRouteId || !routeOptions.some((option) => option.id === selectedMapRouteId)) {
+      selectedMapRouteId = routeOptions.find((option) => option.source !== 'ors-fastest')?.id ?? routeOptions[0]?.id;
+    }
+  });
+
+  function selectMapRoute(routeId: string) {
+    selectedMapRouteId = routeId;
+    document.getElementById(`route-option-${routeId}`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  function handleRouteCardKeydown(event: KeyboardEvent, routeId: string) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      selectMapRoute(routeId);
+    }
+  }
 
   function formatDuration(seconds: number) {
     const totalMinutes = Math.round(seconds / 60);
@@ -152,7 +174,16 @@
             {:else if leg.routeSearch?.options.length}
               <div class="route-options">
                 {#each leg.routeSearch.options as option}
-                  <section class:baseline={option.source === 'ors-fastest'} class="route-option-card">
+                  <section
+                    id={`route-option-${option.id}`}
+                    class:baseline={option.source === 'ors-fastest'}
+                    class:selected={option.id === selectedMapRouteId}
+                    class="route-option-card"
+                    role="button"
+                    tabindex="0"
+                    onclick={() => selectMapRoute(option.id)}
+                    onkeydown={(event) => handleRouteCardKeydown(event, option.id)}
+                  >
                     <div class="route-option-heading">
                       <div>
                         <span>{option.source === 'ors-fastest' ? 'Fastest baseline' : 'Route Option'}</span>
@@ -237,6 +268,7 @@
         label={`${mapLeg.from.routingPlace.name} to ${mapLeg.to.routingPlace.name} Leg comparison map`}
         routeOptions={mapLeg.routeSearch?.options ?? []}
         selectedRouteId={selectedMapRouteId}
+        onRouteSelect={selectMapRoute}
       />
     {:else}
       <MapShell label="Leg comparison map preview" />

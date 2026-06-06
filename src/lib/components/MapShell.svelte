@@ -32,7 +32,8 @@
     zoom = 5.2,
     styleUrl = env.PUBLIC_MAP_STYLE_URL || 'https://demotiles.maplibre.org/style.json',
     routeOptions = [],
-    selectedRouteId = undefined
+    selectedRouteId = undefined,
+    onRouteSelect = undefined
   }: {
     label?: string;
     center?: [number, number];
@@ -40,6 +41,7 @@
     styleUrl?: string;
     routeOptions?: MapRouteOption[];
     selectedRouteId?: string;
+    onRouteSelect?: (routeId: string) => void;
   } = $props();
 
   let mapElement: HTMLDivElement;
@@ -49,6 +51,7 @@
   let errorMessage = $state('');
   let renderedRouteCount = $state(0);
   let renderedSignature = '';
+  let routeClickHandlersAttached = false;
 
   $effect(() => {
     if (status === 'ready') {
@@ -130,9 +133,11 @@
         data: geojson
       });
       addRouteLayers();
+      attachRouteClickHandlers();
     }
 
-    fitRouteBounds(parsedRoutes.flatMap((route) => route.geometry.coordinates));
+    const selectedRoute = parsedRoutes.find((route) => route.option.id === primaryRouteId);
+    fitRouteBounds((selectedRoute ? [selectedRoute] : parsedRoutes).flatMap((route) => route.geometry.coordinates));
   }
 
   function addRouteLayers() {
@@ -171,6 +176,27 @@
         'line-opacity': ['case', ['boolean', ['get', 'primary'], false], 0.98, 0.74]
       }
     });
+  }
+
+  function attachRouteClickHandlers() {
+    if (!map || routeClickHandlersAttached) return;
+
+    for (const layerId of ['route-options-fastest', 'route-options-interesting']) {
+      map.on('click', layerId, (event) => {
+        const routeId = event.features?.[0]?.properties?.id;
+        if (typeof routeId === 'string') {
+          onRouteSelect?.(routeId);
+        }
+      });
+      map.on('mouseenter', layerId, () => {
+        if (map) map.getCanvas().style.cursor = 'pointer';
+      });
+      map.on('mouseleave', layerId, () => {
+        if (map) map.getCanvas().style.cursor = '';
+      });
+    }
+
+    routeClickHandlersAttached = true;
   }
 
   function parseLineString(value: string): LineStringGeometry | null {
