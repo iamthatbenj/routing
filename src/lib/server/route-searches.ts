@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { gridDisk, latLngToCell } from 'h3-js';
+import { routeCorridorCells, selectCorridorRouteOptions } from '$lib/route-corridors';
 import { db } from './db';
 import { findHighlightsByH3Cells, type Highlight } from './highlights';
 import { fetchDrivingRoutes, type OrsRoute } from './ors';
@@ -32,11 +32,6 @@ export type RouteSearch = {
   createdAt: string;
   updatedAt: string;
   options: RouteOption[];
-};
-
-type LineStringGeometry = {
-  type: 'LineString';
-  coordinates: [number, number][];
 };
 
 type ScoredRoute = OrsRoute & {
@@ -124,7 +119,8 @@ export async function startRouteSearch({ leg, directness }: { leg: Leg; directne
   try {
     const routes = await generateRouteOptions(leg);
     const scoredRoutes = await scoreRouteOptions(routes, leg, directness);
-    await replaceRouteOptions(searchId, scoredRoutes);
+    const selectedRoutes = selectCorridorRouteOptions(scoredRoutes);
+    await replaceRouteOptions(searchId, selectedRoutes);
     await updateRouteSearchStatus(searchId, 'complete');
   } catch (error) {
     await updateRouteSearchStatus(searchId, 'failed', error instanceof Error ? error.message : 'Route Search failed.');
@@ -152,10 +148,10 @@ async function generateRouteOptions(leg: Leg) {
     }
   }
 
-  return dedupeRoutes(routes).slice(0, 4);
+  return dedupeExactRoutes(routes);
 }
 
-function dedupeRoutes(routes: OrsRoute[]) {
+function dedupeExactRoutes(routes: OrsRoute[]) {
   const seen = new Set<string>();
   return routes.filter((route) => {
     const key = `${Math.round(route.durationSeconds / 60)}-${Math.round(route.distanceMeters / 1000)}-${route.name}`;
@@ -189,23 +185,6 @@ async function scoreRouteOptions(routes: OrsRoute[], leg: Leg, directness: Direc
       };
     })
   );
-}
-
-function routeCorridorCells(geometry: unknown) {
-  const line = geometry as LineStringGeometry;
-  if (line.type !== 'LineString' || !Array.isArray(line.coordinates)) return [];
-
-  const cells = new Set<string>();
-  const sampleEvery = Math.max(1, Math.floor(line.coordinates.length / 120));
-
-  line.coordinates.forEach(([longitude, latitude], index) => {
-    if (index % sampleEvery !== 0 && index !== line.coordinates.length - 1) return;
-    for (const cell of gridDisk(latLngToCell(latitude, longitude, 5), 1)) {
-      cells.add(cell);
-    }
-  });
-
-  return [...cells];
 }
 
 function isEndpointContextHighlight(highlight: Highlight, leg: Leg) {
