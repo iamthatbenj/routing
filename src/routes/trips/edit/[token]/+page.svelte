@@ -147,9 +147,12 @@
               <div class="route-options">
                 {#each leg.routeSearch.options as option}
                   <section class:baseline={option.source === 'ors-fastest'} class="route-option-card">
-                    <div>
-                      <span>{option.source === 'ors-fastest' ? 'Fastest baseline' : 'Route Option'}</span>
-                      <h4>{option.name}</h4>
+                    <div class="route-option-heading">
+                      <div>
+                        <span>{option.source === 'ors-fastest' ? 'Fastest baseline' : 'Route Option'}</span>
+                        <h4>{option.name}</h4>
+                      </div>
+                      <strong class="score">{option.interestScore}</strong>
                     </div>
                     <dl>
                       <div>
@@ -161,6 +164,13 @@
                         <dd>{formatDistance(option.distanceMeters)}</dd>
                       </div>
                     </dl>
+                    {#if option.explanations.length}
+                      <ul class="explanations">
+                        {#each option.explanations as explanation}
+                          <li>{explanation}</li>
+                        {/each}
+                      </ul>
+                    {/if}
                   </section>
                 {/each}
               </div>

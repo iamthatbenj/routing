@@ -273,12 +273,30 @@ p {
   background: #f9f7f1;
 }
 
+.route-option-heading {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: start;
+}
+
 .route-option-card span {
   color: var(--accent);
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.score {
+  display: grid;
+  place-items: center;
+  min-width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  color: white;
+  background: var(--brand);
+  font-size: 0.95rem;
 }
 
 .route-option-card h4 {
@@ -312,6 +330,15 @@ p {
   margin: 0;
   color: var(--ink);
   font-weight: 900;
+}
+
+.explanations {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 @media (min-width: 760px) {
