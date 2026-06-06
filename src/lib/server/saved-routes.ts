@@ -19,6 +19,11 @@ export type SavedRouteSnapshot = {
   explanations: string[];
   fastestBaselineDeltaSeconds: number;
   warnings: string[];
+  handoffStops: HandoffStop[];
+};
+
+export type HandoffStop = {
+  label: string;
 };
 
 export type SavedRoute = {
@@ -193,12 +198,25 @@ function buildSnapshot(
     interestScore: routeOption.interestScore,
     explanations: routeOption.explanations,
     fastestBaselineDeltaSeconds: Math.max(0, routeOption.durationSeconds - fastestDuration),
-    warnings: []
+    warnings: [],
+    handoffStops: handoffStopsForRouteOption(routeOption)
   };
 }
 
+function handoffStopsForRouteOption(routeOption: RouteOption): HandoffStop[] {
+  if (routeOption.source !== 'ors-anchor' || !routeOption.name.startsWith('Via ')) {
+    return [];
+  }
+
+  return [{ label: routeOption.name.replace(/^Via /, '').trim() }];
+}
+
 function parseSnapshot(value: string): SavedRouteSnapshot {
-  return JSON.parse(value) as SavedRouteSnapshot;
+  const snapshot = JSON.parse(value) as SavedRouteSnapshot;
+  return {
+    ...snapshot,
+    handoffStops: snapshot.handoffStops ?? []
+  };
 }
 
 async function touchTrip(tripId: string) {
