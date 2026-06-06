@@ -95,7 +95,9 @@
 
 .legend-highlight,
 .legend-scenic,
-.legend-context {
+.legend-context,
+.legend-endpoint,
+.legend-shaping {
   width: 0.65rem !important;
   height: 0.65rem !important;
   border: 2px solid #fffaf1;
@@ -113,4 +115,12 @@
 .legend-context {
   background: #8f7b58;
   opacity: 0.72;
+}
+
+.legend-endpoint {
+  background: #17211b;
+}
+
+.legend-shaping {
+  background: #d98b2b;
 }
