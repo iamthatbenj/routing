@@ -343,8 +343,11 @@ p {
 }
 
 .save-route {
+  display: inline-flex;
+  justify-content: center;
   color: var(--brand-strong);
   background: var(--sky);
+  text-decoration: none;
 }
 
 .saved-routes {
