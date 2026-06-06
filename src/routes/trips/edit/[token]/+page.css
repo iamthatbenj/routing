@@ -107,7 +107,8 @@ p {
 
 .primary,
 .secondary,
-.reorder button {
+.reorder button,
+.save-route {
   border: 0;
   border-radius: 999px;
   padding: 0.9rem 1.1rem;
@@ -339,6 +340,57 @@ p {
   padding-left: 1.1rem;
   color: var(--muted);
   line-height: 1.45;
+}
+
+.save-route {
+  color: var(--brand-strong);
+  background: var(--sky);
+}
+
+.saved-routes {
+  display: grid;
+  gap: 0.65rem;
+  border-top: 1px solid var(--line);
+  padding-top: 0.75rem;
+}
+
+.saved-routes h4 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+.saved-route-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.saved-route-card {
+  display: grid;
+  gap: 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.75rem;
+  background: white;
+}
+
+.saved-route-card.preferred {
+  border-color: rgba(35, 99, 75, 0.4);
+  background: var(--sky);
+}
+
+.saved-route-card span {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.saved-route-card strong {
+  color: var(--ink);
 }
 
 @media (min-width: 760px) {

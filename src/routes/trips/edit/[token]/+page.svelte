@@ -171,9 +171,43 @@
                         {/each}
                       </ul>
                     {/if}
+                    <form method="POST" action="?/saveRoute">
+                      <input type="hidden" name="fromStopId" value={leg.from.id} />
+                      <input type="hidden" name="toStopId" value={leg.to.id} />
+                      <input type="hidden" name="routeSearchId" value={leg.routeSearch.id} />
+                      <input type="hidden" name="routeOptionId" value={option.id} />
+                      <button class="save-route" type="submit">Save Route</button>
+                    </form>
                   </section>
                 {/each}
               </div>
+            {/if}
+
+            {#if leg.savedRoutes.length}
+              <section class="saved-routes" aria-label="Saved Routes">
+                <h4>Saved Routes</h4>
+                <div class="saved-route-list">
+                  {#each leg.savedRoutes as savedRoute}
+                    <article class:preferred={savedRoute.isPreferred} class="saved-route-card">
+                      <div>
+                        <span>{savedRoute.isPreferred ? 'Preferred Saved Route' : 'Saved Route'}</span>
+                        <strong>{savedRoute.title}</strong>
+                        <p>
+                          {formatDuration(savedRoute.snapshot.durationSeconds)} ·
+                          {formatDistance(savedRoute.snapshot.distanceMeters)} · score
+                          {savedRoute.snapshot.interestScore}
+                        </p>
+                      </div>
+                      {#if !savedRoute.isPreferred}
+                        <form method="POST" action="?/preferSavedRoute">
+                          <input type="hidden" name="savedRouteId" value={savedRoute.id} />
+                          <button class="save-route" type="submit">Mark preferred</button>
+                        </form>
+                      {/if}
+                    </article>
+                  {/each}
+                </div>
+              </section>
             {/if}
           </article>
         {/each}

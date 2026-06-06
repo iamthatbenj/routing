@@ -1,6 +1,7 @@
 import { error, fail } from '@sveltejs/kit';
 import { latestSearchForLeg, listRouteSearchesForTrip, startRouteSearch } from '$lib/server/route-searches';
 import type { Directness } from '$lib/server/route-searches';
+import { listSavedRoutesForTrip, markSavedRoutePreferred, saveRouteOption } from '$lib/server/saved-routes';
 import { findRoutingPlaceBySearchLabel, listRoutingPlaces } from '$lib/server/routing-places';
 import { addTripStop, deriveLegs, listTripStops, moveTripStop } from '$lib/server/trip-stops';
 import { findTripByEditToken } from '$lib/server/trips';
@@ -20,6 +21,7 @@ export const load = async ({ params }) => {
   const stops = await listTripStops(trip.id);
   const legs = deriveLegs(stops);
   const routeSearches = await listRouteSearchesForTrip(trip.id);
+  const savedRoutes = await listSavedRoutesForTrip(trip.id);
 
   return {
     trip,
@@ -28,7 +30,10 @@ export const load = async ({ params }) => {
     stops,
     legs: legs.map((leg) => ({
       ...leg,
-      routeSearch: latestSearchForLeg(routeSearches, leg) ?? null
+      routeSearch: latestSearchForLeg(routeSearches, leg) ?? null,
+      savedRoutes: savedRoutes.filter(
+        (savedRoute) => savedRoute.fromTripStopId === leg.from.id && savedRoute.toTripStopId === leg.to.id
+      )
     }))
   };
 };
@@ -89,6 +94,52 @@ export const actions = {
     }
 
     await startRouteSearch({ leg, directness });
+    return { success: true };
+  },
+
+  saveRoute: async ({ request, params }) => {
+    const trip = await loadEditableTrip(params.token);
+    const formData = await request.formData();
+    const fromStopId = formData.get('fromStopId');
+    const toStopId = formData.get('toStopId');
+    const routeSearchId = formData.get('routeSearchId');
+    const routeOptionId = formData.get('routeOptionId');
+
+    if (
+      typeof fromStopId !== 'string' ||
+      typeof toStopId !== 'string' ||
+      typeof routeSearchId !== 'string' ||
+      typeof routeOptionId !== 'string'
+    ) {
+      return fail(400, { message: 'Choose a Route Option to save.' });
+    }
+
+    const stops = await listTripStops(trip.id);
+    const leg = deriveLegs(stops).find(
+      (candidate) => candidate.from.id === fromStopId && candidate.to.id === toStopId
+    );
+    const routeSearch = (await listRouteSearchesForTrip(trip.id)).find(
+      (candidate) => candidate.id === routeSearchId
+    );
+
+    if (!leg || !routeSearch) {
+      return fail(400, { message: 'That Route Option does not belong to this Trip.' });
+    }
+
+    await saveRouteOption({ tripId: trip.id, leg, routeSearch, routeOptionId });
+    return { success: true };
+  },
+
+  preferSavedRoute: async ({ request, params }) => {
+    const trip = await loadEditableTrip(params.token);
+    const formData = await request.formData();
+    const savedRouteId = formData.get('savedRouteId');
+
+    if (typeof savedRouteId !== 'string') {
+      return fail(400, { message: 'Choose a Saved Route to prefer.' });
+    }
+
+    await markSavedRoutePreferred(trip.id, savedRouteId);
     return { success: true };
   }
 };
