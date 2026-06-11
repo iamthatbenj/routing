@@ -1,9 +1,9 @@
 .handoff-page {
   display: grid;
   gap: 1rem;
-  width: min(960px, 100%);
+  width: min(1080px, 100%);
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 .hero,
@@ -11,8 +11,8 @@
   display: grid;
   gap: 1rem;
   border: 1px solid rgba(72, 62, 47, 0.12);
-  border-radius: 1.5rem;
-  padding: 1rem;
+  border-radius: 1.35rem;
+  padding: 0.85rem;
   background: rgba(255, 250, 241, 0.92);
   box-shadow: var(--shadow);
 }
@@ -27,7 +27,7 @@
 }
 
 .handoff-map-card :global(.map-shell) {
-  min-height: 24rem;
+  min-height: clamp(20rem, 62vh, 34rem);
 }
 
 .eyebrow {
@@ -152,6 +152,12 @@ ul,
   .handoff-page {
     grid-template-columns: 1fr 1fr;
     padding: 1.5rem;
+  }
+
+  .hero,
+  .handoff-card {
+    border-radius: 1.5rem;
+    padding: 1rem;
   }
 
   .hero,
