@@ -108,3 +108,31 @@ A traveler comparing routes can use a basemap with enough geographic and roadsid
 - Production basemap provider commitment ADR unless the review produces a concrete decision.
 - Self-hosted tile infrastructure.
 - Manual route editing or map-based Trip Stop picking.
+
+## TB4 — Leg Handoff and Shaping Stop quality
+
+Goal: make Leg Handoff trustworthy enough that a traveler can open a Saved Route in Google Maps and expect the generated waypoints to preserve the intended Corridor reasonably well.
+
+A traveler who chooses an Interesting Route can understand and use the generated Shaping Stops without being surprised by noisy, misplaced, or ineffective waypoints.
+
+### Scope
+
+- Define what makes a Shaping Stop good enough for navigation handoff.
+- Improve Shaping Stop selection/capping for Google Maps waypoint handoff.
+- Add lightweight diagnostics to explain generated Shaping Stops.
+- Human-in-the-loop Google Maps verification against Denver → Moab Saved Routes.
+- Close out the Shaping Stop quality concern captured during TB3.
+
+### GitHub issues
+
+1. [TB4.01 Define good-enough Shaping Stops](https://github.com/iamthatbenj/routing/issues/44)
+2. [TB4.02 Improve Shaping Stop selection](https://github.com/iamthatbenj/routing/issues/45)
+3. [TB4.03 Add Leg Handoff Shaping Stop diagnostics](https://github.com/iamthatbenj/routing/issues/46)
+4. [TB4.04 Google Maps handoff verification pass](https://github.com/iamthatbenj/routing/issues/47)
+5. [TB4.05 Close out Shaping Stop quality follow-up](https://github.com/iamthatbenj/routing/issues/40)
+
+### Deferred from TB4
+
+- Apple Maps multi-stop handoff unless a reliable web URL approach is found.
+- Full navigation provider integration beyond outbound links.
+- Manual route editing/dragging.
