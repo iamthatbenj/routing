@@ -62,7 +62,7 @@
       <ol class="manual-stops" aria-label="Stops to add manually in Apple Maps">
         <li>{data.savedRoute.snapshot.endpoints.from}</li>
         {#each data.savedRoute.snapshot.handoffStops as stop}
-          <li>{stop.label}</li>
+          <li>{stop.displayLabel ?? stop.label}</li>
         {/each}
         <li>{data.savedRoute.snapshot.endpoints.to}</li>
       </ol>
@@ -122,7 +122,7 @@
       </p>
       <ol>
         {#each data.savedRoute.snapshot.handoffStops as stop}
-          <li>{stop.label}</li>
+          <li>{stop.displayLabel ?? stop.label}</li>
         {/each}
       </ol>
     {:else}

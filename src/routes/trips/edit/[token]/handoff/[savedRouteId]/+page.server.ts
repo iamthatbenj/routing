@@ -23,11 +23,21 @@ export const load = async ({ params, url }) => {
   const toStop = tripStops.find((stop) => stop.id === savedRoute.toTripStopId);
   const shapingStops = await Promise.all(
     savedRoute.snapshot.handoffStops.map(async (stop, index) => {
+      if (Number.isFinite(stop.latitude) && Number.isFinite(stop.longitude)) {
+        return {
+          id: `shaping-${index}`,
+          label: stop.displayLabel ?? stop.label,
+          kind: 'shaping' as const,
+          latitude: Number(stop.latitude),
+          longitude: Number(stop.longitude)
+        };
+      }
+
       const routingPlace = await findRoutingPlaceBySearchLabel(stop.label);
       return routingPlace
         ? {
             id: `shaping-${index}-${routingPlace.id}`,
-            label: stop.label,
+            label: stop.displayLabel ?? stop.label,
             kind: 'shaping' as const,
             latitude: routingPlace.latitude,
             longitude: routingPlace.longitude
