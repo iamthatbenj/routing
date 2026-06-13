@@ -63,6 +63,8 @@ PUBLIC_RASTER_TILE_ATTRIBUTION=Required provider attribution
 
 Do not assume demo tiles are suitable for production traffic; choose a provider and follow its attribution, rate-limit, and terms requirements before deployment.
 
+MapLibre is loaded with a client-only dynamic import when the map scrolls near the viewport. The production build may still report a large MapLibre chunk; that is an accepted TB3 trade-off while the Trip-first UI avoids loading map code until the map is needed.
+
 ## Project guidance
 
 Before coding, read:
