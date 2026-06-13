@@ -142,3 +142,32 @@ Failure modes: stops that land on the wrong road or non-road place, stops that c
 - Apple Maps multi-stop handoff unless a reliable web URL approach is found.
 - Full navigation provider integration beyond outbound links.
 - Manual route editing/dragging.
+
+## TB5 — Route Option explanation and scoring transparency
+
+Goal: make Route Option comparison more trustworthy by explaining why each Interesting Route exists, which Anchors/Highlights shaped it, and how the Interest Score trades off against extra time.
+
+A traveler comparing a Leg can understand the difference between the fastest baseline and Anchor-generated Interesting Routes without needing to infer the product logic from route names alone.
+
+### Scope
+
+- Make Anchor-generated routes explicit in the comparison UI.
+- Persist structured Route Option reasons/metadata alongside existing explanation text.
+- Improve Interest Score explanation with component-level context.
+- Seed one more route corridor or Anchor to avoid overfitting the current comparison.
+- Human-in-the-loop review of route cards, map overlays, score explanations, and handoff context.
+
+### GitHub issues
+
+1. [TB5.01 Make Anchor Routes explicit in the UI](https://github.com/iamthatbenj/routing/issues/50)
+2. [TB5.02 Persist structured Route Option reasons](https://github.com/iamthatbenj/routing/issues/51)
+3. [TB5.03 Improve Interest Score explanation](https://github.com/iamthatbenj/routing/issues/52)
+4. [TB5.04 Seed one more route corridor or Anchor](https://github.com/iamthatbenj/routing/issues/53)
+5. [TB5.05 Route comparison explanation review](https://github.com/iamthatbenj/routing/issues/54)
+
+### Deferred from TB5
+
+- Full OSM/Wikidata/NPS Highlight ingestion pipeline.
+- Manual route dragging/editing.
+- Production basemap provider selection.
+- Account/auth system.
