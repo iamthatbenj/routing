@@ -54,13 +54,13 @@ A traveler comparing Route Options for a Leg can see the fastest baseline, Inter
 ### Scope
 
 - MapLibre-compatible map foundation.
-- Environment-based vector map style/provider configuration.
+- Environment-based MapLibre-compatible basemap configuration.
 - Route Option geometry rendering from stored ORS LineStrings.
 - Card-to-map Route Option selection.
 - Seeded Highlight and Scenic Segment markers.
 - Leg Handoff map showing preferred Saved Route, endpoints, and Shaping Stops.
 - Mobile and desktop layout review for map-backed planning.
-- Free vector tile provider review.
+- Basemap provider review.
 
 ### GitHub issues
 
@@ -78,3 +78,33 @@ A traveler comparing Route Options for a Leg can see the fastest baseline, Inter
 - Full Highlight enrichment pipeline.
 - Map-based Trip Stop picking.
 - Production map provider commitment ADR unless the review produces a concrete decision.
+
+## TB3 — Basemap quality and provider-swappable maps
+
+Goal: evaluate and integrate richer basemaps while preserving MapLibre route, Highlight, endpoint, and Shaping Stop overlays.
+
+A traveler comparing routes can use a basemap with enough geographic and roadside context to understand the route without relying only on app-specific Highlights.
+
+### Scope
+
+- Named basemap provider/style configuration.
+- Support for raster or vector MapLibre-compatible basemaps.
+- Evaluation basemap switcher.
+- Richer raster basemap candidate.
+- Overlay legibility across sparse/demo and detailed basemaps.
+- Map performance hygiene for the Trip-first mobile flow.
+- Human-in-the-loop provider review.
+
+### GitHub issues
+
+1. [TB3.01 Add basemap provider abstraction](https://github.com/iamthatbenj/routing/issues/33)
+2. [TB3.02 Add basemap switcher with demo and raster candidate](https://github.com/iamthatbenj/routing/issues/34)
+3. [TB3.03 Overlay legibility across basemaps](https://github.com/iamthatbenj/routing/issues/35)
+4. [TB3.04 Map performance hygiene](https://github.com/iamthatbenj/routing/issues/36)
+5. [TB3.05 Basemap provider review](https://github.com/iamthatbenj/routing/issues/37)
+
+### Deferred from TB3
+
+- Production basemap provider commitment ADR unless the review produces a concrete decision.
+- Self-hosted tile infrastructure.
+- Manual route editing or map-based Trip Stop picking.
