@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { shapingStopsFromGeometry } from '$lib/shaping-stops';
 import { db } from './db';
 import type { RouteOption, RouteSearch } from './route-searches';
 import type { Leg } from './trip-stops';
@@ -24,6 +25,10 @@ export type SavedRouteSnapshot = {
 
 export type HandoffStop = {
   label: string;
+  displayLabel?: string;
+  latitude?: number;
+  longitude?: number;
+  routeFraction?: number;
 };
 
 export type SavedRoute = {
@@ -204,11 +209,11 @@ function buildSnapshot(
 }
 
 function handoffStopsForRouteOption(routeOption: RouteOption): HandoffStop[] {
-  if (routeOption.source !== 'ors-anchor' || !routeOption.name.startsWith('Via ')) {
+  if (routeOption.source === 'ors-fastest') {
     return [];
   }
 
-  return [{ label: routeOption.name.replace(/^Via /, '').trim() }];
+  return shapingStopsFromGeometry(routeOption.geometryJson);
 }
 
 function parseSnapshot(value: string): SavedRouteSnapshot {
