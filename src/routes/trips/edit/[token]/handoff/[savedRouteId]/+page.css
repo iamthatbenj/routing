@@ -140,6 +140,59 @@ ul,
   padding-left: 1.1rem;
 }
 
+.shaping-diagnostics {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shaping-diagnostics li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.75rem;
+  background: white;
+}
+
+.stop-order {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  color: white;
+  background: var(--brand);
+  font-weight: 900;
+}
+
+.stop-diagnostic-copy {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.stop-diagnostic-copy strong {
+  color: var(--ink);
+}
+
+.stop-diagnostic-copy span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.stop-diagnostic-copy code {
+  justify-self: start;
+  border-radius: 999px;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.82rem;
+}
+
 .manual-stops {
   border: 1px solid var(--line);
   border-radius: 1rem;
