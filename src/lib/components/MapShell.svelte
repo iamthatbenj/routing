@@ -278,14 +278,16 @@
   function addRouteLayers() {
     if (!map) return;
 
+    const theme = selectedBasemap.overlayTheme;
+
     map.addLayer({
       id: 'route-options-casing',
       type: 'line',
       source: 'route-options',
       paint: {
-        'line-color': '#fffaf1',
-        'line-width': ['case', ['boolean', ['get', 'primary'], false], 10, 6],
-        'line-opacity': 0.95
+        'line-color': theme.casingColor,
+        'line-width': ['case', ['boolean', ['get', 'primary'], false], 12, 7],
+        'line-opacity': 0.96
       }
     });
     map.addLayer({
@@ -294,10 +296,10 @@
       source: 'route-options',
       filter: ['==', ['get', 'source'], 'ors-fastest'],
       paint: {
-        'line-color': '#5f6b61',
-        'line-width': ['case', ['boolean', ['get', 'primary'], false], 5, 3],
+        'line-color': theme.fastestColor,
+        'line-width': ['case', ['boolean', ['get', 'primary'], false], 5.5, 3.5],
         'line-dasharray': [1.5, 1.25],
-        'line-opacity': ['case', ['boolean', ['get', 'primary'], false], 0.95, 0.68]
+        'line-opacity': ['case', ['boolean', ['get', 'primary'], false], 0.96, 0.72]
       }
     });
     map.addLayer({
@@ -306,9 +308,9 @@
       source: 'route-options',
       filter: ['!=', ['get', 'source'], 'ors-fastest'],
       paint: {
-        'line-color': ['case', ['boolean', ['get', 'primary'], false], '#d98b2b', '#23634b'],
-        'line-width': ['case', ['boolean', ['get', 'primary'], false], 6, 3.5],
-        'line-opacity': ['case', ['boolean', ['get', 'primary'], false], 0.98, 0.74]
+        'line-color': ['case', ['boolean', ['get', 'primary'], false], theme.selectedInterestingColor, theme.interestingColor],
+        'line-width': ['case', ['boolean', ['get', 'primary'], false], 6.5, 4],
+        'line-opacity': ['case', ['boolean', ['get', 'primary'], false], 0.98, 0.78]
       }
     });
   }
@@ -316,16 +318,28 @@
   function addHighlightLayers() {
     if (!map) return;
 
+    const theme = selectedBasemap.overlayTheme;
+
+    map.addLayer({
+      id: 'highlight-marker-halos',
+      type: 'circle',
+      source: 'highlights',
+      paint: {
+        'circle-radius': ['case', ['==', ['get', 'category'], 'scenic_segment'], 11, ['boolean', ['get', 'endpointContext'], false], 10, 11],
+        'circle-color': 'rgba(0, 0, 0, 0.28)',
+        'circle-blur': 0.45
+      }
+    });
     map.addLayer({
       id: 'highlight-markers',
       type: 'circle',
       source: 'highlights',
       paint: {
         'circle-radius': ['case', ['==', ['get', 'category'], 'scenic_segment'], 7, ['boolean', ['get', 'endpointContext'], false], 6, 7],
-        'circle-color': ['case', ['==', ['get', 'category'], 'scenic_segment'], '#5d80a6', ['boolean', ['get', 'endpointContext'], false], '#8f7b58', '#23634b'],
-        'circle-stroke-color': '#fffaf1',
+        'circle-color': ['case', ['==', ['get', 'category'], 'scenic_segment'], theme.scenicColor, ['boolean', ['get', 'endpointContext'], false], theme.contextColor, theme.highlightColor],
+        'circle-stroke-color': theme.markerStrokeColor,
         'circle-stroke-width': ['case', ['boolean', ['get', 'endpointContext'], false], 2, 3],
-        'circle-opacity': ['case', ['boolean', ['get', 'endpointContext'], false], 0.72, 0.92]
+        'circle-opacity': ['case', ['boolean', ['get', 'endpointContext'], false], 0.78, 0.94]
       }
     });
   }
@@ -333,15 +347,43 @@
   function addStopLayers() {
     if (!map) return;
 
+    const theme = selectedBasemap.overlayTheme;
+
+    map.addLayer({
+      id: 'handoff-stop-halos',
+      type: 'circle',
+      source: 'handoff-stops',
+      paint: {
+        'circle-radius': ['case', ['==', ['get', 'kind'], 'endpoint'], 13, 12],
+        'circle-color': 'rgba(0, 0, 0, 0.3)',
+        'circle-blur': 0.45
+      }
+    });
     map.addLayer({
       id: 'handoff-stop-markers',
       type: 'circle',
       source: 'handoff-stops',
       paint: {
         'circle-radius': ['case', ['==', ['get', 'kind'], 'endpoint'], 8, 7],
-        'circle-color': ['case', ['==', ['get', 'kind'], 'endpoint'], '#17211b', '#d98b2b'],
-        'circle-stroke-color': '#fffaf1',
+        'circle-color': ['case', ['==', ['get', 'kind'], 'endpoint'], theme.endpointColor, theme.shapingColor],
+        'circle-stroke-color': theme.markerStrokeColor,
         'circle-stroke-width': 3
+      }
+    });
+    map.addLayer({
+      id: 'handoff-stop-labels',
+      type: 'symbol',
+      source: 'handoff-stops',
+      layout: {
+        'text-field': ['case', ['==', ['get', 'kind'], 'endpoint'], 'E', 'S'],
+        'text-size': 10,
+        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+        'text-allow-overlap': true
+      },
+      paint: {
+        'text-color': theme.markerStrokeColor,
+        'text-halo-color': 'rgba(0, 0, 0, 0.55)',
+        'text-halo-width': 1
       }
     });
   }
@@ -442,12 +484,26 @@
     map.fitBounds(bounds, { padding: 42, duration: 0, maxZoom: 9 });
   }
 
+  function themeStyle() {
+    const theme = selectedBasemap.overlayTheme;
+    return [
+      `--map-fastest: ${theme.fastestColor}`,
+      `--map-interesting: ${theme.selectedInterestingColor}`,
+      `--map-highlight: ${theme.highlightColor}`,
+      `--map-scenic: ${theme.scenicColor}`,
+      `--map-context: ${theme.contextColor}`,
+      `--map-endpoint: ${theme.endpointColor}`,
+      `--map-shaping: ${theme.shapingColor}`,
+      `--map-marker-stroke: ${theme.markerStrokeColor}`
+    ].join('; ');
+  }
+
   function escapeHtml(value: string) {
     return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
   }
 </script>
 
-<div class="map-shell" aria-label={label}>
+<div class="map-shell" aria-label={label} style={themeStyle()}>
   <div class="map-canvas" bind:this={mapElement}></div>
   {#if status !== 'ready' || routeOptions.length === 0}
     <div class="map-overlay" class:error={status === 'error'}>
