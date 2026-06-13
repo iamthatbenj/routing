@@ -2,6 +2,7 @@
   import './MapShell.css';
   import { onDestroy, onMount } from 'svelte';
   import { env } from '$env/dynamic/public';
+  import { resolveBasemap, type BasemapConfig } from '$lib/basemaps';
 
   type MapStatus = 'loading' | 'ready' | 'error';
 
@@ -57,7 +58,7 @@
     label = 'Route map',
     center = [-107.2, 39.0],
     zoom = 5.2,
-    styleUrl = env.PUBLIC_MAP_STYLE_URL || 'https://demotiles.maplibre.org/style.json',
+    basemap = resolveBasemap(env),
     routeOptions = [],
     selectedRouteId = undefined,
     highlights = [],
@@ -67,7 +68,7 @@
     label?: string;
     center?: [number, number];
     zoom?: number;
-    styleUrl?: string;
+    basemap?: BasemapConfig;
     routeOptions?: MapRouteOption[];
     selectedRouteId?: string;
     highlights?: MapHighlight[];
@@ -109,7 +110,7 @@
       maplibreModule = maplibre;
       map = new maplibre.Map({
         container: mapElement,
-        style: styleUrl,
+        style: basemap.style as import('maplibre-gl').StyleSpecification | string,
         center,
         zoom,
         attributionControl: false
@@ -424,11 +425,13 @@
       {/if}
     </div>
   {/if}
-  {#if status === 'ready' && renderedRouteCount > 0}
+  {#if status === 'ready' && (renderedRouteCount > 0 || basemap)}
     <div class="map-legend" aria-live="polite">
-      <strong>{renderedRouteCount} Corridors</strong>
-      <span><i class="legend-fastest"></i> Fastest baseline</span>
-      <span><i class="legend-interesting"></i> Interesting Route</span>
+      <strong>{renderedRouteCount > 0 ? `${renderedRouteCount} Corridors` : basemap.name}</strong>
+      {#if renderedRouteCount > 0}
+        <span><i class="legend-fastest"></i> Fastest baseline</span>
+        <span><i class="legend-interesting"></i> Interesting Route</span>
+      {/if}
       {#if renderedStopCount > 0}
         <span><i class="legend-endpoint"></i> Endpoint</span>
         <span><i class="legend-shaping"></i> Shaping Stop</span>

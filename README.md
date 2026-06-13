@@ -37,8 +37,29 @@ npm run build
 
 ## Map configuration
 
-MapLibre maps read a MapLibre-compatible style URL from `PUBLIC_MAP_STYLE_URL`.
-If it is not set, local development falls back to MapLibre demo tiles. Do not assume the demo tile service is suitable for production traffic; choose a provider and follow its attribution, rate-limit, and terms requirements before deployment.
+MapLibre maps use named basemap configs so the app can evaluate raster or vector basemaps while preserving route and Highlight overlays.
+
+Local development falls back to `demo-vector`, backed by MapLibre demo tiles:
+
+```env
+PUBLIC_BASEMAP_ID=demo-vector
+```
+
+To test a vector style, set:
+
+```env
+PUBLIC_MAP_STYLE_URL=https://example.com/style.json
+```
+
+To test a raster tile basemap, set:
+
+```env
+PUBLIC_BASEMAP_ID=custom-raster
+PUBLIC_RASTER_TILE_URL=https://tile-provider.example/{z}/{x}/{y}.png
+PUBLIC_RASTER_TILE_ATTRIBUTION=Required provider attribution
+```
+
+Do not assume demo tiles are suitable for production traffic; choose a provider and follow its attribution, rate-limit, and terms requirements before deployment.
 
 ## Project guidance
 
