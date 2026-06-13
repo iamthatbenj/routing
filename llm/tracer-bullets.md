@@ -123,6 +123,12 @@ A traveler who chooses an Interesting Route can understand and use the generated
 - Human-in-the-loop Google Maps verification against Denver → Moab Saved Routes.
 - Close out the Shaping Stop quality concern captured during TB3.
 
+### Good-enough Shaping Stops criteria
+
+For TB4, Shaping Stops are good enough when they preserve the intended Saved Route Corridor in Google Maps without making handoff noisy or brittle. Prefer stops that are on or very near navigable roads, distributed along meaningful Corridor divergences, not near endpoints, and understandable in manual stop order. Cap Google Maps waypoint handoff at **five Shaping Stops** for now; fewer is better when the Corridor is already preserved. Apple Maps remains endpoints-only and is not a measure of Shaping Stop success.
+
+Failure modes: stops that land on the wrong road or non-road place, stops that cause Google Maps to leave the intended Corridor, too many/noisy stops, stops clustered near endpoints, or stop labels/order that make the handoff hard to understand.
+
 ### GitHub issues
 
 1. [TB4.01 Define good-enough Shaping Stops](https://github.com/iamthatbenj/routing/issues/44)
