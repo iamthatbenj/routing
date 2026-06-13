@@ -2,7 +2,7 @@
   import './MapShell.css';
   import { onDestroy, onMount } from 'svelte';
   import { env } from '$env/dynamic/public';
-  import { resolveBasemap, type BasemapConfig } from '$lib/basemaps';
+  import { basemapConfigs, resolveBasemap, type BasemapConfig } from '$lib/basemaps';
 
   type MapStatus = 'loading' | 'ready' | 'error';
 
@@ -76,6 +76,10 @@
     onRouteSelect?: (routeId: string) => void;
   } = $props();
 
+  const availableBasemaps = basemapConfigs(env);
+  const basemapStorageKey = 'routing.selectedBasemapId';
+
+  let selectedBasemap = $state<BasemapConfig>(resolveBasemap(env));
   let mapElement: HTMLDivElement;
   let map: import('maplibre-gl').Map | null = null;
   let maplibreModule: typeof import('maplibre-gl') | null = null;
@@ -108,9 +112,10 @@
     try {
       const maplibre = await import('maplibre-gl');
       maplibreModule = maplibre;
+      selectedBasemap = storedBasemap() ?? basemap;
       map = new maplibre.Map({
         container: mapElement,
-        style: basemap.style as import('maplibre-gl').StyleSpecification | string,
+        style: selectedBasemap.style as import('maplibre-gl').StyleSpecification | string,
         center,
         zoom,
         attributionControl: false
@@ -133,6 +138,40 @@
   onDestroy(() => {
     map?.remove();
   });
+
+  function switchBasemap(basemapId: string) {
+    if (!map || basemapId === selectedBasemap.id) return;
+
+    const nextBasemap = availableBasemaps.find((candidate) => candidate.id === basemapId);
+    if (!nextBasemap) return;
+
+    selectedBasemap = nextBasemap;
+    sessionStorage.setItem(basemapStorageKey, nextBasemap.id);
+    status = 'loading';
+    resetRenderedMapContent();
+
+    map.setStyle(nextBasemap.style as import('maplibre-gl').StyleSpecification | string);
+    map.once('style.load', () => {
+      status = 'ready';
+      renderRouteOptions();
+      renderHighlights();
+      renderStops();
+    });
+  }
+
+  function storedBasemap() {
+    const storedId = sessionStorage.getItem(basemapStorageKey);
+    return availableBasemaps.find((candidate) => candidate.id === storedId);
+  }
+
+  function resetRenderedMapContent() {
+    renderedSignature = '';
+    renderedHighlightSignature = '';
+    renderedStopSignature = '';
+    routeClickHandlersAttached = false;
+    highlightClickHandlersAttached = false;
+    stopClickHandlersAttached = false;
+  }
 
   function renderRouteOptions() {
     if (!map || !maplibreModule) return;
@@ -425,9 +464,19 @@
       {/if}
     </div>
   {/if}
-  {#if status === 'ready' && (renderedRouteCount > 0 || basemap)}
+  {#if status === 'ready' && availableBasemaps.length > 1}
+    <label class="basemap-switcher">
+      <span>Basemap</span>
+      <select value={selectedBasemap.id} onchange={(event) => switchBasemap(event.currentTarget.value)}>
+        {#each availableBasemaps as candidate}
+          <option value={candidate.id}>{candidate.name}</option>
+        {/each}
+      </select>
+    </label>
+  {/if}
+  {#if status === 'ready' && (renderedRouteCount > 0 || selectedBasemap)}
     <div class="map-legend" aria-live="polite">
-      <strong>{renderedRouteCount > 0 ? `${renderedRouteCount} Corridors` : basemap.name}</strong>
+      <strong>{renderedRouteCount > 0 ? `${renderedRouteCount} Corridors` : selectedBasemap.name}</strong>
       {#if renderedRouteCount > 0}
         <span><i class="legend-fastest"></i> Fastest baseline</span>
         <span><i class="legend-interesting"></i> Interesting Route</span>
