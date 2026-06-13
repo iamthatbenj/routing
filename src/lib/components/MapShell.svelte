@@ -83,6 +83,9 @@
   let mapElement: HTMLDivElement;
   let map: import('maplibre-gl').Map | null = null;
   let maplibreModule: typeof import('maplibre-gl') | null = null;
+  let mapObserver: IntersectionObserver | null = null;
+  let mapInitialized = false;
+  let componentDestroyed = false;
   let status: MapStatus = $state('loading');
   let errorMessage = $state('');
   let renderedRouteCount = $state(0);
@@ -108,9 +111,38 @@
     }
   });
 
-  onMount(async () => {
+  onMount(() => {
+    if (!('IntersectionObserver' in window)) {
+      void initializeMap();
+      return;
+    }
+
+    mapObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          mapObserver?.disconnect();
+          mapObserver = null;
+          void initializeMap();
+        }
+      },
+      { rootMargin: '320px 0px' }
+    );
+    mapObserver.observe(mapElement);
+  });
+
+  onDestroy(() => {
+    componentDestroyed = true;
+    mapObserver?.disconnect();
+    map?.remove();
+  });
+
+  async function initializeMap() {
+    if (mapInitialized) return;
+    mapInitialized = true;
+
     try {
       const maplibre = await import('maplibre-gl');
+      if (componentDestroyed) return;
       maplibreModule = maplibre;
       selectedBasemap = storedBasemap() ?? basemap;
       map = new maplibre.Map({
@@ -133,11 +165,7 @@
       status = 'error';
       errorMessage = error instanceof Error ? error.message : 'The map could not be initialized.';
     }
-  });
-
-  onDestroy(() => {
-    map?.remove();
-  });
+  }
 
   function switchBasemap(basemapId: string) {
     if (!map || basemapId === selectedBasemap.id) return;
