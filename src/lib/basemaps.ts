@@ -26,7 +26,19 @@ export function basemapConfigs(env: BasemapEnvironment): BasemapConfig[] {
     style: env.PUBLIC_MAP_STYLE_URL || demoVectorStyleUrl
   };
 
-  const configs = [demoVector];
+  const osmRaster: BasemapConfig = {
+    id: 'osm-standard-raster',
+    name: 'OpenStreetMap Standard raster',
+    kind: 'raster',
+    attribution: '© OpenStreetMap contributors',
+    style: rasterStyle({
+      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+      attribution: '© OpenStreetMap contributors',
+      name: 'OpenStreetMap Standard raster'
+    })
+  };
+
+  const configs = [demoVector, osmRaster];
 
   if (env.PUBLIC_RASTER_TILE_URL) {
     configs.push({

@@ -51,6 +51,39 @@
   line-height: 1.45;
 }
 
+.basemap-switcher {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: grid;
+  gap: 0.25rem;
+  max-width: calc(100% - 5rem);
+  border-radius: 0.85rem;
+  padding: 0.5rem;
+  background: rgba(255, 250, 241, 0.94);
+  box-shadow: 0 8px 24px rgba(32, 39, 34, 0.16);
+}
+
+.basemap-switcher span {
+  color: var(--brand);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.basemap-switcher select {
+  max-width: 14rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.45rem 1.8rem 0.45rem 0.65rem;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .map-legend {
   position: absolute;
   left: 0.6rem;
@@ -130,6 +163,14 @@
 @media (min-width: 760px) {
   .map-shell {
     border-radius: 1.25rem;
+  }
+
+  .basemap-switcher {
+    max-width: calc(100% - 6rem);
+  }
+
+  .basemap-switcher select {
+    max-width: 18rem;
   }
 
   .map-legend {

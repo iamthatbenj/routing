@@ -39,7 +39,9 @@ npm run build
 
 MapLibre maps use named basemap configs so the app can evaluate raster or vector basemaps while preserving route and Highlight overlays.
 
-Local development falls back to `demo-vector`, backed by MapLibre demo tiles:
+Local development falls back to `demo-vector`, backed by MapLibre demo tiles. The evaluation switcher also includes `osm-standard-raster`, a raster OpenStreetMap candidate for comparing richer map context.
+
+Select the default basemap with:
 
 ```env
 PUBLIC_BASEMAP_ID=demo-vector
