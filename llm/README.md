@@ -20,7 +20,7 @@ Trip → Trip Stops → Leg → Route Search → Route Options → preferred Sav
 
 - SvelteKit + TypeScript for the web app.
 - Turso as the initial primary database.
-- MapLibre-compatible vector maps when map rendering is introduced.
+- MapLibre-compatible map rendering with provider-swappable raster or vector basemaps.
 - App-owned Routing Place gazetteer for Endpoint and Trip Stop search.
 - H3 indexes for initial route-to-Highlight spatial matching.
 - Anonymous Trip editing through private edit links.
