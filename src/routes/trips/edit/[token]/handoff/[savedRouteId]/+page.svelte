@@ -13,6 +13,14 @@
   function formatDistance(meters: number) {
     return `${Math.round(meters / 1609.344)} mi`;
   }
+
+  function formatRouteFraction(routeFraction: number | undefined) {
+    return typeof routeFraction === 'number' ? `${Math.round(routeFraction * 100)}% along route` : 'Position unknown';
+  }
+
+  function formatCoordinate(value: number | undefined) {
+    return typeof value === 'number' ? value.toFixed(5) : 'unknown';
+  }
 </script>
 
 <svelte:head>
@@ -120,9 +128,16 @@
         These visible Shaping Stops are included where the navigation app supports waypoints. Remove
         or change them in the navigation app if they do not match your plan.
       </p>
-      <ol>
-        {#each data.savedRoute.snapshot.handoffStops as stop}
-          <li>{stop.displayLabel ?? stop.label}</li>
+      <ol class="shaping-diagnostics">
+        {#each data.savedRoute.snapshot.handoffStops as stop, index}
+          <li>
+            <div class="stop-order">{index + 1}</div>
+            <div class="stop-diagnostic-copy">
+              <strong>{stop.displayLabel ?? `Shaping Stop ${index + 1}`}</strong>
+              <span>{formatRouteFraction(stop.routeFraction)}</span>
+              <code>{formatCoordinate(stop.latitude)}, {formatCoordinate(stop.longitude)}</code>
+            </div>
+          </li>
         {/each}
       </ol>
     {:else}
