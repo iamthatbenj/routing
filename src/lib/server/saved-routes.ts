@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import type { RouteReason } from '$lib/route-reasons';
 import { shapingStopsFromGeometry } from '$lib/shaping-stops';
 import { db } from './db';
 import type { RouteOption, RouteSearch } from './route-searches';
@@ -18,6 +19,7 @@ export type SavedRouteSnapshot = {
   geometryJson: string;
   interestScore: number;
   explanations: string[];
+  reasons: RouteReason[];
   fastestBaselineDeltaSeconds: number;
   warnings: string[];
   handoffStops: HandoffStop[];
@@ -202,6 +204,7 @@ function buildSnapshot(
     geometryJson: routeOption.geometryJson,
     interestScore: routeOption.interestScore,
     explanations: routeOption.explanations,
+    reasons: routeOption.reasons,
     fastestBaselineDeltaSeconds: Math.max(0, routeOption.durationSeconds - fastestDuration),
     warnings: [],
     handoffStops: handoffStopsForRouteOption(routeOption)
@@ -220,6 +223,7 @@ function parseSnapshot(value: string): SavedRouteSnapshot {
   const snapshot = JSON.parse(value) as SavedRouteSnapshot;
   return {
     ...snapshot,
+    reasons: snapshot.reasons ?? [],
     handoffStops: snapshot.handoffStops ?? []
   };
 }
