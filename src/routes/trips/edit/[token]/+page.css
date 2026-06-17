@@ -517,6 +517,45 @@ p {
   color: var(--ink);
 }
 
+.saved-route-card small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.rename-route-form {
+  display: grid;
+  gap: 0.35rem;
+  border: 1px solid rgba(72, 62, 47, 0.1);
+  border-radius: 0.9rem;
+  padding: 0.65rem;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.rename-route-form label {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rename-route-form div {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.rename-route-form input {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.75rem 0.9rem;
+  background: white;
+  font: inherit;
+}
+
 .saved-route-facts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -590,8 +629,9 @@ p {
     padding: 1rem;
   }
 
-  .meta-grid {
-    grid-template-columns: 1fr 1fr;
+  .meta-grid,
+  .rename-route-form div {
+    grid-template-columns: 1fr auto;
   }
 
   .legs,

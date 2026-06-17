@@ -2,7 +2,7 @@ import { error, fail } from '@sveltejs/kit';
 import { listHighlights } from '$lib/server/highlights';
 import { latestSearchForLeg, listRouteSearchesForTrip, startRouteSearch } from '$lib/server/route-searches';
 import type { Directness } from '$lib/server/route-searches';
-import { deleteSavedRoute, listSavedRoutesForTrip, markSavedRoutePreferred, saveRouteOption } from '$lib/server/saved-routes';
+import { deleteSavedRoute, listSavedRoutesForTrip, markSavedRoutePreferred, renameSavedRoute, saveRouteOption } from '$lib/server/saved-routes';
 import { findRoutingPlaceBySearchLabel, listRoutingPlaces } from '$lib/server/routing-places';
 import { addTripStop, deriveLegs, listTripStops, moveTripStop } from '$lib/server/trip-stops';
 import { findTripByEditToken } from '$lib/server/trips';
@@ -155,6 +155,30 @@ export const actions = {
     }
 
     await deleteSavedRoute(trip.id, savedRouteId);
+    return { success: true };
+  },
+
+  renameSavedRoute: async ({ request, params }) => {
+    const trip = await loadEditableTrip(params.token);
+    const formData = await request.formData();
+    const savedRouteId = formData.get('savedRouteId');
+    const rawTitle = formData.get('title');
+
+    if (typeof savedRouteId !== 'string' || typeof rawTitle !== 'string') {
+      return fail(400, { message: 'Choose a Saved Route title to update.' });
+    }
+
+    const title = rawTitle.trim();
+
+    if (title.length === 0) {
+      return fail(400, { message: 'Saved Route title cannot be empty.' });
+    }
+
+    if (title.length > 90) {
+      return fail(400, { message: 'Saved Route title must be 90 characters or fewer.' });
+    }
+
+    await renameSavedRoute(trip.id, savedRouteId, title);
     return { success: true };
   }
 };

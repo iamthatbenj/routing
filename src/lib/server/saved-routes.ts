@@ -162,6 +162,20 @@ export async function deleteSavedRoute(tripId: string, savedRouteId: string) {
   await touchTrip(tripId);
 }
 
+export async function renameSavedRoute(tripId: string, savedRouteId: string, title: string) {
+  const savedRoute = await findSavedRoute(tripId, savedRouteId);
+
+  if (!savedRoute) {
+    throw new Error('Saved Route does not belong to this Trip.');
+  }
+
+  await db.execute({
+    sql: 'UPDATE saved_routes SET title = ?, updated_at = ? WHERE id = ? AND trip_id = ?',
+    args: [title, new Date().toISOString(), savedRouteId, tripId]
+  });
+  await touchTrip(tripId);
+}
+
 export async function findSavedRoute(tripId: string, savedRouteId: string) {
   const result = await db.execute({
     sql: `
