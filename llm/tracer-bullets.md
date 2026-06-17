@@ -171,3 +171,32 @@ A traveler comparing a Leg can understand the difference between the fastest bas
 - Manual route dragging/editing.
 - Production basemap provider selection.
 - Account/auth system.
+
+## TB6 — Saved Route management and Trip workflow polish
+
+Goal: make Saved Routes easier to understand and manage so a traveler can save, prefer, rename, delete, and hand off the route they actually intend to use.
+
+A traveler comparing a Leg can keep multiple Saved Routes, clearly see which one is preferred, update titles for their own planning language, remove routes they no longer want, and open Leg Handoff from the preferred route.
+
+### Scope
+
+- Improve Saved Route cards with source/type, Anchor, score, time/distance, Shaping Stop count, and preferred state.
+- Delete Saved Routes with predictable fallback when deleting the preferred route.
+- Rename Saved Routes while preserving Route Option snapshot metadata.
+- Improve preferred Saved Route selection and Route Option saved/preferred hints.
+- Human-in-the-loop review of save/rename/delete/prefer/handoff workflow.
+
+### GitHub issues
+
+1. [TB6.01 Improve Saved Route cards](https://github.com/iamthatbenj/routing/issues/59)
+2. [TB6.02 Delete Saved Routes](https://github.com/iamthatbenj/routing/issues/60)
+3. [TB6.03 Rename Saved Routes](https://github.com/iamthatbenj/routing/issues/61)
+4. [TB6.04 Improve preferred Saved Route selection](https://github.com/iamthatbenj/routing/issues/62)
+5. [TB6.05 Saved Route workflow review](https://github.com/iamthatbenj/routing/issues/63)
+
+### Deferred from TB6
+
+- Account/auth system.
+- Full read-only sharing workflow.
+- Manual route editing/dragging.
+- Production basemap provider selection.
