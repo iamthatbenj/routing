@@ -9,6 +9,12 @@ import type { Leg } from './trip-stops';
 
 export type Directness = 'Direct' | 'Balanced' | 'Adventurous';
 
+export const tracerRouteAnchorLabels = [
+  'Colorado National Monument, Colorado',
+  'Black Canyon of the Gunnison, Colorado',
+  'Dinosaur National Monument, Utah / Colorado'
+];
+
 export type RouteOption = {
   id: string;
   routeSearchId: string;
@@ -139,10 +145,7 @@ async function generateRouteOptions(leg: Leg) {
   const to = leg.to.routingPlace;
   const routes = await fetchDrivingRoutes({ from, to });
 
-  for (const anchorLabel of [
-    'Colorado National Monument, Colorado',
-    'Black Canyon of the Gunnison, Colorado'
-  ]) {
+  for (const anchorLabel of tracerRouteAnchorLabels) {
     const anchor = await findRoutingPlaceBySearchLabel(anchorLabel);
     if (anchor && anchor.id !== from.id && anchor.id !== to.id) {
       try {
