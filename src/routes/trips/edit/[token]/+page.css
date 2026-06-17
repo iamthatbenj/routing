@@ -321,6 +321,18 @@ p {
   letter-spacing: -0.035em;
 }
 
+.route-origin {
+  display: inline-flex;
+  justify-self: start;
+  max-width: 100%;
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem;
+  color: var(--brand-strong);
+  background: var(--sky);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
 .route-option-card dl {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

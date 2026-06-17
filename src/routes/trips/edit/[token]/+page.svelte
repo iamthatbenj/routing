@@ -39,6 +39,14 @@
   function formatDistance(meters: number) {
     return `${Math.round(meters / 1609.344)} mi`;
   }
+
+  function routeKind(source: string) {
+    return source === 'ors-fastest' ? 'Fastest baseline' : source === 'ors-anchor' ? 'Anchor-generated Interesting Route' : 'Route Option';
+  }
+
+  function anchorLabel(option: { source: string; name: string }) {
+    return option.source === 'ors-anchor' && option.name.startsWith('Via ') ? option.name.replace(/^Via /, '').trim() : '';
+  }
 </script>
 
 <svelte:head>
@@ -186,8 +194,13 @@
                   >
                     <div class="route-option-heading">
                       <div>
-                        <span>{option.source === 'ors-fastest' ? 'Fastest baseline' : 'Route Option'}</span>
+                        <span>{routeKind(option.source)}</span>
                         <h4>{option.name}</h4>
+                        {#if anchorLabel(option)}
+                          <p class="route-origin">Anchor: {anchorLabel(option)}</p>
+                        {:else if option.source === 'ors-fastest'}
+                          <p class="route-origin">Baseline Corridor for comparison</p>
+                        {/if}
                       </div>
                       <strong class="score">{option.interestScore}</strong>
                     </div>
@@ -229,6 +242,11 @@
                       <div>
                         <span>{savedRoute.isPreferred ? 'Preferred Saved Route' : 'Saved Route'}</span>
                         <strong>{savedRoute.title}</strong>
+                        {#if anchorLabel(savedRoute.snapshot)}
+                          <p class="route-origin">Anchor-generated Corridor via {anchorLabel(savedRoute.snapshot)}</p>
+                        {:else if savedRoute.snapshot.source === 'ors-fastest'}
+                          <p class="route-origin">Fastest baseline Corridor</p>
+                        {/if}
                         <p>
                           {formatDuration(savedRoute.snapshot.durationSeconds)} ·
                           {formatDistance(savedRoute.snapshot.distanceMeters)} · score
