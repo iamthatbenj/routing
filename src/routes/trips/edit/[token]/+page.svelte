@@ -290,6 +290,7 @@
                         <div>
                           <span>{savedRoute.isPreferred ? 'Preferred Saved Route' : 'Saved Route'}</span>
                           <strong>{savedRoute.title}</strong>
+                          <small>Original Route Option: {savedRoute.snapshot.name}</small>
                         </div>
                         {#if savedRoute.isPreferred}
                           <em>Preferred</em>
@@ -304,6 +305,14 @@
                           {routeKind(savedRoute.snapshot.source)} Corridor
                         {/if}
                       </p>
+                      <form class="rename-route-form" method="POST" action="?/renameSavedRoute" aria-label={`Rename ${savedRoute.title}`}>
+                        <input type="hidden" name="savedRouteId" value={savedRoute.id} />
+                        <label for={`rename-${savedRoute.id}`}>Rename Saved Route</label>
+                        <div>
+                          <input id={`rename-${savedRoute.id}`} name="title" value={savedRoute.title} maxlength="90" />
+                          <button class="save-route" type="submit">Rename</button>
+                        </div>
+                      </form>
                       <dl class="saved-route-facts">
                         <div>
                           <dt>Score</dt>
