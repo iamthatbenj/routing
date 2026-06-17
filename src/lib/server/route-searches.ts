@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { routeCorridorCells, selectCorridorRouteOptions } from '$lib/route-corridors';
+import { parseRouteReasons, type RouteReason } from '$lib/route-reasons';
 import { db } from './db';
 import { findHighlightsByH3Cells, type Highlight } from './highlights';
 import { fetchDrivingRoutes, type OrsRoute } from './ors';
@@ -19,6 +20,7 @@ export type RouteOption = {
   sortOrder: number;
   interestScore: number;
   explanations: string[];
+  reasons: RouteReason[];
 };
 
 export type RouteSearch = {
@@ -37,6 +39,7 @@ export type RouteSearch = {
 type ScoredRoute = OrsRoute & {
   interestScore: number;
   explanations: string[];
+  reasons: RouteReason[];
 };
 
 function rowToRouteSearch(row: Record<string, unknown>, options: RouteOption[]): RouteSearch {
@@ -65,7 +68,8 @@ function rowToRouteOption(row: Record<string, unknown>): RouteOption {
     geometryJson: String(row.geometry_json),
     sortOrder: Number(row.sort_order),
     interestScore: Number(row.interest_score ?? 0),
-    explanations: parseExplanations(String(row.explanation_json ?? '[]'))
+    explanations: parseExplanations(String(row.explanation_json ?? '[]')),
+    reasons: parseRouteReasons(String(row.reason_json ?? '[]'))
   };
 }
 
@@ -84,7 +88,8 @@ export async function listRouteSearchesForTrip(tripId: string) {
     sql: `
       SELECT route_options.id, route_options.route_search_id, route_options.name, route_options.source,
         route_options.duration_seconds, route_options.distance_meters, route_options.geometry_json,
-        route_options.sort_order, route_options.interest_score, route_options.explanation_json
+        route_options.sort_order, route_options.interest_score, route_options.explanation_json,
+        route_options.reason_json
       FROM route_options
       JOIN route_searches ON route_searches.id = route_options.route_search_id
       WHERE route_searches.trip_id = ?
@@ -175,13 +180,15 @@ async function scoreRouteOptions(routes: OrsRoute[], leg: Leg, directness: Direc
         (total, highlight) => total + highlightWeight(highlight),
         0
       );
-      const penalty = directnessPenalty(route.durationSeconds - fastestDuration, directness);
+      const extraSeconds = route.durationSeconds - fastestDuration;
+      const penalty = directnessPenalty(extraSeconds, directness);
       const interestScore = Math.max(0, Math.round(highlightScore - penalty));
 
       return {
         ...route,
         interestScore,
-        explanations: buildExplanations(scoredHighlights, endpointContext, route.durationSeconds - fastestDuration)
+        explanations: buildExplanations(scoredHighlights, endpointContext, extraSeconds),
+        reasons: buildReasons(route, scoredHighlights, endpointContext, extraSeconds, directness, penalty)
       };
     })
   );
@@ -203,6 +210,37 @@ function directnessPenalty(extraSeconds: number, directness: Directness) {
   const extraMinutes = Math.max(0, extraSeconds / 60);
   const penaltyPerMinute = directness === 'Direct' ? 0.45 : directness === 'Adventurous' ? 0.08 : 0.18;
   return extraMinutes * penaltyPerMinute;
+}
+
+function buildReasons(route: OrsRoute, scoredHighlights: Highlight[], endpointContext: Highlight[], extraSeconds: number, directness: Directness, penalty: number): RouteReason[] {
+  const reasons: RouteReason[] = [];
+  const anchorLabel = anchorLabelForRoute(route);
+
+  if (anchorLabel) {
+    reasons.push({ kind: 'anchor', label: anchorLabel });
+  }
+
+  reasons.push(
+    ...scoredHighlights.slice(0, 5).map((highlight) => ({
+      kind: 'highlight' as const,
+      label: highlight.name,
+      category: highlight.category,
+      visitEffort: highlight.visitEffort,
+      scoreImpact: highlightWeight(highlight)
+    }))
+  );
+
+  reasons.push({ kind: 'tradeoff', extraSeconds: Math.max(0, extraSeconds), directness, penalty });
+
+  if (endpointContext.length > 0) {
+    reasons.push({ kind: 'endpoint_context', labels: endpointContext.map((highlight) => highlight.name) });
+  }
+
+  return reasons;
+}
+
+function anchorLabelForRoute(route: OrsRoute) {
+  return route.source === 'ors-anchor' && route.name.startsWith('Via ') ? route.name.replace(/^Via /, '').trim() : '';
 }
 
 function buildExplanations(scoredHighlights: Highlight[], endpointContext: Highlight[], extraSeconds: number) {
@@ -241,9 +279,9 @@ async function replaceRouteOptions(routeSearchId: string, routes: ScoredRoute[])
       sql: `
         INSERT INTO route_options (
           id, route_search_id, name, source, duration_seconds, distance_meters,
-          geometry_json, sort_order, interest_score, explanation_json
+          geometry_json, sort_order, interest_score, explanation_json, reason_json
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       args: [
         randomUUID(),
@@ -255,7 +293,8 @@ async function replaceRouteOptions(routeSearchId: string, routes: ScoredRoute[])
         JSON.stringify(route.geometry),
         index + 1,
         route.interestScore,
-        JSON.stringify(route.explanations)
+        JSON.stringify(route.explanations),
+        JSON.stringify(route.reasons)
       ]
     }))
   );

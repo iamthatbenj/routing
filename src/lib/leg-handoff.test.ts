@@ -27,6 +27,7 @@ function savedRoute(overrides: Partial<SavedRoute['snapshot']> = {}): SavedRoute
       geometryJson: '{}',
       interestScore: 10,
       explanations: [],
+      reasons: [],
       fastestBaselineDeltaSeconds: 1,
       warnings: [],
       handoffStops: [],
