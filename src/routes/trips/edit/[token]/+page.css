@@ -321,7 +321,8 @@ p {
   letter-spacing: -0.035em;
 }
 
-.route-origin {
+.route-origin,
+.route-saved-status {
   display: inline-flex;
   justify-self: start;
   max-width: 100%;
@@ -331,6 +332,16 @@ p {
   background: var(--sky);
   font-size: 0.82rem;
   font-weight: 900;
+}
+
+.route-saved-status {
+  color: #5f4420;
+  background: var(--accent-soft);
+}
+
+.route-saved-status.preferred {
+  color: white;
+  background: var(--brand);
 }
 
 .route-option-card dl {

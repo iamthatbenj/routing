@@ -61,6 +61,10 @@
   function shapingStopCountLabel(count: number) {
     return `${count} Shaping Stop${count === 1 ? '' : 's'}`;
   }
+
+  function savedRouteForOption(leg: { savedRoutes: Array<{ routeOptionId: string | null; isPreferred: boolean }> }, routeOptionId: string) {
+    return leg.savedRoutes.find((savedRoute) => savedRoute.routeOptionId === routeOptionId);
+  }
 </script>
 
 <svelte:head>
@@ -215,6 +219,11 @@
                         {:else if option.source === 'ors-fastest'}
                           <p class="route-origin">Baseline Corridor for comparison</p>
                         {/if}
+                        {#if savedRouteForOption(leg, option.id)?.isPreferred}
+                          <p class="route-saved-status preferred">Already saved as Preferred Saved Route</p>
+                        {:else if savedRouteForOption(leg, option.id)}
+                          <p class="route-saved-status">Already saved</p>
+                        {/if}
                       </div>
                       <strong class="score">{option.interestScore}</strong>
                     </div>
@@ -337,7 +346,7 @@
                         {:else}
                           <form method="POST" action="?/preferSavedRoute">
                             <input type="hidden" name="savedRouteId" value={savedRoute.id} />
-                            <button class="save-route" type="submit">Mark preferred</button>
+                            <button class="save-route" type="submit">Use as Preferred Saved Route</button>
                           </form>
                         {/if}
                         <form method="POST" action="?/deleteSavedRoute">
