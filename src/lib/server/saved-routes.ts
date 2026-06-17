@@ -143,6 +143,25 @@ export async function markSavedRoutePreferred(tripId: string, savedRouteId: stri
   await touchTrip(tripId);
 }
 
+export async function deleteSavedRoute(tripId: string, savedRouteId: string) {
+  const savedRoute = await findSavedRoute(tripId, savedRouteId);
+
+  if (!savedRoute) {
+    throw new Error('Saved Route does not belong to this Trip.');
+  }
+
+  await db.execute({
+    sql: 'DELETE FROM saved_routes WHERE id = ? AND trip_id = ?',
+    args: [savedRouteId, tripId]
+  });
+
+  if (savedRoute.isPreferred) {
+    await preferNewestSavedRouteForLeg(tripId, savedRoute.fromTripStopId, savedRoute.toTripStopId);
+  }
+
+  await touchTrip(tripId);
+}
+
 export async function findSavedRoute(tripId: string, savedRouteId: string) {
   const result = await db.execute({
     sql: `
@@ -180,6 +199,27 @@ async function clearPreferredRoute(tripId: string, fromTripStopId: string, toTri
       WHERE trip_id = ? AND from_trip_stop_id = ? AND to_trip_stop_id = ?
     `,
     args: [new Date().toISOString(), tripId, fromTripStopId, toTripStopId]
+  });
+}
+
+async function preferNewestSavedRouteForLeg(tripId: string, fromTripStopId: string, toTripStopId: string) {
+  const result = await db.execute({
+    sql: `
+      SELECT id
+      FROM saved_routes
+      WHERE trip_id = ? AND from_trip_stop_id = ? AND to_trip_stop_id = ?
+      ORDER BY created_at DESC
+      LIMIT 1
+    `,
+    args: [tripId, fromTripStopId, toTripStopId]
+  });
+  const nextPreferredId = result.rows[0]?.id;
+
+  if (!nextPreferredId) return;
+
+  await db.execute({
+    sql: 'UPDATE saved_routes SET is_preferred = 1, updated_at = ? WHERE id = ? AND trip_id = ?',
+    args: [new Date().toISOString(), String(nextPreferredId), tripId]
   });
 }
 

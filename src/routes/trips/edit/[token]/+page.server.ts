@@ -2,7 +2,7 @@ import { error, fail } from '@sveltejs/kit';
 import { listHighlights } from '$lib/server/highlights';
 import { latestSearchForLeg, listRouteSearchesForTrip, startRouteSearch } from '$lib/server/route-searches';
 import type { Directness } from '$lib/server/route-searches';
-import { listSavedRoutesForTrip, markSavedRoutePreferred, saveRouteOption } from '$lib/server/saved-routes';
+import { deleteSavedRoute, listSavedRoutesForTrip, markSavedRoutePreferred, saveRouteOption } from '$lib/server/saved-routes';
 import { findRoutingPlaceBySearchLabel, listRoutingPlaces } from '$lib/server/routing-places';
 import { addTripStop, deriveLegs, listTripStops, moveTripStop } from '$lib/server/trip-stops';
 import { findTripByEditToken } from '$lib/server/trips';
@@ -142,6 +142,19 @@ export const actions = {
     }
 
     await markSavedRoutePreferred(trip.id, savedRouteId);
+    return { success: true };
+  },
+
+  deleteSavedRoute: async ({ request, params }) => {
+    const trip = await loadEditableTrip(params.token);
+    const formData = await request.formData();
+    const savedRouteId = formData.get('savedRouteId');
+
+    if (typeof savedRouteId !== 'string') {
+      return fail(400, { message: 'Choose a Saved Route to delete.' });
+    }
+
+    await deleteSavedRoute(trip.id, savedRouteId);
     return { success: true };
   }
 };

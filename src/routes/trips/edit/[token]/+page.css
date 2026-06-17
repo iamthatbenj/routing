@@ -421,12 +421,36 @@ p {
   font-size: 0.9rem;
 }
 
-.save-route {
+.save-route,
+.delete-route {
   display: inline-flex;
   justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.9rem 1.1rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.save-route {
   color: var(--brand-strong);
   background: var(--sky);
-  text-decoration: none;
+}
+
+.delete-route,
+.saved-route-actions .delete-route {
+  appearance: none;
+  border: 1px solid rgba(138, 47, 32, 0.28);
+  color: #8a2f20;
+  background: #ffe4dc;
+  box-shadow: inset 0 0 0 1px rgba(138, 47, 32, 0.08);
+}
+
+.saved-route-actions .delete-route::before {
+  content: '×';
+  margin-right: 0.35rem;
+  font-size: 1.05em;
+  line-height: 1;
 }
 
 .saved-routes {
@@ -522,6 +546,12 @@ p {
   color: var(--ink);
   font-size: 0.88rem;
   font-weight: 900;
+}
+
+.saved-route-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
 }
 
 .map-panel {

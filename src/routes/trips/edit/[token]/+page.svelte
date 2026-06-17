@@ -1,4 +1,5 @@
 <script lang="ts">
+  import './+page.css';
   import MapShell from '$lib/components/MapShell.svelte';
 
   let { data, form } = $props();
@@ -321,14 +322,20 @@
                           <dd>{shapingStopCountLabel(savedRoute.snapshot.handoffStops.length)}</dd>
                         </div>
                       </dl>
-                      {#if savedRoute.isPreferred}
-                        <a class="save-route" href={`/trips/edit/${data.editToken}/handoff/${savedRoute.id}`}>Open Leg Handoff</a>
-                      {:else}
-                        <form method="POST" action="?/preferSavedRoute">
+                      <div class="saved-route-actions">
+                        {#if savedRoute.isPreferred}
+                          <a class="save-route" href={`/trips/edit/${data.editToken}/handoff/${savedRoute.id}`}>Open Leg Handoff</a>
+                        {:else}
+                          <form method="POST" action="?/preferSavedRoute">
+                            <input type="hidden" name="savedRouteId" value={savedRoute.id} />
+                            <button class="save-route" type="submit">Mark preferred</button>
+                          </form>
+                        {/if}
+                        <form method="POST" action="?/deleteSavedRoute">
                           <input type="hidden" name="savedRouteId" value={savedRoute.id} />
-                          <button class="save-route" type="submit">Mark preferred</button>
+                          <button class="delete-route" type="submit">Delete Saved Route</button>
                         </form>
-                      {/if}
+                      </div>
                     </article>
                   {/each}
                 </div>
