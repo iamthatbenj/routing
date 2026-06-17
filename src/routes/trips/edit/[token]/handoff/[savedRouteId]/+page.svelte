@@ -1,4 +1,5 @@
 <script lang="ts">
+  import './+page.css';
   import MapShell from '$lib/components/MapShell.svelte';
 
   let { data } = $props();
