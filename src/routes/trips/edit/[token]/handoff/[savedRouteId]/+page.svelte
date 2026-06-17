@@ -21,6 +21,14 @@
   function formatCoordinate(value: number | undefined) {
     return typeof value === 'number' ? value.toFixed(5) : 'unknown';
   }
+
+  function routeKind(source: string) {
+    return source === 'ors-fastest' ? 'Fastest baseline Corridor' : source === 'ors-anchor' ? 'Anchor-generated Interesting Route' : 'Saved Route Corridor';
+  }
+
+  function anchorLabel(route: { source: string; name: string }) {
+    return route.source === 'ors-anchor' && route.name.startsWith('Via ') ? route.name.replace(/^Via /, '').trim() : '';
+  }
 </script>
 
 <svelte:head>
@@ -90,6 +98,10 @@
   <section class="handoff-card" aria-labelledby="summary-heading">
     <p class="eyebrow">Preferred Saved Route</p>
     <h2 id="summary-heading">{data.savedRoute.title}</h2>
+    <p class="route-origin">{routeKind(data.savedRoute.snapshot.source)}</p>
+    {#if anchorLabel(data.savedRoute.snapshot)}
+      <p>This Interesting Route was generated through the Anchor: <strong>{anchorLabel(data.savedRoute.snapshot)}</strong>.</p>
+    {/if}
     <dl>
       <div>
         <dt>Directness</dt>

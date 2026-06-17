@@ -133,6 +133,16 @@ dd {
   font-weight: 900;
 }
 
+.route-origin {
+  justify-self: start;
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem;
+  color: var(--brand-strong);
+  background: var(--sky);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
 ul,
 .manual-stops {
   display: grid;
