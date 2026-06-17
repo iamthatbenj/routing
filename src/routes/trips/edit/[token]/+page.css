@@ -368,6 +368,59 @@ p {
   line-height: 1.45;
 }
 
+.score-breakdown {
+  display: grid;
+  gap: 0.55rem;
+  border-top: 1px solid var(--line);
+  padding-top: 0.7rem;
+}
+
+.score-breakdown h5 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.score-breakdown ul {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.score-breakdown li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.2rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  padding: 0.65rem;
+  background: white;
+}
+
+.score-breakdown li.context-only {
+  background: #f9f7f1;
+}
+
+.score-breakdown li span {
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.score-breakdown li strong {
+  color: var(--ink);
+  font-size: 0.86rem;
+}
+
+.score-breakdown li p {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+}
+
 .save-route {
   display: inline-flex;
   justify-content: center;

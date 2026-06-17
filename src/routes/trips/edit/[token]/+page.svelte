@@ -47,6 +47,15 @@
   function anchorLabel(option: { source: string; name: string }) {
     return option.source === 'ors-anchor' && option.name.startsWith('Via ') ? option.name.replace(/^Via /, '').trim() : '';
   }
+
+  function formatScoreImpact(value: number) {
+    return `+${Math.round(value)}`;
+  }
+
+  function formatPenalty(value: number) {
+    const rounded = Math.round(value);
+    return rounded > 0 ? `-${rounded}` : '0';
+  }
 </script>
 
 <svelte:head>
@@ -214,7 +223,40 @@
                         <dd>{formatDistance(option.distanceMeters)}</dd>
                       </div>
                     </dl>
-                    {#if option.explanations.length}
+                    {#if option.reasons.length}
+                      <section class="score-breakdown" aria-label={`Interest Score breakdown for ${option.name}`}>
+                        <h5>Interest Score breakdown</h5>
+                        <ul>
+                          {#each option.reasons as reason}
+                            {#if reason.kind === 'highlight'}
+                              <li>
+                                <span>{reason.category === 'scenic_segment' ? 'Scenic Segment' : 'Highlight'}</span>
+                                <strong>{formatScoreImpact(reason.scoreImpact)}</strong>
+                                <p>{reason.label} · {reason.visitEffort}</p>
+                              </li>
+                            {:else if reason.kind === 'tradeoff'}
+                              <li>
+                                <span>Directness tradeoff</span>
+                                <strong>{formatPenalty(reason.penalty)}</strong>
+                                <p>{reason.extraSeconds > 0 ? `${formatDuration(reason.extraSeconds)} slower · ${reason.directness}` : `Fastest baseline · ${reason.directness}`}</p>
+                              </li>
+                            {:else if reason.kind === 'endpoint_context'}
+                              <li class="context-only">
+                                <span>Destination context</span>
+                                <strong>Not scored</strong>
+                                <p>{reason.labels.slice(0, 2).join(', ')}</p>
+                              </li>
+                            {:else if reason.kind === 'anchor'}
+                              <li>
+                                <span>Anchor</span>
+                                <strong>Corridor</strong>
+                                <p>{reason.label}</p>
+                              </li>
+                            {/if}
+                          {/each}
+                        </ul>
+                      </section>
+                    {:else if option.explanations.length}
                       <ul class="explanations">
                         {#each option.explanations as explanation}
                           <li>{explanation}</li>
