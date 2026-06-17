@@ -200,3 +200,32 @@ A traveler comparing a Leg can keep multiple Saved Routes, clearly see which one
 - Full read-only sharing workflow.
 - Manual route editing/dragging.
 - Production basemap provider selection.
+
+## TB7 — Read-only Trip sharing
+
+Goal: let a traveler share a read-only Trip link so another person can understand Trip Stops, Legs, Preferred Saved Routes, maps, and Handoff context without exposing the private edit token.
+
+A shared viewer can open a Trip share link and review the planning context, but cannot edit stops, save/delete/rename routes, or change the Preferred Saved Route.
+
+### Scope
+
+- Surface the existing read-only share link from the private edit page.
+- Expand the share page with Trip Stops, Legs, and Preferred Saved Route summaries.
+- Add MapShell-backed Preferred Saved Route maps to the share page.
+- Add read-only Handoff context without exposing the private edit token.
+- Human-in-the-loop review of edit-vs-share privacy and mobile/desktop share UX.
+
+### GitHub issues
+
+1. [TB7.01 Surface read-only share links](https://github.com/iamthatbenj/routing/issues/69)
+2. [TB7.02 Expand share page content](https://github.com/iamthatbenj/routing/issues/70)
+3. [TB7.03 Add maps to share page](https://github.com/iamthatbenj/routing/issues/71)
+4. [TB7.04 Add share-page Handoff context](https://github.com/iamthatbenj/routing/issues/72)
+5. [TB7.05 Share workflow review](https://github.com/iamthatbenj/routing/issues/73)
+
+### Deferred from TB7
+
+- Account/auth system.
+- Editable collaboration or permission management.
+- Public discovery/search of Trips.
+- Production basemap provider selection.
