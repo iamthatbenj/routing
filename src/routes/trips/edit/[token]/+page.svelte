@@ -56,6 +56,10 @@
     const rounded = Math.round(value);
     return rounded > 0 ? `-${rounded}` : '0';
   }
+
+  function shapingStopCountLabel(count: number) {
+    return `${count} Shaping Stop${count === 1 ? '' : 's'}`;
+  }
 </script>
 
 <svelte:head>
@@ -281,20 +285,42 @@
                 <div class="saved-route-list">
                   {#each leg.savedRoutes as savedRoute}
                     <article class:preferred={savedRoute.isPreferred} class="saved-route-card">
-                      <div>
-                        <span>{savedRoute.isPreferred ? 'Preferred Saved Route' : 'Saved Route'}</span>
-                        <strong>{savedRoute.title}</strong>
-                        {#if anchorLabel(savedRoute.snapshot)}
-                          <p class="route-origin">Anchor-generated Corridor via {anchorLabel(savedRoute.snapshot)}</p>
-                        {:else if savedRoute.snapshot.source === 'ors-fastest'}
-                          <p class="route-origin">Fastest baseline Corridor</p>
+                      <div class="saved-route-heading">
+                        <div>
+                          <span>{savedRoute.isPreferred ? 'Preferred Saved Route' : 'Saved Route'}</span>
+                          <strong>{savedRoute.title}</strong>
+                        </div>
+                        {#if savedRoute.isPreferred}
+                          <em>Preferred</em>
                         {/if}
-                        <p>
-                          {formatDuration(savedRoute.snapshot.durationSeconds)} ·
-                          {formatDistance(savedRoute.snapshot.distanceMeters)} · score
-                          {savedRoute.snapshot.interestScore}
-                        </p>
                       </div>
+                      <p class="route-origin">
+                        {#if anchorLabel(savedRoute.snapshot)}
+                          Anchor-generated Corridor via {anchorLabel(savedRoute.snapshot)}
+                        {:else if savedRoute.snapshot.source === 'ors-fastest'}
+                          Fastest baseline Corridor
+                        {:else}
+                          {routeKind(savedRoute.snapshot.source)} Corridor
+                        {/if}
+                      </p>
+                      <dl class="saved-route-facts">
+                        <div>
+                          <dt>Score</dt>
+                          <dd>{savedRoute.snapshot.interestScore}</dd>
+                        </div>
+                        <div>
+                          <dt>Time</dt>
+                          <dd>{formatDuration(savedRoute.snapshot.durationSeconds)}</dd>
+                        </div>
+                        <div>
+                          <dt>Distance</dt>
+                          <dd>{formatDistance(savedRoute.snapshot.distanceMeters)}</dd>
+                        </div>
+                        <div>
+                          <dt>Handoff</dt>
+                          <dd>{shapingStopCountLabel(savedRoute.snapshot.handoffStops.length)}</dd>
+                        </div>
+                      </dl>
                       {#if savedRoute.isPreferred}
                         <a class="save-route" href={`/trips/edit/${data.editToken}/handoff/${savedRoute.id}`}>Open Leg Handoff</a>
                       {:else}
