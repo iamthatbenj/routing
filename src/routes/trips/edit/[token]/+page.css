@@ -1,9 +1,9 @@
 .trip-page {
   display: grid;
   gap: 1rem;
-  width: min(1280px, 100%);
+  width: min(var(--layout-workspace-max), 100%);
   margin: 0 auto;
-  padding: 0.75rem;
+  padding: var(--layout-gutter);
 }
 
 .trip-card,
@@ -13,8 +13,8 @@
   display: grid;
   gap: 1rem;
   border: 1px solid rgba(72, 62, 47, 0.12);
-  border-radius: 1.35rem;
-  padding: 0.85rem;
+  border-radius: var(--layout-card-radius);
+  padding: var(--layout-card-padding);
   background: rgba(255, 250, 241, 0.9);
   box-shadow: var(--shadow);
 }
@@ -655,15 +655,6 @@ p {
   .trip-page {
     grid-template-columns: 0.9fr 1.1fr;
     align-items: start;
-    padding: 1.25rem;
-  }
-
-  .trip-card,
-  .planner,
-  .legs,
-  .map-panel {
-    border-radius: 1.5rem;
-    padding: 1rem;
   }
 
   .meta-grid,

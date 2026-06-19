@@ -21,6 +21,12 @@
   --accent-soft: #fff1dd;
   --sky: #dbeee8;
   --shadow: 0 18px 45px rgba(32, 39, 34, 0.12);
+  --layout-gutter: clamp(0.75rem, 2vw, 1.5rem);
+  --layout-card-padding: clamp(0.85rem, 1.5vw, 1.1rem);
+  --layout-card-radius: 1.5rem;
+  --layout-readable: 42rem;
+  --layout-page-max: 72rem;
+  --layout-workspace-max: 80rem;
 }
 
 * {
@@ -47,6 +53,35 @@ button {
 
 a {
   color: inherit;
+}
+
+.route-page-shell {
+  width: min(var(--layout-page-max), 100%);
+  margin-inline: auto;
+  padding: var(--layout-gutter);
+}
+
+.route-workspace-shell {
+  width: min(var(--layout-workspace-max), 100%);
+  margin-inline: auto;
+  padding: var(--layout-gutter);
+}
+
+.route-card-surface {
+  border: 1px solid rgba(72, 62, 47, 0.12);
+  border-radius: var(--layout-card-radius);
+  padding: var(--layout-card-padding);
+  background: rgba(255, 250, 241, 0.9);
+  box-shadow: var(--shadow);
+}
+
+@media (min-width: 1060px) {
+  .route-desktop-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.48fr);
+    gap: 1rem;
+    align-items: start;
+  }
 }
 
 .sr-only {
