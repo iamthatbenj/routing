@@ -136,6 +136,39 @@ npm run db:migrate -- --yes
 
 The server-side app uses `@libsql/client` with `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`, which is compatible with Vercel's SvelteKit server runtime. Do not use `file:local.db` for Vercel deployments; Vercel serverless filesystems are not a durable application database.
 
+## Production environment checklist
+
+Required before a Vercel deployment can support the core Trip planning flow:
+
+- [ ] `TURSO_DATABASE_URL` points at the intended Turso database.
+- [ ] `TURSO_AUTH_TOKEN` is configured as a Vercel secret/environment variable.
+- [ ] `ORS_API_KEY` is configured. OpenRouteService remains an experimental route provider, but current Route Search depends on it.
+- [ ] Remote migrations have been checked and applied intentionally:
+
+  ```sh
+  npm run db:status
+  npm run db:migrate -- --yes
+  ```
+
+Recommended for map quality and attribution:
+
+- [ ] `PUBLIC_BASEMAP_ID` is set intentionally. Current built-in options are `demo-vector`, `osm-standard-raster`, and `custom-raster`.
+- [ ] If using a vector style, `PUBLIC_MAP_STYLE_URL` points at a provider-approved MapLibre style.
+- [ ] If using custom raster tiles, `PUBLIC_RASTER_TILE_URL` and `PUBLIC_RASTER_TILE_ATTRIBUTION` are configured.
+- [ ] Basemap provider terms, attribution, rate limits, and pricing are acceptable. Current demo/OSM raster basemaps are evaluation defaults, not a v1 production provider commitment.
+
+Share-link and domain assumptions:
+
+- [ ] Share URLs are generated from the deployed request origin, so the Vercel production domain/custom domain should be final before sharing broadly.
+- [ ] Share links are read-only but not secret/private. Anyone with a share URL can view the Trip context.
+- [ ] Private edit links remain separate and should not be posted publicly.
+
+Optional operational checks:
+
+- [ ] Run a Vercel preview smoke test before promoting to production.
+- [ ] Confirm `/favicon.ico`, `/apple-touch-icon.png`, and `/apple-touch-icon-precomposed.png` return assets.
+- [ ] Confirm Google Maps Handoff links include Shaping Stops and Apple Maps links are endpoints-only.
+
 ## Map configuration
 
 MapLibre maps use named basemap configs so the app can evaluate raster or vector basemaps while preserving route and Highlight overlays.
