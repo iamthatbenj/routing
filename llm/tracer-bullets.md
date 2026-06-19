@@ -229,3 +229,32 @@ A shared viewer can open a Trip share link and review the planning context, but 
 - Editable collaboration or permission management.
 - Public discovery/search of Trips.
 - Production basemap provider selection.
+
+## TB8 — Database workflow and Turso readiness
+
+Goal: make it safe and obvious to run Routing against either the default local libSQL database or a Turso/remote libSQL database.
+
+A developer can see which database is active, apply migrations intentionally, and verify Turso connectivity without confusing local, share, or test data.
+
+### Scope
+
+- Document local vs Turso database modes and env vars.
+- Add a database status command.
+- Make remote migrations require explicit confirmation.
+- Verify Turso connection/migration workflow when credentials are available.
+- Human-in-the-loop review of the database workflow in one larger PR.
+
+### GitHub issues
+
+1. [TB8.01 Document database modes and env setup](https://github.com/iamthatbenj/routing/issues/78)
+2. [TB8.02 Add database status command](https://github.com/iamthatbenj/routing/issues/79)
+3. [TB8.03 Make migration runner safer](https://github.com/iamthatbenj/routing/issues/80)
+4. [TB8.04 Verify Turso connection and migrations](https://github.com/iamthatbenj/routing/issues/81)
+5. [TB8.05 Database workflow review](https://github.com/iamthatbenj/routing/issues/82)
+
+### Deferred from TB8
+
+- Production deployment/secrets management.
+- Automated backups or Turso branching workflows.
+- Account/auth system.
+- Production basemap provider selection.
