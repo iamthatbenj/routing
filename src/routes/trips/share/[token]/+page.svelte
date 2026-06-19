@@ -1,5 +1,6 @@
 <script lang="ts">
   import './+page.css';
+  import MapShell from '$lib/components/MapShell.svelte';
 
   let { data } = $props();
 
@@ -90,6 +91,17 @@
                     {routeKind(leg.preferredSavedRoute.snapshot.source)}
                   {/if}
                 </p>
+                {#if leg.mapRouteOption}
+                  <div class="share-map-card">
+                    <MapShell
+                      label={`${leg.from.routingPlace.name} to ${leg.to.routingPlace.name} shared Preferred Saved Route map`}
+                      routeOptions={[leg.mapRouteOption]}
+                      selectedRouteId={leg.mapRouteOption.id}
+                      stops={leg.mapStops}
+                      highlights={data.highlights}
+                    />
+                  </div>
+                {/if}
                 <dl class="saved-route-facts">
                   <div>
                     <dt>Score</dt>
