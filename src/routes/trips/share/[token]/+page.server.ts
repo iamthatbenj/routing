@@ -1,4 +1,5 @@
 import { error } from '@sveltejs/kit';
+import { appleMapsUrl, googleMapsUrl, routeGeometryWarning } from '$lib/leg-handoff';
 import { listHighlights } from '$lib/server/highlights';
 import { findRoutingPlaceBySearchLabel } from '$lib/server/routing-places';
 import { listSavedRoutesForTrip, type HandoffStop } from '$lib/server/saved-routes';
@@ -35,6 +36,9 @@ export const load = async ({ params }) => {
               geometryJson: preferredSavedRoute.snapshot.geometryJson
             }
           : null,
+        googleMapsUrl: preferredSavedRoute ? googleMapsUrl(preferredSavedRoute) : '',
+        appleMapsUrl: preferredSavedRoute ? appleMapsUrl(preferredSavedRoute) : '',
+        geometryWarning: preferredSavedRoute ? routeGeometryWarning(preferredSavedRoute) : '',
         mapStops: preferredSavedRoute
           ? [
               {
