@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "db:migrate": "node scripts/migrate.mjs",
+    "db:status": "node scripts/db-status.mjs",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",
     "lint": "npm run check"
