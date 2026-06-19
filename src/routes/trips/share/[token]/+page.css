@@ -144,6 +144,10 @@ a {
   font-weight: 900;
 }
 
+.share-map-card :global(.map-shell) {
+  min-height: clamp(18rem, 48vh, 28rem);
+}
+
 .saved-route-facts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

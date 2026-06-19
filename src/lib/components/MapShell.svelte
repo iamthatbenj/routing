@@ -178,13 +178,15 @@
     status = 'loading';
     resetRenderedMapContent();
 
-    map.setStyle(nextBasemap.style as import('maplibre-gl').StyleSpecification | string);
     map.once('style.load', () => {
-      status = 'ready';
-      renderRouteOptions();
-      renderHighlights();
-      renderStops();
+      map?.once('idle', () => {
+        status = 'ready';
+        renderRouteOptions();
+        renderHighlights();
+        renderStops();
+      });
     });
+    map.setStyle(nextBasemap.style as import('maplibre-gl').StyleSpecification | string);
   }
 
   function storedBasemap() {
