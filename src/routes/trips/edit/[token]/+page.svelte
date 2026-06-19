@@ -94,7 +94,13 @@
 
     <div class="actions">
       <a class="primary" href="/">Back to planner</a>
-      <button class="secondary" type="button" disabled>Read-only share link coming next</button>
+      <a class="secondary" href={data.shareUrl}>Open read-only share link</a>
+    </div>
+
+    <div class="share-link-card" aria-label="Read-only share link">
+      <span>Read-only share link</span>
+      <p>Anyone with this link can view the Trip context, but they cannot edit this private Trip.</p>
+      <code>{data.shareUrl}</code>
     </div>
   </section>
 

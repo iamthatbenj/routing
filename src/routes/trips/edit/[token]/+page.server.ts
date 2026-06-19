@@ -17,7 +17,7 @@ async function loadEditableTrip(token: string) {
   return trip;
 }
 
-export const load = async ({ params }) => {
+export const load = async ({ params, url }) => {
   const trip = await loadEditableTrip(params.token);
   const stops = await listTripStops(trip.id);
   const legs = deriveLegs(stops);
@@ -27,6 +27,7 @@ export const load = async ({ params }) => {
   return {
     trip,
     editToken: params.token,
+    shareUrl: new URL(`/trips/share/${trip.shareToken}`, url).toString(),
     routingPlaces: await listRoutingPlaces(),
     highlights: await listHighlights(),
     stops,

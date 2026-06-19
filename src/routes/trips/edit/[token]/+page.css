@@ -106,6 +106,32 @@ p {
   gap: 0.75rem;
 }
 
+.share-link-card {
+  display: grid;
+  gap: 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.85rem;
+  background: white;
+}
+
+.share-link-card span {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.share-link-card code {
+  overflow-wrap: anywhere;
+  user-select: all;
+  border-radius: 0.75rem;
+  padding: 0.65rem;
+  color: var(--brand-strong);
+  background: var(--sky);
+}
+
 .primary,
 .secondary,
 .reorder button,
