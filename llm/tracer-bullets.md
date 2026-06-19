@@ -258,3 +258,32 @@ A developer can see which database is active, apply migrations intentionally, an
 - Automated backups or Turso branching workflows.
 - Account/auth system.
 - Production basemap provider selection.
+
+## TB9 — Vercel deploy readiness
+
+Goal: make Routing ready to deploy and smoke-test on Vercel with Turso, route search, basemaps, app icons, and share links configured.
+
+A project owner can deploy Routing to Vercel, configure the required environment, run migrations intentionally, and verify the core Trip planning/share workflow in a hosted environment.
+
+### Scope
+
+- Add basic app icons and metadata.
+- Prepare/document Vercel deployment configuration.
+- Add a production environment checklist.
+- Smoke-test the deployed app.
+- Human-in-the-loop deploy readiness review.
+
+### GitHub issues
+
+1. [TB9.01 Add app icons and metadata](https://github.com/iamthatbenj/routing/issues/84)
+2. [TB9.02 Add Vercel deployment configuration](https://github.com/iamthatbenj/routing/issues/85)
+3. [TB9.03 Add production environment checklist](https://github.com/iamthatbenj/routing/issues/86)
+4. [TB9.04 Smoke-test deployed app](https://github.com/iamthatbenj/routing/issues/87)
+5. [TB9.05 Deploy readiness review](https://github.com/iamthatbenj/routing/issues/88)
+
+### Deferred from TB9
+
+- Production basemap provider commitment.
+- Account/auth system.
+- Automated monitoring/observability.
+- Backup/restore workflows.
