@@ -653,8 +653,13 @@ p {
 
 @media (min-width: 760px) {
   .trip-page {
-    grid-template-columns: 0.9fr 1.1fr;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     align-items: start;
+  }
+
+  .trip-card,
+  .map-panel {
+    grid-column: 1 / -1;
   }
 
   .meta-grid,
@@ -662,29 +667,145 @@ p {
     grid-template-columns: 1fr auto;
   }
 
-  .legs,
-  .map-panel {
+  .route-search-form {
+    grid-template-columns: minmax(10rem, 0.45fr) minmax(0, 1fr) auto;
+    align-items: end;
+  }
+
+  .route-search-form label {
     grid-column: 1 / -1;
+  }
+
+  .route-search-form button {
+    justify-self: stretch;
   }
 }
 
 @media (min-width: 1060px) {
   .trip-page {
-    grid-template-columns: minmax(17rem, 0.78fr) minmax(26rem, 1.06fr) minmax(22rem, 0.96fr);
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.5fr);
+    grid-template-areas:
+      'summary map'
+      'planner map'
+      'legs map';
+    gap: 1.1rem;
   }
 
-  .legs,
-  .map-panel {
-    grid-column: auto;
+  .trip-card {
+    grid-area: summary;
+  }
+
+  .planner {
+    grid-area: planner;
+  }
+
+  .legs {
+    grid-area: legs;
   }
 
   .map-panel {
+    grid-area: map;
     position: sticky;
     top: 1rem;
     max-height: calc(100vh - 2rem);
+    overflow: auto;
   }
 
   .map-panel :global(.map-shell) {
-    min-height: min(62vh, 42rem);
+    min-height: min(58vh, 38rem);
+  }
+
+  .trip-card {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.48fr);
+    gap: 0.85rem 1rem;
+    align-items: start;
+  }
+
+  .trip-card > .eyebrow,
+  .trip-card > h1,
+  .trip-card > p,
+  .trip-card > .meta-grid {
+    grid-column: 1;
+  }
+
+  .trip-card > .actions,
+  .trip-card > .share-link-card {
+    grid-column: 2;
+  }
+
+  .trip-card > .actions {
+    grid-row: 1 / span 1;
+  }
+
+  .trip-card > .share-link-card {
+    grid-row: 2 / span 3;
+  }
+
+  .trip-card > .meta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .trip-card h1 {
+    font-size: clamp(2.5rem, 3.6vw, 3.8rem);
+    max-width: 14ch;
+  }
+
+  .trip-card > p {
+    max-width: 34rem;
+  }
+
+  .trip-card > .actions {
+    align-self: start;
+    gap: 0.45rem;
+    margin-top: -0.2rem;
+  }
+
+  .trip-card > .actions .primary,
+  .trip-card > .actions .secondary {
+    padding: 0.62rem 0.8rem;
+    font-size: 0.88rem;
+  }
+
+  .share-link-card {
+    gap: 0.35rem;
+    padding: 0.75rem;
+  }
+
+  .share-link-card code {
+    max-height: 4.8rem;
+    overflow: auto;
+  }
+
+  .planner {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr);
+    align-items: start;
+  }
+
+  .planner > .section-heading {
+    grid-column: 1;
+  }
+
+  .planner > .form-error {
+    grid-column: 1 / -1;
+  }
+
+  .planner > .add-stop {
+    grid-column: 1;
+  }
+
+  .planner > .empty-state,
+  .planner > .stops {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .route-options {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    align-items: start;
+  }
+
+  .saved-route-list {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    align-items: start;
   }
 }
