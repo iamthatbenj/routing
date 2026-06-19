@@ -287,3 +287,32 @@ A project owner can deploy Routing to Vercel, configure the required environment
 - Account/auth system.
 - Automated monitoring/observability.
 - Backup/restore workflows.
+
+## TB10 — Free-tier basemap provider evaluation
+
+Goal: find a free-tier-safe production-ish basemap option for the deployed app, or explicitly keep basemaps experimental if the free options are too constrained.
+
+A traveler using the deployed app sees useful route context without the project owner taking on near-term map tile costs or committing to a paid provider.
+
+### Scope
+
+- Shortlist free-tier or zero-cost MapLibre-compatible basemap candidates.
+- Add one free-tier candidate configuration for deployed evaluation.
+- Compare free basemaps on Denver → Moab route flows.
+- Document attribution, rate limits, API key exposure, and free-tier production risks.
+- Make a free-tier basemap decision, reusing the earlier provider follow-up issue as the closeout ticket.
+
+### GitHub issues
+
+1. [TB10.01 Shortlist free-tier basemap candidates](https://github.com/iamthatbenj/routing/issues/92)
+2. [TB10.02 Add one free-tier basemap candidate config](https://github.com/iamthatbenj/routing/issues/93)
+3. [TB10.03 Compare free basemaps on deployed route flows](https://github.com/iamthatbenj/routing/issues/94)
+4. [TB10.04 Document free-tier basemap limits and risks](https://github.com/iamthatbenj/routing/issues/95)
+5. [TB10.05 Free-tier basemap decision](https://github.com/iamthatbenj/routing/issues/43)
+
+### Deferred from TB10
+
+- Paid basemap provider commitment.
+- Self-hosted tile infrastructure.
+- Full Protomaps/PMTiles implementation unless selected as a later direction.
+- Production monitoring/observability.
