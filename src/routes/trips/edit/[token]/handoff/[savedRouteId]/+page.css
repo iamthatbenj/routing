@@ -1,9 +1,9 @@
 .handoff-page {
   display: grid;
   gap: 1rem;
-  width: min(1080px, 100%);
+  width: min(var(--layout-page-max), 100%);
   margin: 0 auto;
-  padding: 0.75rem;
+  padding: var(--layout-gutter);
 }
 
 .hero,
@@ -11,8 +11,8 @@
   display: grid;
   gap: 1rem;
   border: 1px solid rgba(72, 62, 47, 0.12);
-  border-radius: 1.35rem;
-  padding: 0.85rem;
+  border-radius: var(--layout-card-radius);
+  padding: var(--layout-card-padding);
   background: rgba(255, 250, 241, 0.92);
   box-shadow: var(--shadow);
 }
@@ -267,13 +267,6 @@ ul,
 @media (min-width: 800px) {
   .handoff-page {
     grid-template-columns: 1fr 1fr;
-    padding: 1.5rem;
-  }
-
-  .hero,
-  .handoff-card {
-    border-radius: 1.5rem;
-    padding: 1rem;
   }
 
   .hero,

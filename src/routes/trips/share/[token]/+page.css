@@ -1,9 +1,9 @@
 .share-page {
   display: grid;
   gap: 1rem;
-  width: min(1080px, 100%);
+  width: min(var(--layout-page-max), 100%);
   margin: 0 auto;
-  padding: 0.75rem;
+  padding: var(--layout-gutter);
 }
 
 .hero,
@@ -14,8 +14,8 @@
   display: grid;
   gap: 1rem;
   border: 1px solid rgba(72, 62, 47, 0.12);
-  border-radius: 1.35rem;
-  padding: 0.85rem;
+  border-radius: var(--layout-card-radius);
+  padding: var(--layout-card-padding);
   background: rgba(255, 250, 241, 0.9);
   box-shadow: var(--shadow);
 }
@@ -210,16 +210,10 @@ a,
 @media (min-width: 800px) {
   .share-page {
     grid-template-columns: 0.85fr 1.15fr;
-    padding: 1.5rem;
   }
 
   .hero {
     grid-column: 1 / -1;
   }
 
-  .hero,
-  .share-card {
-    border-radius: 1.5rem;
-    padding: 1rem;
-  }
 }
