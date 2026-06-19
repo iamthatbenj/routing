@@ -346,3 +346,33 @@ A user on desktop sees a coherent Trip planning workspace rather than phone-size
 - Advanced map-first desktop planner.
 - Route provider replacement or ORS review.
 - More basemap provider evaluation.
+
+## TB12 — Route Search reliability and provider fallback
+
+Goal: make Route Search more reliable and understandable when provider routing fails, while keeping Anchor-generated Corridors as the primary Interesting Route concept.
+
+A user can understand whether a Route Search succeeded, partially succeeded, or failed — and still see useful route-planning guidance instead of a dead end.
+
+### Scope
+
+- Audit current Route Search failure modes.
+- Improve user-facing Route Search error messaging.
+- Add fallback Anchor Corridors when ORS/provider routing fails.
+- Add lightweight provider diagnostics.
+- Review success, failure, fallback, Saved Route, and Handoff behavior.
+
+### GitHub issues
+
+1. [TB12.01 Audit route search failure modes](https://github.com/iamthatbenj/routing/issues/106)
+2. [TB12.02 Improve Route Search error messaging](https://github.com/iamthatbenj/routing/issues/107)
+3. [TB12.03 Add fallback Anchor Corridors when ORS fails](https://github.com/iamthatbenj/routing/issues/108)
+4. [TB12.04 Add route provider diagnostics](https://github.com/iamthatbenj/routing/issues/109)
+5. [TB12.05 Route search reliability review](https://github.com/iamthatbenj/routing/issues/110)
+
+### Deferred from TB12
+
+- Full route provider replacement.
+- Paid routing provider decision.
+- Offline/self-hosted routing.
+- Editable Shaping Stops.
+- Turn-by-turn navigation.
