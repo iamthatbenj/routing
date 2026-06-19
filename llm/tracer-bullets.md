@@ -316,3 +316,33 @@ A traveler using the deployed app sees useful route context without the project 
 - Self-hosted tile infrastructure.
 - Full Protomaps/PMTiles implementation unless selected as a later direction.
 - Production monitoring/observability.
+
+## TB11 — Responsive layout polish
+
+Goal: make Routing feel intentionally designed on both mobile and desktop without abandoning the mobile-first workflow.
+
+A user on desktop sees a coherent Trip planning workspace rather than phone-sized panels scattered across a wide page, while a mobile user keeps the current simple vertical flow.
+
+### Scope
+
+- Audit deployed responsive layout across the main pages.
+- Establish a reusable responsive page shell or layout pattern.
+- Polish the Trip edit page desktop layout.
+- Polish share and Handoff page desktop layouts.
+- Review the deployed app and decide whether layout is good enough for now.
+
+### GitHub issues
+
+1. [TB11.01 Audit deployed responsive layout](https://github.com/iamthatbenj/routing/issues/98)
+2. [TB11.02 Establish responsive desktop page shell](https://github.com/iamthatbenj/routing/issues/99)
+3. [TB11.03 Polish Trip edit desktop layout](https://github.com/iamthatbenj/routing/issues/100)
+4. [TB11.04 Polish share and handoff desktop layouts](https://github.com/iamthatbenj/routing/issues/101)
+5. [TB11.05 Responsive layout review](https://github.com/iamthatbenj/routing/issues/102)
+
+### Deferred from TB11
+
+- Full visual brand redesign.
+- Navigation/account system.
+- Advanced map-first desktop planner.
+- Route provider replacement or ORS review.
+- More basemap provider evaluation.
