@@ -122,6 +122,7 @@ Recommended/optional map environment variables:
 
 ```env
 PUBLIC_BASEMAP_ID=demo-vector
+PUBLIC_MAPTILER_KEY=your-public-maptiler-key
 PUBLIC_MAP_STYLE_URL=https://example.com/style.json
 PUBLIC_RASTER_TILE_URL=https://tile-provider.example/{z}/{x}/{y}.png
 PUBLIC_RASTER_TILE_ATTRIBUTION=Required provider attribution
@@ -152,7 +153,8 @@ Required before a Vercel deployment can support the core Trip planning flow:
 
 Recommended for map quality and attribution:
 
-- [ ] `PUBLIC_BASEMAP_ID` is set intentionally. Current built-in options are `demo-vector`, `osm-standard-raster`, and `custom-raster`.
+- [ ] `PUBLIC_BASEMAP_ID` is set intentionally. Current built-in options are `demo-vector`, `osm-standard-raster`, `maptiler-outdoor`, and `custom-raster`.
+- [ ] If using MapTiler, `PUBLIC_MAPTILER_KEY` is configured, restricted to deployed domains if available, and monitored against free API session/request caps.
 - [ ] If using a vector style, `PUBLIC_MAP_STYLE_URL` points at a provider-approved MapLibre style.
 - [ ] If using custom raster tiles, `PUBLIC_RASTER_TILE_URL` and `PUBLIC_RASTER_TILE_ATTRIBUTION` are configured.
 - [ ] Basemap provider terms, attribution, rate limits, and pricing are acceptable. Current demo/OSM raster basemaps are evaluation defaults, not a v1 production provider commitment.
@@ -173,7 +175,7 @@ Optional operational checks:
 
 MapLibre maps use named basemap configs so the app can evaluate raster or vector basemaps while preserving route and Highlight overlays.
 
-Local development falls back to `demo-vector`, backed by MapLibre demo tiles. The evaluation switcher also includes `osm-standard-raster`, a raster OpenStreetMap candidate for comparing richer map context.
+Local development falls back to `demo-vector`, backed by MapLibre demo tiles. The evaluation switcher also includes `osm-standard-raster`, a raster OpenStreetMap candidate for comparing richer map context. When `PUBLIC_MAPTILER_KEY` is configured, it also includes `maptiler-outdoor`, a MapTiler Outdoor vector candidate for TB10 free-tier evaluation.
 
 Select the default basemap with:
 
@@ -181,7 +183,16 @@ Select the default basemap with:
 PUBLIC_BASEMAP_ID=demo-vector
 ```
 
-To test a vector style, set:
+To test the MapTiler Outdoor vector candidate, register a MapTiler account/key, monitor the free API session/request caps, and set:
+
+```env
+PUBLIC_BASEMAP_ID=maptiler-outdoor
+PUBLIC_MAPTILER_KEY=your-public-maptiler-key
+```
+
+MapTiler keys are used in client-side style URLs, so treat them as public browser keys and restrict them to your deployed domains if the provider controls allow it.
+
+To test a generic vector style, set:
 
 ```env
 PUBLIC_MAP_STYLE_URL=https://example.com/style.json

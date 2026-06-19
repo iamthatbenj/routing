@@ -27,9 +27,11 @@ export type BasemapEnvironment = {
   PUBLIC_MAP_STYLE_URL?: string;
   PUBLIC_RASTER_TILE_URL?: string;
   PUBLIC_RASTER_TILE_ATTRIBUTION?: string;
+  PUBLIC_MAPTILER_KEY?: string;
 };
 
 const demoVectorStyleUrl = 'https://demotiles.maplibre.org/style.json';
+const mapTilerOutdoorStyleBaseUrl = 'https://api.maptiler.com/maps/outdoor-v2/style.json';
 
 const standardOverlayTheme: OverlayTheme = {
   casingColor: '#fffaf1',
@@ -81,6 +83,17 @@ export function basemapConfigs(env: BasemapEnvironment): BasemapConfig[] {
   };
 
   const configs = [demoVector, osmRaster];
+
+  if (env.PUBLIC_MAPTILER_KEY) {
+    configs.push({
+      id: 'maptiler-outdoor',
+      name: 'MapTiler Outdoor vector',
+      kind: 'vector',
+      attribution: '© MapTiler © OpenStreetMap contributors',
+      style: `${mapTilerOutdoorStyleBaseUrl}?key=${encodeURIComponent(env.PUBLIC_MAPTILER_KEY)}`,
+      overlayTheme: standardOverlayTheme
+    });
+  }
 
   if (env.PUBLIC_RASTER_TILE_URL) {
     configs.push({
