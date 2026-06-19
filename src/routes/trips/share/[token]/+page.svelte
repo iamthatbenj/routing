@@ -43,7 +43,7 @@
     <a href="/">Back to planner</a>
   </section>
 
-  <section class="share-card" aria-labelledby="stops-heading">
+  <section class="share-card share-stops" aria-labelledby="stops-heading">
     <p class="eyebrow">Trip Stops</p>
     <h2 id="stops-heading">Stops in order</h2>
     {#if data.stops.length}
@@ -66,7 +66,7 @@
     {/if}
   </section>
 
-  <section class="share-card" aria-labelledby="legs-heading">
+  <section class="share-card share-legs" aria-labelledby="legs-heading">
     <p class="eyebrow">Legs</p>
     <h2 id="legs-heading">Preferred Saved Routes</h2>
     {#if data.legs.length}

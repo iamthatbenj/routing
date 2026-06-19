@@ -95,7 +95,7 @@
     {/if}
   </section>
 
-  <section class="handoff-card" aria-labelledby="context-heading">
+  <section class="handoff-card context-card" aria-labelledby="context-heading">
     <p class="eyebrow">App context link</p>
     <h2 id="context-heading">Share route context</h2>
     <p>
@@ -105,7 +105,7 @@
     <code>{data.appContextUrl}</code>
   </section>
 
-  <section class="handoff-card" aria-labelledby="summary-heading">
+  <section class="handoff-card summary-card" aria-labelledby="summary-heading">
     <p class="eyebrow">Preferred Saved Route</p>
     <h2 id="summary-heading">{data.savedRoute.title}</h2>
     <p class="route-origin">{routeKind(data.savedRoute.snapshot.source)}</p>
@@ -173,7 +173,7 @@
     {/if}
   </section>
 
-  <section class="handoff-card" aria-labelledby="shaping-heading">
+  <section class="handoff-card shaping-card" aria-labelledby="shaping-heading">
     <p class="eyebrow">Shaping Stops</p>
     <h2 id="shaping-heading">
       {data.savedRoute.snapshot.handoffStops.length ? 'Included in the navigation handoff' : 'No Shaping Stops yet'}
