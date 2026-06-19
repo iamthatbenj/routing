@@ -99,6 +99,43 @@ When connecting a new Turso database:
 3. Run `npm run db:migrate -- --yes` to apply migrations intentionally.
 4. Run `npm run dev`, create a Trip, reload it, and verify `npm run db:status` shows all migrations applied.
 
+## Vercel deployment
+
+Routing uses SvelteKit `adapter-auto`, which detects Vercel during deployment. No committed Vercel secrets or project-specific deployment tokens are required.
+
+Recommended Vercel settings:
+
+- Framework preset: **SvelteKit**
+- Build command: `npm run build`
+- Install command: `npm install`
+- Output directory: managed by SvelteKit / Vercel
+
+Required Vercel environment variables:
+
+```env
+TURSO_DATABASE_URL=libsql://your-database.turso.io
+TURSO_AUTH_TOKEN=your-token
+ORS_API_KEY=your-openrouteservice-key
+```
+
+Recommended/optional map environment variables:
+
+```env
+PUBLIC_BASEMAP_ID=demo-vector
+PUBLIC_MAP_STYLE_URL=https://example.com/style.json
+PUBLIC_RASTER_TILE_URL=https://tile-provider.example/{z}/{x}/{y}.png
+PUBLIC_RASTER_TILE_ATTRIBUTION=Required provider attribution
+```
+
+Before deploying, apply migrations to the intended Turso database from a trusted local environment or CI job:
+
+```sh
+npm run db:status
+npm run db:migrate -- --yes
+```
+
+The server-side app uses `@libsql/client` with `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`, which is compatible with Vercel's SvelteKit server runtime. Do not use `file:local.db` for Vercel deployments; Vercel serverless filesystems are not a durable application database.
+
 ## Map configuration
 
 MapLibre maps use named basemap configs so the app can evaluate raster or vector basemaps while preserving route and Highlight overlays.
