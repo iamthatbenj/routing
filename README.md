@@ -35,6 +35,70 @@ Build for production:
 npm run build
 ```
 
+## Database configuration
+
+Routing uses libSQL. Local development defaults to a file-backed database at `file:local.db`.
+
+Check the active database before running migrations:
+
+```sh
+npm run db:status
+```
+
+The status command prints the database mode, redacted URL, auth-token presence, applied migration count, pending migrations, and latest applied migration. It never prints auth-token values.
+
+### Local database
+
+Use the default local DB in `.env`:
+
+```env
+DATABASE_URL=file:local.db
+```
+
+Apply local migrations:
+
+```sh
+npm run db:migrate
+```
+
+### Turso / remote libSQL database
+
+Set Turso env vars instead of `DATABASE_URL`:
+
+```env
+TURSO_DATABASE_URL=libsql://your-database.turso.io
+TURSO_AUTH_TOKEN=your-token
+```
+
+Then verify the target:
+
+```sh
+npm run db:status
+```
+
+Remote migrations require explicit confirmation so a developer does not accidentally migrate the wrong database:
+
+```sh
+npm run db:migrate -- --yes
+```
+
+or:
+
+```sh
+DATABASE_MIGRATE_CONFIRM=1 npm run db:migrate
+```
+
+The app, `db:status`, and `db:migrate` all read the same database env vars. They also load `.env` for local commands; shell-provided environment variables take precedence.
+
+### Turso verification checklist
+
+When connecting a new Turso database:
+
+1. Add `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` to `.env` or your shell.
+2. Run `npm run db:status` and confirm the URL/mode point at the intended remote database.
+3. Run `npm run db:migrate -- --yes` to apply migrations intentionally.
+4. Run `npm run dev`, create a Trip, reload it, and verify `npm run db:status` shows all migrations applied.
+
 ## Map configuration
 
 MapLibre maps use named basemap configs so the app can evaluate raster or vector basemaps while preserving route and Highlight overlays.
