@@ -1,7 +1,7 @@
 .handoff-page {
   display: grid;
   gap: 1rem;
-  width: min(var(--layout-page-max), 100%);
+  width: min(var(--layout-workspace-max), 100%);
   margin: 0 auto;
   padding: var(--layout-gutter);
 }
@@ -80,6 +80,8 @@ li {
 
 .primary,
 .secondary {
+  display: inline-flex;
+  align-items: center;
   border-radius: 999px;
   padding: 0.9rem 1.1rem;
   font-weight: 900;
@@ -267,11 +269,84 @@ ul,
 @media (min-width: 800px) {
   .handoff-page {
     grid-template-columns: 1fr 1fr;
+    align-items: start;
   }
 
   .hero,
   .warning,
   .handoff-map-card {
     grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1060px) {
+  .handoff-page {
+    grid-template-columns: minmax(0, 0.95fr) minmax(22rem, 0.7fr);
+    grid-template-areas:
+      'hero map'
+      'warning map'
+      'actions map'
+      'context map'
+      'summary shaping';
+    gap: 1.1rem;
+  }
+
+  .hero {
+    grid-area: hero;
+  }
+
+  .handoff-map-card {
+    grid-area: map;
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+  }
+
+  .warning {
+    grid-area: warning;
+  }
+
+  .actions {
+    grid-area: actions;
+    border-color: rgba(35, 99, 75, 0.22);
+    background: rgba(219, 238, 232, 0.78);
+  }
+
+  .context-card {
+    grid-area: context;
+  }
+
+  .summary-card {
+    grid-area: summary;
+  }
+
+  .shaping-card {
+    grid-area: shaping;
+  }
+
+  .hero,
+  .warning,
+  .handoff-map-card {
+    grid-column: auto;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 4.2vw, 4.2rem);
+  }
+
+  .handoff-map-card :global(.map-shell) {
+    min-height: min(58vh, 38rem);
+  }
+
+  .actions .button-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .actions .primary,
+  .actions .secondary {
+    justify-content: center;
+    text-align: center;
   }
 }
