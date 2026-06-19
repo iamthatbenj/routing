@@ -102,6 +102,21 @@
                     />
                   </div>
                 {/if}
+                <section class="handoff-context" aria-label={`Navigation handoff for ${leg.preferredSavedRoute.title}`}>
+                  <p class="eyebrow">Navigation Handoff</p>
+                  <h4>Open this Preferred Saved Route</h4>
+                  <p>{leg.geometryWarning}</p>
+                  <div class="button-row">
+                    <a class="primary-link" href={leg.googleMapsUrl} target="_blank" rel="noreferrer">Google Maps with Shaping Stops</a>
+                    <a class="secondary-link" href={leg.appleMapsUrl} target="_blank" rel="noreferrer">Apple Maps endpoints only</a>
+                  </div>
+                  {#if leg.preferredSavedRoute.snapshot.handoffStops.length}
+                    <p>
+                      Google Maps receives the Shaping Stops as waypoints. Apple Maps web links do
+                      not reliably support intermediate stops, so the Apple Maps link opens endpoints only.
+                    </p>
+                  {/if}
+                </section>
                 <dl class="saved-route-facts">
                   <div>
                     <dt>Score</dt>

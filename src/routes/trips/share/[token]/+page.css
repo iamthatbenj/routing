@@ -71,7 +71,9 @@ p {
   line-height: 1.55;
 }
 
-a {
+a,
+.primary-link,
+.secondary-link {
   justify-self: start;
   border-radius: 999px;
   padding: 0.9rem 1.1rem;
@@ -79,6 +81,11 @@ a {
   background: var(--brand);
   font-weight: 900;
   text-decoration: none;
+}
+
+.secondary-link {
+  color: var(--brand-strong);
+  background: var(--sky);
 }
 
 .stops,
@@ -146,6 +153,27 @@ a {
 
 .share-map-card :global(.map-shell) {
   min-height: clamp(18rem, 48vh, 28rem);
+}
+
+.handoff-context {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid rgba(72, 62, 47, 0.12);
+  border-radius: 1rem;
+  padding: 0.85rem;
+  background: #fffaf1;
+}
+
+.handoff-context h4 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
 }
 
 .saved-route-facts {
