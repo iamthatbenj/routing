@@ -208,6 +208,22 @@ PUBLIC_RASTER_TILE_ATTRIBUTION=Required provider attribution
 
 Do not assume demo tiles are suitable for production traffic; choose a provider and follow its attribution, rate-limit, and terms requirements before deployment.
 
+### Free-tier basemap risks
+
+Current TB10 candidate: **MapTiler Outdoor vector** via `maptiler-outdoor`.
+
+- MapTiler's free plan is acceptable for low-traffic deployed prototype evaluation, not a long-term production commitment yet.
+- The free plan is capped by both API sessions and API requests. Check the current MapTiler dashboard/plan page for exact limits before broad sharing because a single map session can generate many style, tile, glyph, and sprite requests.
+- `PUBLIC_MAPTILER_KEY` is used in browser-visible style URLs. Treat it as a public web key, restrict it to the deployed Vercel/custom domains if MapTiler controls allow, and rotate it if abused.
+- Keep MapTiler/OSM attribution visible through the MapLibre attribution control.
+- Re-evaluate the provider if usage approaches free caps, maps stop loading due to quota, attribution/terms change, the app starts receiving public traffic, or another style/provider proves materially better for rural/scenic route context.
+
+Reference basemaps:
+
+- `osm-standard-raster` is useful for visual comparison, but public `tile.openstreetmap.org` is not a production tile backend for app traffic.
+- `demo-vector` is a MapLibre development/demo source and should remain local/dev/reference only.
+- `custom-raster` remains available for future provider trials when URL template and attribution are configured explicitly.
+
 MapLibre is loaded with a client-only dynamic import when the map scrolls near the viewport. The production build may still report a large MapLibre chunk; that is an accepted TB3 trade-off while the Trip-first UI avoids loading map code until the map is needed.
 
 ## Project guidance
