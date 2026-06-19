@@ -26,6 +26,18 @@ describe('basemap configuration', () => {
     });
   });
 
+  it('can represent the MapTiler Outdoor free-tier candidate when configured', () => {
+    const configs = basemapConfigs({
+      PUBLIC_MAPTILER_KEY: 'test key'
+    });
+
+    const mapTiler = configs.find((config) => config.id === 'maptiler-outdoor');
+
+    expect(mapTiler?.kind).toBe('vector');
+    expect(mapTiler?.attribution).toBe('© MapTiler © OpenStreetMap contributors');
+    expect(mapTiler?.style).toBe('https://api.maptiler.com/maps/outdoor-v2/style.json?key=test%20key');
+  });
+
   it('can represent a configured raster basemap', () => {
     const configs = basemapConfigs({
       PUBLIC_RASTER_TILE_URL: 'https://example.test/{z}/{x}/{y}.png',
@@ -45,6 +57,12 @@ describe('basemap configuration', () => {
         }
       }
     });
+  });
+
+  it('does not include the MapTiler candidate without a public key', () => {
+    const mapTiler = basemapConfigs({}).find((config) => config.id === 'maptiler-outdoor');
+
+    expect(mapTiler).toBeUndefined();
   });
 
   it('selects a named basemap when configured', () => {
