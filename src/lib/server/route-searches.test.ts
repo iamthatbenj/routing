@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { OrsRouteError } from './ors';
-import { fallbackRoute, routeSearchFailureMessage, tracerRouteAnchorLabels } from './route-searches';
+import { fallbackRoute, failureDiagnostics, routeSearchFailureMessage, successDiagnostics, tracerRouteAnchorLabels } from './route-searches';
 import type { RoutingPlace } from './routing-places';
 
 describe('tracer Route Anchors', () => {
@@ -67,6 +67,52 @@ describe('fallback Route Options', () => {
         [moab.longitude, moab.latitude]
       ]
     });
+  });
+});
+
+describe('Route Search diagnostics', () => {
+  it('captures successful provider sources without sensitive details', () => {
+    const diagnostics = successDiagnostics([{ source: 'ors-fastest' }, { source: 'ors-anchor' }, { source: 'ors-anchor' }]);
+
+    expect(diagnostics).toEqual({
+      provider: 'ors',
+      outcome: 'complete',
+      routeSources: ['ors-fastest', 'ors-anchor'],
+      optionCount: 3,
+      usedFallback: false
+    });
+  });
+
+  it('captures fallback outcome and provider error category', () => {
+    const diagnostics = successDiagnostics(
+      [{ source: 'fallback-direct' }, { source: 'fallback-anchor' }],
+      new OrsRouteError('quota', 'Quota reached', { status: 429, diagnosticMessage: 'raw provider body' })
+    );
+
+    expect(diagnostics).toEqual({
+      provider: 'ors',
+      outcome: 'fallback_complete',
+      routeSources: ['fallback-direct', 'fallback-anchor'],
+      optionCount: 2,
+      usedFallback: true,
+      errorCategory: 'quota',
+      errorStatus: 429
+    });
+    expect(JSON.stringify(diagnostics)).not.toContain('raw provider body');
+  });
+
+  it('captures failed provider diagnostics without raw messages', () => {
+    const diagnostics = failureDiagnostics(
+      new OrsRouteError('auth', 'Provider rejected key', { status: 403, diagnosticMessage: 'secret-ish provider body' })
+    );
+
+    expect(diagnostics).toMatchObject({
+      provider: 'ors',
+      outcome: 'failed',
+      errorCategory: 'auth',
+      errorStatus: 403
+    });
+    expect(JSON.stringify(diagnostics)).not.toContain('secret-ish provider body');
   });
 });
 

@@ -30,6 +30,16 @@ export type RouteOption = {
   reasons: RouteReason[];
 };
 
+export type RouteSearchDiagnostics = {
+  provider: 'ors';
+  outcome: 'running' | 'complete' | 'fallback_complete' | 'failed';
+  routeSources: string[];
+  optionCount: number;
+  usedFallback: boolean;
+  errorCategory?: string;
+  errorStatus?: number;
+};
+
 export type RouteSearch = {
   id: string;
   tripId: string;
@@ -38,6 +48,8 @@ export type RouteSearch = {
   directness: Directness;
   status: 'running' | 'complete' | 'failed';
   errorMessage: string;
+  provider: string;
+  diagnostics: RouteSearchDiagnostics;
   createdAt: string;
   updatedAt: string;
   options: RouteOption[];
@@ -58,6 +70,8 @@ function rowToRouteSearch(row: Record<string, unknown>, options: RouteOption[]):
     directness: String(row.directness) as Directness,
     status: String(row.status) as RouteSearch['status'],
     errorMessage: String(row.error_message ?? ''),
+    provider: String(row.provider ?? 'ors'),
+    diagnostics: parseDiagnostics(String(row.diagnostic_json ?? '{}')),
     createdAt: String(row.created_at),
     updatedAt: String(row.updated_at),
     options
@@ -83,7 +97,7 @@ function rowToRouteOption(row: Record<string, unknown>): RouteOption {
 export async function listRouteSearchesForTrip(tripId: string) {
   const searchesResult = await db.execute({
     sql: `
-      SELECT id, trip_id, from_trip_stop_id, to_trip_stop_id, directness, status, error_message, created_at, updated_at
+      SELECT id, trip_id, from_trip_stop_id, to_trip_stop_id, directness, status, error_message, provider, diagnostic_json, created_at, updated_at
       FROM route_searches
       WHERE trip_id = ?
       ORDER BY created_at DESC
@@ -122,27 +136,27 @@ export async function startRouteSearch({ leg, directness }: { leg: Leg; directne
 
   await db.execute({
     sql: `
-      INSERT INTO route_searches (id, trip_id, from_trip_stop_id, to_trip_stop_id, directness, status, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, 'running', ?, ?)
+      INSERT INTO route_searches (id, trip_id, from_trip_stop_id, to_trip_stop_id, directness, status, provider, diagnostic_json, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, 'running', 'ors', ?, ?, ?)
     `,
-    args: [searchId, leg.from.tripId, leg.from.id, leg.to.id, directness, now, now]
+    args: [searchId, leg.from.tripId, leg.from.id, leg.to.id, directness, JSON.stringify(runningDiagnostics()), now, now]
   });
 
   try {
-    const routes = await generateRouteOptions(leg);
+    const { routes, providerFailure } = await generateRouteOptions(leg);
     const scoredRoutes = await scoreRouteOptions(routes, leg, directness);
     const selectedRoutes = selectCorridorRouteOptions(scoredRoutes);
     await replaceRouteOptions(searchId, selectedRoutes);
-    await updateRouteSearchStatus(searchId, 'complete');
+    await updateRouteSearchStatus(searchId, 'complete', '', successDiagnostics(selectedRoutes, providerFailure));
   } catch (error) {
     logRouteSearchFailure(error);
-    await updateRouteSearchStatus(searchId, 'failed', routeSearchFailureMessage(error));
+    await updateRouteSearchStatus(searchId, 'failed', routeSearchFailureMessage(error), failureDiagnostics(error));
   }
 
   return searchId;
 }
 
-async function generateRouteOptions(leg: Leg) {
+async function generateRouteOptions(leg: Leg): Promise<{ routes: OrsRoute[]; providerFailure?: unknown }> {
   const from = leg.from.routingPlace;
   const to = leg.to.routingPlace;
   let routes: OrsRoute[];
@@ -151,7 +165,7 @@ async function generateRouteOptions(leg: Leg) {
     routes = await fetchDrivingRoutes({ from, to });
   } catch (error) {
     logRouteSearchFailure(error);
-    return generateFallbackAnchorCorridors(leg);
+    return { routes: await generateFallbackAnchorCorridors(leg), providerFailure: error };
   }
 
   for (const anchorLabel of tracerRouteAnchorLabels) {
@@ -165,7 +179,7 @@ async function generateRouteOptions(leg: Leg) {
     }
   }
 
-  return dedupeExactRoutes(routes);
+  return { routes: dedupeExactRoutes(routes) };
 }
 
 export async function generateFallbackAnchorCorridors(leg: Leg) {
@@ -402,22 +416,68 @@ export function routeSearchFailureMessage(error: unknown) {
 function logRouteSearchFailure(error: unknown) {
   if (error instanceof OrsRouteError) {
     console.warn('[route-search] provider failure', {
+      provider: 'ors',
       category: error.category,
-      status: error.status,
-      diagnosticMessage: error.diagnosticMessage
+      status: error.status
     });
     return;
   }
 
   console.warn('[route-search] unexpected failure', {
-    message: error instanceof Error ? error.message : 'Unknown Route Search failure'
+    provider: 'ors',
+    category: 'unexpected'
   });
 }
 
-async function updateRouteSearchStatus(id: string, status: RouteSearch['status'], errorMessage = '') {
+function runningDiagnostics(): RouteSearchDiagnostics {
+  return {
+    provider: 'ors',
+    outcome: 'running',
+    routeSources: [],
+    optionCount: 0,
+    usedFallback: false
+  };
+}
+
+export function successDiagnostics(routes: Array<{ source: string }>, providerFailure?: unknown): RouteSearchDiagnostics {
+  const usedFallback = routes.some((route) => route.source.startsWith('fallback-'));
+  return {
+    provider: 'ors',
+    outcome: usedFallback ? 'fallback_complete' : 'complete',
+    routeSources: [...new Set(routes.map((route) => route.source))],
+    optionCount: routes.length,
+    usedFallback,
+    ...diagnosticErrorFields(providerFailure)
+  };
+}
+
+export function failureDiagnostics(error: unknown): RouteSearchDiagnostics {
+  return {
+    provider: 'ors',
+    outcome: 'failed',
+    routeSources: [],
+    optionCount: 0,
+    usedFallback: false,
+    ...diagnosticErrorFields(error)
+  };
+}
+
+function diagnosticErrorFields(error: unknown) {
+  if (error instanceof OrsRouteError) {
+    return {
+      errorCategory: error.category,
+      ...(typeof error.status === 'number' ? { errorStatus: error.status } : {})
+    };
+  }
+
+  if (error) return { errorCategory: 'unexpected' };
+  return {};
+}
+
+async function updateRouteSearchStatus(id: string, status: RouteSearch['status'], errorMessage = '', diagnostics: RouteSearchDiagnostics = runningDiagnostics()) {
   await db.execute({
-    sql: 'UPDATE route_searches SET status = ?, error_message = ?, updated_at = ? WHERE id = ?',
-    args: [status, errorMessage, new Date().toISOString(), id]
+    sql: 'UPDATE route_searches SET status = ?, error_message = ?, diagnostic_json = ?, updated_at = ? WHERE id = ?',
+    args: [status, errorMessage, JSON.stringify(diagnostics), new Date().toISOString(), id]
   });
 }
 
@@ -444,5 +504,25 @@ function parseExplanations(value: string) {
     return Array.isArray(parsed) ? parsed.map(String) : [];
   } catch {
     return [];
+  }
+}
+
+function parseDiagnostics(value: string): RouteSearchDiagnostics {
+  try {
+    const parsed = JSON.parse(value) as Partial<RouteSearchDiagnostics>;
+    return {
+      provider: 'ors',
+      outcome:
+        parsed.outcome === 'complete' || parsed.outcome === 'fallback_complete' || parsed.outcome === 'failed' || parsed.outcome === 'running'
+          ? parsed.outcome
+          : 'running',
+      routeSources: Array.isArray(parsed.routeSources) ? parsed.routeSources.map(String) : [],
+      optionCount: Number.isFinite(parsed.optionCount) ? Number(parsed.optionCount) : 0,
+      usedFallback: Boolean(parsed.usedFallback),
+      ...(typeof parsed.errorCategory === 'string' ? { errorCategory: parsed.errorCategory } : {}),
+      ...(typeof parsed.errorStatus === 'number' ? { errorStatus: parsed.errorStatus } : {})
+    };
+  } catch {
+    return runningDiagnostics();
   }
 }
