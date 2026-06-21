@@ -301,14 +301,17 @@
             {/if}
 
             {#if leg.savedRoutes.length}
-              <section class="saved-routes" aria-label="Saved Routes">
-                <h4>Saved Routes</h4>
+              <section class="saved-routes" aria-label={`Saved Routes for ${leg.from.routingPlace.name} to ${leg.to.routingPlace.name}`}>
+                <div class="saved-routes-heading">
+                  <h4>Saved Routes for this Leg</h4>
+                  <p>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</p>
+                </div>
                 <div class="saved-route-list">
                   {#each leg.savedRoutes as savedRoute}
                     <article class:preferred={savedRoute.isPreferred} class="saved-route-card">
                       <div class="saved-route-heading">
                         <div>
-                          <span>{savedRoute.isPreferred ? 'Preferred Saved Route' : 'Saved Route'}</span>
+                          <span>{savedRoute.isPreferred ? 'This Leg’s Preferred Saved Route' : 'Saved Route for this Leg'}</span>
                           <strong>{savedRoute.title}</strong>
                           <small>Original Route Option: {savedRoute.snapshot.name}</small>
                         </div>
@@ -327,7 +330,7 @@
                       </p>
                       <form class="rename-route-form" method="POST" action="?/renameSavedRoute" aria-label={`Rename ${savedRoute.title}`}>
                         <input type="hidden" name="savedRouteId" value={savedRoute.id} />
-                        <label for={`rename-${savedRoute.id}`}>Rename Saved Route</label>
+                        <label for={`rename-${savedRoute.id}`}>Rename this Leg's Saved Route</label>
                         <div>
                           <input id={`rename-${savedRoute.id}`} name="title" value={savedRoute.title} maxlength="90" />
                           <button class="save-route" type="submit">Rename</button>
@@ -353,16 +356,16 @@
                       </dl>
                       <div class="saved-route-actions">
                         {#if savedRoute.isPreferred}
-                          <a class="save-route" href={`/trips/edit/${data.editToken}/handoff/${savedRoute.id}`}>Open Leg Handoff</a>
+                          <a class="save-route" href={`/trips/edit/${data.editToken}/handoff/${savedRoute.id}`}>Open this Leg Handoff</a>
                         {:else}
                           <form method="POST" action="?/preferSavedRoute">
                             <input type="hidden" name="savedRouteId" value={savedRoute.id} />
-                            <button class="save-route" type="submit">Use as Preferred Saved Route</button>
+                            <button class="save-route" type="submit">Use as this Leg's Preferred Route</button>
                           </form>
                         {/if}
                         <form method="POST" action="?/deleteSavedRoute">
                           <input type="hidden" name="savedRouteId" value={savedRoute.id} />
-                          <button class="delete-route" type="submit">Delete Saved Route</button>
+                          <button class="delete-route" type="submit">Delete from this Leg</button>
                         </form>
                       </div>
                     </article>
@@ -401,9 +404,9 @@
                           <p class="route-origin">Provider unavailable · approximate planning geometry only</p>
                         {/if}
                         {#if savedRouteForOption(leg, option.id)?.isPreferred}
-                          <p class="route-saved-status preferred">Already saved as Preferred Saved Route</p>
+                          <p class="route-saved-status preferred">Already saved as this Leg's Preferred Saved Route</p>
                         {:else if savedRouteForOption(leg, option.id)}
-                          <p class="route-saved-status">Already saved</p>
+                          <p class="route-saved-status">Already saved for this Leg</p>
                         {/if}
                       </div>
                       <strong class="score">{option.interestScore}</strong>
@@ -459,14 +462,14 @@
                       </ul>
                     {/if}
                     {#if isFallbackRoute(option.source)}
-                      <p class="fallback-save-note">Approximate fallback Corridors cannot be saved for navigation Handoff.</p>
+                      <p class="fallback-save-note">Approximate fallback Corridors cannot be saved for this Leg's navigation Handoff.</p>
                     {:else}
                       <form method="POST" action="?/saveRoute">
                         <input type="hidden" name="fromStopId" value={leg.from.id} />
                         <input type="hidden" name="toStopId" value={leg.to.id} />
                         <input type="hidden" name="routeSearchId" value={leg.routeSearch.id} />
                         <input type="hidden" name="routeOptionId" value={option.id} />
-                        <button class="save-route" type="submit">Save Route</button>
+                        <button class="save-route" type="submit">Save for this Leg</button>
                       </form>
                     {/if}
                   </section>
