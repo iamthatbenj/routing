@@ -80,6 +80,22 @@
   function savedRouteForOption(leg: { savedRoutes: Array<{ routeOptionId: string | null; isPreferred: boolean }> }, routeOptionId: string) {
     return leg.savedRoutes.find((savedRoute) => savedRoute.routeOptionId === routeOptionId);
   }
+
+  function preferredSavedRoute<T extends { isPreferred: boolean }>(leg: { savedRoutes: T[] }) {
+    return leg.savedRoutes.find((savedRoute) => savedRoute.isPreferred);
+  }
+
+  function legStatus(leg: {
+    routeSearch: null | { status: string; options: Array<{ source: string }>; diagnostics: { usedFallback: boolean } };
+    savedRoutes: Array<{ isPreferred: boolean }>;
+  }) {
+    if (preferredSavedRoute(leg)) return 'Preferred Saved Route selected';
+    if (!leg.routeSearch) return 'Ready for Route Search';
+    if (leg.routeSearch.status === 'failed') return 'Route Search failed';
+    if (leg.routeSearch.diagnostics.usedFallback || leg.routeSearch.options.some((option) => isFallbackRoute(option.source))) return 'Fallback Corridors available';
+    if (leg.routeSearch.options.length) return 'Route Options available';
+    return `Route Search ${leg.routeSearch.status}`;
+  }
 </script>
 
 <svelte:head>
@@ -182,6 +198,26 @@
     {/if}
   </section>
 
+  {#if data.legs.length}
+    <section class="leg-overview" aria-labelledby="leg-overview-heading">
+      <div class="section-heading">
+        <p class="eyebrow">Leg overview</p>
+        <h2 id="leg-overview-heading">Plan each Leg in order</h2>
+        <p>Use this compact summary to jump between Legs without scanning every Route Option.</p>
+      </div>
+      <nav class="leg-summary-list" aria-label="Leg navigation">
+        {#each data.legs as leg, index}
+          {@const preferredRoute = preferredSavedRoute(leg)}
+          <a href={`#leg-${leg.id}`} class:complete={Boolean(preferredRoute)} class:fallback={leg.routeSearch?.diagnostics.usedFallback}>
+            <span>Leg {index + 1}</span>
+            <strong>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</strong>
+            <small>{preferredRoute ? preferredRoute.title : legStatus(leg)}</small>
+          </a>
+        {/each}
+      </nav>
+    </section>
+  {/if}
+
   <section class="legs" aria-labelledby="legs-heading">
     <div class="section-heading">
       <p class="eyebrow">Legs</p>
@@ -195,10 +231,18 @@
       </div>
     {:else}
       <div class="leg-list">
-        {#each data.legs as leg}
-          <article class="leg-card">
-            <span>{leg.routeSearch ? `Route Search ${leg.routeSearch.status}` : 'Ready for Route Search'}</span>
-            <h3>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</h3>
+        {#each data.legs as leg, index}
+          {@const preferredRoute = preferredSavedRoute(leg)}
+          <article class="leg-card" id={`leg-${leg.id}`}>
+            <div class="leg-card-heading">
+              <div>
+                <span>Leg {index + 1} · {legStatus(leg)}</span>
+                <h3>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</h3>
+              </div>
+              {#if preferredRoute}
+                <a class="leg-handoff-link" href={`/trips/edit/${data.editToken}/handoff/${preferredRoute.id}`}>Open Handoff</a>
+              {/if}
+            </div>
             <p>
               Compare real route geometry from OpenRouteService. Balanced is the default Directness
               for this tracer bullet.
@@ -328,8 +372,13 @@
             {/if}
 
             {#if leg.routeSearch?.options.length}
-              <div class="route-options">
-                {#each leg.routeSearch.options as option}
+              <details class="route-option-details" open={data.legs.length === 1 && leg.savedRoutes.length === 0}>
+                <summary>
+                  <span>Route Option comparison</span>
+                  <strong>{leg.routeSearch.options.length} option{leg.routeSearch.options.length === 1 ? '' : 's'}</strong>
+                </summary>
+                <div class="route-options">
+                  {#each leg.routeSearch.options as option}
                   <section
                     id={`route-option-${option.id}`}
                     class:baseline={option.source === 'ors-fastest'}
@@ -421,8 +470,9 @@
                       </form>
                     {/if}
                   </section>
-                {/each}
-              </div>
+                  {/each}
+                </div>
+              </details>
             {/if}
 
           </article>
