@@ -256,6 +256,77 @@
               </details>
             {/if}
 
+            {#if leg.savedRoutes.length}
+              <section class="saved-routes" aria-label="Saved Routes">
+                <h4>Saved Routes</h4>
+                <div class="saved-route-list">
+                  {#each leg.savedRoutes as savedRoute}
+                    <article class:preferred={savedRoute.isPreferred} class="saved-route-card">
+                      <div class="saved-route-heading">
+                        <div>
+                          <span>{savedRoute.isPreferred ? 'Preferred Saved Route' : 'Saved Route'}</span>
+                          <strong>{savedRoute.title}</strong>
+                          <small>Original Route Option: {savedRoute.snapshot.name}</small>
+                        </div>
+                        {#if savedRoute.isPreferred}
+                          <em>Preferred</em>
+                        {/if}
+                      </div>
+                      <p class="route-origin">
+                        {#if anchorLabel(savedRoute.snapshot)}
+                          Anchor-generated Corridor via {anchorLabel(savedRoute.snapshot)}
+                        {:else if savedRoute.snapshot.source === 'ors-fastest'}
+                          Fastest baseline Corridor
+                        {:else}
+                          {routeKind(savedRoute.snapshot.source)} Corridor
+                        {/if}
+                      </p>
+                      <form class="rename-route-form" method="POST" action="?/renameSavedRoute" aria-label={`Rename ${savedRoute.title}`}>
+                        <input type="hidden" name="savedRouteId" value={savedRoute.id} />
+                        <label for={`rename-${savedRoute.id}`}>Rename Saved Route</label>
+                        <div>
+                          <input id={`rename-${savedRoute.id}`} name="title" value={savedRoute.title} maxlength="90" />
+                          <button class="save-route" type="submit">Rename</button>
+                        </div>
+                      </form>
+                      <dl class="saved-route-facts">
+                        <div>
+                          <dt>Score</dt>
+                          <dd>{savedRoute.snapshot.interestScore}</dd>
+                        </div>
+                        <div>
+                          <dt>Time</dt>
+                          <dd>{formatDuration(savedRoute.snapshot.durationSeconds)}</dd>
+                        </div>
+                        <div>
+                          <dt>Distance</dt>
+                          <dd>{formatDistance(savedRoute.snapshot.distanceMeters)}</dd>
+                        </div>
+                        <div>
+                          <dt>Handoff</dt>
+                          <dd>{shapingStopCountLabel(savedRoute.snapshot.handoffStops.length)}</dd>
+                        </div>
+                      </dl>
+                      <div class="saved-route-actions">
+                        {#if savedRoute.isPreferred}
+                          <a class="save-route" href={`/trips/edit/${data.editToken}/handoff/${savedRoute.id}`}>Open Leg Handoff</a>
+                        {:else}
+                          <form method="POST" action="?/preferSavedRoute">
+                            <input type="hidden" name="savedRouteId" value={savedRoute.id} />
+                            <button class="save-route" type="submit">Use as Preferred Saved Route</button>
+                          </form>
+                        {/if}
+                        <form method="POST" action="?/deleteSavedRoute">
+                          <input type="hidden" name="savedRouteId" value={savedRoute.id} />
+                          <button class="delete-route" type="submit">Delete Saved Route</button>
+                        </form>
+                      </div>
+                    </article>
+                  {/each}
+                </div>
+              </section>
+            {/if}
+
             {#if leg.routeSearch?.options.length}
               <div class="route-options">
                 {#each leg.routeSearch.options as option}
@@ -354,76 +425,6 @@
               </div>
             {/if}
 
-            {#if leg.savedRoutes.length}
-              <section class="saved-routes" aria-label="Saved Routes">
-                <h4>Saved Routes</h4>
-                <div class="saved-route-list">
-                  {#each leg.savedRoutes as savedRoute}
-                    <article class:preferred={savedRoute.isPreferred} class="saved-route-card">
-                      <div class="saved-route-heading">
-                        <div>
-                          <span>{savedRoute.isPreferred ? 'Preferred Saved Route' : 'Saved Route'}</span>
-                          <strong>{savedRoute.title}</strong>
-                          <small>Original Route Option: {savedRoute.snapshot.name}</small>
-                        </div>
-                        {#if savedRoute.isPreferred}
-                          <em>Preferred</em>
-                        {/if}
-                      </div>
-                      <p class="route-origin">
-                        {#if anchorLabel(savedRoute.snapshot)}
-                          Anchor-generated Corridor via {anchorLabel(savedRoute.snapshot)}
-                        {:else if savedRoute.snapshot.source === 'ors-fastest'}
-                          Fastest baseline Corridor
-                        {:else}
-                          {routeKind(savedRoute.snapshot.source)} Corridor
-                        {/if}
-                      </p>
-                      <form class="rename-route-form" method="POST" action="?/renameSavedRoute" aria-label={`Rename ${savedRoute.title}`}>
-                        <input type="hidden" name="savedRouteId" value={savedRoute.id} />
-                        <label for={`rename-${savedRoute.id}`}>Rename Saved Route</label>
-                        <div>
-                          <input id={`rename-${savedRoute.id}`} name="title" value={savedRoute.title} maxlength="90" />
-                          <button class="save-route" type="submit">Rename</button>
-                        </div>
-                      </form>
-                      <dl class="saved-route-facts">
-                        <div>
-                          <dt>Score</dt>
-                          <dd>{savedRoute.snapshot.interestScore}</dd>
-                        </div>
-                        <div>
-                          <dt>Time</dt>
-                          <dd>{formatDuration(savedRoute.snapshot.durationSeconds)}</dd>
-                        </div>
-                        <div>
-                          <dt>Distance</dt>
-                          <dd>{formatDistance(savedRoute.snapshot.distanceMeters)}</dd>
-                        </div>
-                        <div>
-                          <dt>Handoff</dt>
-                          <dd>{shapingStopCountLabel(savedRoute.snapshot.handoffStops.length)}</dd>
-                        </div>
-                      </dl>
-                      <div class="saved-route-actions">
-                        {#if savedRoute.isPreferred}
-                          <a class="save-route" href={`/trips/edit/${data.editToken}/handoff/${savedRoute.id}`}>Open Leg Handoff</a>
-                        {:else}
-                          <form method="POST" action="?/preferSavedRoute">
-                            <input type="hidden" name="savedRouteId" value={savedRoute.id} />
-                            <button class="save-route" type="submit">Use as Preferred Saved Route</button>
-                          </form>
-                        {/if}
-                        <form method="POST" action="?/deleteSavedRoute">
-                          <input type="hidden" name="savedRouteId" value={savedRoute.id} />
-                          <button class="delete-route" type="submit">Delete Saved Route</button>
-                        </form>
-                      </div>
-                    </article>
-                  {/each}
-                </div>
-              </section>
-            {/if}
           </article>
         {/each}
       </div>
