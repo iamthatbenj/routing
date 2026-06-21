@@ -376,3 +376,34 @@ A user can understand whether a Route Search succeeded, partially succeeded, or 
 - Offline/self-hosted routing.
 - Editable Shaping Stops.
 - Turn-by-turn navigation.
+
+## TB13 — Multi-leg Trip workflow
+
+Goal: make Routing support a Trip with multiple Legs as a coherent planning workflow.
+
+A user can add 3+ Trip Stops, compare routes per Leg, select a Preferred Saved Route for each Leg, and understand the overall Trip plan.
+
+### Scope
+
+- Audit current multi-leg behavior with 3+ Trip Stops.
+- Add Leg navigation and planning summary on the Trip edit page.
+- Clarify per-Leg Saved Route workflow and actions.
+- Polish the read-only share page for multi-leg Trips.
+- Review single-Leg and multi-Leg workflows after implementation.
+
+### GitHub issues
+
+1. [TB13.01 Audit current multi-leg behavior](https://github.com/iamthatbenj/routing/issues/115)
+2. [TB13.02 Add Leg navigation and planning summary](https://github.com/iamthatbenj/routing/issues/116)
+3. [TB13.03 Clarify per-Leg Saved Route workflow](https://github.com/iamthatbenj/routing/issues/117)
+4. [TB13.04 Polish share page for multi-leg Trips](https://github.com/iamthatbenj/routing/issues/118)
+5. [TB13.05 Multi-leg workflow review](https://github.com/iamthatbenj/routing/issues/119)
+
+### Deferred from TB13
+
+- Whole-trip optimization.
+- Drag-and-drop Trip Stop reordering.
+- Day-by-day itinerary planning.
+- Lodging/date model.
+- Multi-leg map overview across the entire Trip.
+- Export whole Trip to navigation.
