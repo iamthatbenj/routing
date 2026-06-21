@@ -8,6 +8,7 @@
 
 .trip-card,
 .planner,
+.leg-overview,
 .legs,
 .map-panel {
   display: grid;
@@ -241,6 +242,49 @@ p {
   background: var(--sky);
 }
 
+.leg-overview {
+  align-content: start;
+}
+
+.leg-summary-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.leg-summary-list a {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.75rem;
+  color: inherit;
+  background: white;
+  text-decoration: none;
+}
+
+.leg-summary-list a.complete {
+  border-color: rgba(35, 99, 75, 0.45);
+  background: var(--sky);
+}
+
+.leg-summary-list a.fallback {
+  border-color: rgba(217, 139, 43, 0.45);
+  background: var(--accent-soft);
+}
+
+.leg-summary-list span,
+.leg-summary-list small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.leg-summary-list strong {
+  color: var(--ink);
+}
+
 .leg-list {
   display: grid;
   gap: 0.75rem;
@@ -249,6 +293,26 @@ p {
 .leg-card {
   display: grid;
   gap: 0.75rem;
+  scroll-margin-top: 1rem;
+}
+
+.leg-card-heading {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.leg-card-heading h3 {
+  margin-top: 0.2rem;
+}
+
+.leg-handoff-link {
+  justify-self: start;
+  border-radius: 999px;
+  padding: 0.7rem 0.85rem;
+  color: var(--brand-strong);
+  background: var(--sky);
+  font-weight: 900;
+  text-decoration: none;
 }
 
 .route-search-form {
@@ -322,6 +386,31 @@ p {
   color: var(--ink);
   font-size: 0.86rem;
   font-weight: 800;
+}
+
+.route-option-details {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.7rem 0.8rem;
+  background: #f9f7f1;
+}
+
+.route-option-details > summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  cursor: pointer;
+  color: var(--brand-strong);
+}
+
+.route-option-details > summary span,
+.route-option-details > summary strong {
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.route-option-details > .route-options {
+  margin-top: 0.75rem;
 }
 
 .route-options {
@@ -709,8 +798,13 @@ p {
   }
 
   .trip-card,
+  .leg-overview,
   .map-panel {
     grid-column: 1 / -1;
+  }
+
+  .leg-summary-list {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
   }
 
   .meta-grid,
@@ -738,6 +832,7 @@ p {
     grid-template-areas:
       'summary map'
       'planner map'
+      'overview map'
       'legs map';
     gap: 1.1rem;
   }
@@ -748,6 +843,10 @@ p {
 
   .planner {
     grid-area: planner;
+  }
+
+  .leg-overview {
+    grid-area: overview;
   }
 
   .legs {
@@ -848,6 +947,11 @@ p {
   .planner > .stops {
     grid-column: 2;
     grid-row: 1 / span 2;
+  }
+
+  .leg-card-heading {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
   }
 
   .route-options {
