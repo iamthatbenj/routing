@@ -388,6 +388,7 @@ A user can add 3+ Trip Stops, compare routes per Leg, select a Preferred Saved R
 - Audit current multi-leg behavior with 3+ Trip Stops.
 - Add Leg navigation and planning summary on the Trip edit page.
 - Clarify per-Leg Saved Route workflow and actions.
+- Add a whole-Trip itinerary summary once Legs have Preferred Saved Routes.
 - Polish the read-only share page for multi-leg Trips.
 - Review single-Leg and multi-Leg workflows after implementation.
 
@@ -396,8 +397,9 @@ A user can add 3+ Trip Stops, compare routes per Leg, select a Preferred Saved R
 1. [TB13.01 Audit current multi-leg behavior](https://github.com/iamthatbenj/routing/issues/115)
 2. [TB13.02 Add Leg navigation and planning summary](https://github.com/iamthatbenj/routing/issues/116)
 3. [TB13.03 Clarify per-Leg Saved Route workflow](https://github.com/iamthatbenj/routing/issues/117)
-4. [TB13.04 Polish share page for multi-leg Trips](https://github.com/iamthatbenj/routing/issues/118)
-5. [TB13.05 Multi-leg workflow review](https://github.com/iamthatbenj/routing/issues/119)
+4. [TB13.04 Add whole-Trip itinerary summary](https://github.com/iamthatbenj/routing/issues/122)
+5. [TB13.05 Polish share page for multi-leg Trips](https://github.com/iamthatbenj/routing/issues/118)
+6. [TB13.06 Multi-leg workflow review](https://github.com/iamthatbenj/routing/issues/119)
 
 ### Deferred from TB13
 
