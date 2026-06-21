@@ -637,10 +637,21 @@ p {
   padding-top: 0.75rem;
 }
 
+.saved-routes-heading {
+  display: grid;
+  gap: 0.2rem;
+}
+
 .saved-routes h4 {
   margin: 0;
   color: var(--ink);
   font-size: 1.05rem;
+}
+
+.saved-routes-heading p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
 }
 
 .saved-route-list {
