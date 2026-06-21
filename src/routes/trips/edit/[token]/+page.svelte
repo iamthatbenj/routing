@@ -198,6 +198,8 @@
     {/if}
   </section>
 
+
+
   {#if data.legs.length}
     <section class="leg-overview" aria-labelledby="leg-overview-heading">
       <div class="section-heading">
@@ -485,6 +487,57 @@
   </section>
 
   <section class="map-panel" aria-labelledby="map-heading">
+  {#if data.stops.length >= 2}
+    <section class="trip-itinerary" aria-labelledby="trip-itinerary-heading">
+      <div class="section-heading">
+        <p class="eyebrow">Trip itinerary</p>
+        <h2 id="trip-itinerary-heading">Whole Trip at a glance</h2>
+        <p>Stops and selected routes interleaved in the order you will travel.</p>
+      </div>
+      <ol class="itinerary-list" aria-label="Whole Trip itinerary">
+        {#each data.stops as stop, index}
+          <li class="itinerary-stop">
+            <span class="itinerary-index">Stop {index + 1}</span>
+            <strong>{stop.routingPlace.name}</strong>
+            <small>{stop.routingPlace.region} · {stop.routingPlace.kind.replaceAll('_', ' ')}</small>
+          </li>
+          {#if index < data.legs.length}
+            {@const leg = data.legs[index]}
+            {@const preferredRoute = preferredSavedRoute(leg)}
+            <li class:missing={!preferredRoute} class="itinerary-leg">
+              <span class="itinerary-index">Leg {index + 1}</span>
+              <div>
+                <strong>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</strong>
+                <ul class="itinerary-leg-stops" aria-label={`Stop details for Leg ${index + 1}`}>
+                  <li>
+                    <span>From</span>
+                    <p>{leg.from.routingPlace.region}{leg.from.details ? ` · ${leg.from.details}` : ''}</p>
+                  </li>
+                  <li>
+                    <span>To</span>
+                    <p>{leg.to.routingPlace.region}{leg.to.details ? ` · ${leg.to.details}` : ''}</p>
+                  </li>
+                </ul>
+                {#if preferredRoute}
+                  <p>{preferredRoute.title}</p>
+                  <small>{formatDuration(preferredRoute.snapshot.durationSeconds)} · {formatDistance(preferredRoute.snapshot.distanceMeters)}</small>
+                {:else}
+                  <p>No Preferred Saved Route selected yet.</p>
+                  <small>{legStatus(leg)}</small>
+                {/if}
+              </div>
+              {#if preferredRoute}
+                <a href={`/trips/edit/${data.editToken}/handoff/${preferredRoute.id}`}>Handoff</a>
+              {:else}
+                <a href={`#leg-${leg.id}`}>Choose route</a>
+              {/if}
+            </li>
+          {/if}
+        {/each}
+      </ol>
+    </section>
+  {/if}
+
     <div class="section-heading">
       <p class="eyebrow">Map preview</p>
       <h2 id="map-heading">Corridors will land here</h2>
