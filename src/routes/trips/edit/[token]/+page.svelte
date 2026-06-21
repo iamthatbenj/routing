@@ -42,11 +42,21 @@
   }
 
   function routeKind(source: string) {
-    return source === 'ors-fastest' ? 'Fastest baseline' : source === 'ors-anchor' ? 'Anchor-generated Interesting Route' : 'Route Option';
+    if (source === 'ors-fastest') return 'Fastest baseline';
+    if (source === 'ors-anchor') return 'Anchor-generated Interesting Route';
+    if (source === 'fallback-direct') return 'Approximate fallback Corridor';
+    if (source === 'fallback-anchor') return 'Approximate fallback Anchor Corridor';
+    return 'Route Option';
+  }
+
+  function isFallbackRoute(source: string) {
+    return source.startsWith('fallback-');
   }
 
   function anchorLabel(option: { source: string; name: string }) {
-    return option.source === 'ors-anchor' && option.name.startsWith('Via ') ? option.name.replace(/^Via /, '').trim() : '';
+    if (option.source === 'ors-anchor' && option.name.startsWith('Via ')) return option.name.replace(/^Via /, '').trim();
+    if (option.source === 'fallback-anchor' && option.name.startsWith('Approximate via ')) return option.name.replace(/^Approximate via /, '').trim();
+    return '';
   }
 
   function formatScoreImpact(value: number) {
@@ -224,6 +234,8 @@
                           <p class="route-origin">Anchor: {anchorLabel(option)}</p>
                         {:else if option.source === 'ors-fastest'}
                           <p class="route-origin">Baseline Corridor for comparison</p>
+                        {:else if isFallbackRoute(option.source)}
+                          <p class="route-origin">Provider unavailable · approximate planning geometry only</p>
                         {/if}
                         {#if savedRouteForOption(leg, option.id)?.isPreferred}
                           <p class="route-saved-status preferred">Already saved as Preferred Saved Route</p>
@@ -283,13 +295,17 @@
                         {/each}
                       </ul>
                     {/if}
-                    <form method="POST" action="?/saveRoute">
-                      <input type="hidden" name="fromStopId" value={leg.from.id} />
-                      <input type="hidden" name="toStopId" value={leg.to.id} />
-                      <input type="hidden" name="routeSearchId" value={leg.routeSearch.id} />
-                      <input type="hidden" name="routeOptionId" value={option.id} />
-                      <button class="save-route" type="submit">Save Route</button>
-                    </form>
+                    {#if isFallbackRoute(option.source)}
+                      <p class="fallback-save-note">Approximate fallback Corridors cannot be saved for navigation Handoff.</p>
+                    {:else}
+                      <form method="POST" action="?/saveRoute">
+                        <input type="hidden" name="fromStopId" value={leg.from.id} />
+                        <input type="hidden" name="toStopId" value={leg.to.id} />
+                        <input type="hidden" name="routeSearchId" value={leg.routeSearch.id} />
+                        <input type="hidden" name="routeOptionId" value={option.id} />
+                        <button class="save-route" type="submit">Save Route</button>
+                      </form>
+                    {/if}
                   </section>
                 {/each}
               </div>

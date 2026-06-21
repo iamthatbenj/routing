@@ -370,6 +370,16 @@ p {
   background: var(--brand);
 }
 
+.fallback-save-note {
+  border: 1px solid rgba(138, 47, 32, 0.18);
+  border-radius: 1rem;
+  padding: 0.7rem 0.8rem;
+  color: #6d4129;
+  background: #fff1dd;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
 .route-option-card dl {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

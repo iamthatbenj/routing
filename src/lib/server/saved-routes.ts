@@ -93,6 +93,10 @@ export async function saveRouteOption({
     throw new Error('Route Option does not belong to this Leg Route Search.');
   }
 
+  if (routeOption.source.startsWith('fallback-')) {
+    throw new Error('Approximate fallback Corridors cannot be saved for navigation handoff.');
+  }
+
   const existingCount = await countSavedRoutesForLeg(tripId, leg.from.id, leg.to.id);
   const isPreferred = existingCount === 0;
   const now = new Date().toISOString();

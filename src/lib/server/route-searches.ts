@@ -6,6 +6,7 @@ import { findHighlightsByH3Cells, type Highlight } from './highlights';
 import { fetchDrivingRoutes, OrsRouteError, type OrsRoute } from './ors';
 import { findRoutingPlaceBySearchLabel } from './routing-places';
 import type { Leg } from './trip-stops';
+import type { RoutingPlace } from './routing-places';
 
 export type Directness = 'Direct' | 'Balanced' | 'Adventurous';
 
@@ -144,7 +145,14 @@ export async function startRouteSearch({ leg, directness }: { leg: Leg; directne
 async function generateRouteOptions(leg: Leg) {
   const from = leg.from.routingPlace;
   const to = leg.to.routingPlace;
-  const routes = await fetchDrivingRoutes({ from, to });
+  let routes: OrsRoute[];
+
+  try {
+    routes = await fetchDrivingRoutes({ from, to });
+  } catch (error) {
+    logRouteSearchFailure(error);
+    return generateFallbackAnchorCorridors(leg);
+  }
 
   for (const anchorLabel of tracerRouteAnchorLabels) {
     const anchor = await findRoutingPlaceBySearchLabel(anchorLabel);
@@ -158,6 +166,63 @@ async function generateRouteOptions(leg: Leg) {
   }
 
   return dedupeExactRoutes(routes);
+}
+
+export async function generateFallbackAnchorCorridors(leg: Leg) {
+  const from = leg.from.routingPlace;
+  const to = leg.to.routingPlace;
+  const routes: OrsRoute[] = [fallbackRoute({ from, to })];
+
+  for (const anchorLabel of tracerRouteAnchorLabels) {
+    const anchor = await findRoutingPlaceBySearchLabel(anchorLabel);
+    if (anchor && anchor.id !== from.id && anchor.id !== to.id) {
+      routes.push(fallbackRoute({ from, to, via: anchor }));
+    }
+  }
+
+  return dedupeExactRoutes(routes);
+}
+
+export function fallbackRoute({ from, to, via }: { from: RoutingPlace; to: RoutingPlace; via?: RoutingPlace }): OrsRoute {
+  const distanceMeters = via
+    ? approximateDistanceMeters(from, via) + approximateDistanceMeters(via, to)
+    : approximateDistanceMeters(from, to);
+  const durationSeconds = Math.round(distanceMeters / 22.2);
+
+  return {
+    name: via ? `Approximate via ${via.name}` : 'Approximate direct Corridor',
+    source: via ? 'fallback-anchor' : 'fallback-direct',
+    durationSeconds,
+    distanceMeters: Math.round(distanceMeters),
+    geometry: {
+      type: 'LineString',
+      coordinates: via
+        ? [toCoordinate(from), toCoordinate(via), toCoordinate(to)]
+        : [toCoordinate(from), toCoordinate(to)]
+    }
+  };
+}
+
+function toCoordinate(place: RoutingPlace): [number, number] {
+  return [place.longitude, place.latitude];
+}
+
+function approximateDistanceMeters(from: RoutingPlace, to: RoutingPlace) {
+  const earthRadiusMeters = 6_371_000;
+  const fromLatitude = toRadians(from.latitude);
+  const toLatitude = toRadians(to.latitude);
+  const latitudeDelta = toRadians(to.latitude - from.latitude);
+  const longitudeDelta = toRadians(to.longitude - from.longitude);
+
+  const a =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(fromLatitude) * Math.cos(toLatitude) * Math.sin(longitudeDelta / 2) ** 2;
+
+  return earthRadiusMeters * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function toRadians(degrees: number) {
+  return (degrees * Math.PI) / 180;
 }
 
 function dedupeExactRoutes(routes: OrsRoute[]) {
@@ -191,7 +256,7 @@ async function scoreRouteOptions(routes: OrsRoute[], leg: Leg, directness: Direc
       return {
         ...route,
         interestScore,
-        explanations: buildExplanations(scoredHighlights, endpointContext, extraSeconds),
+        explanations: buildExplanations(scoredHighlights, endpointContext, extraSeconds, route),
         reasons: buildReasons(route, scoredHighlights, endpointContext, extraSeconds, directness, penalty)
       };
     })
@@ -244,10 +309,34 @@ function buildReasons(route: OrsRoute, scoredHighlights: Highlight[], endpointCo
 }
 
 function anchorLabelForRoute(route: OrsRoute) {
-  return route.source === 'ors-anchor' && route.name.startsWith('Via ') ? route.name.replace(/^Via /, '').trim() : '';
+  if (route.source === 'ors-anchor' && route.name.startsWith('Via ')) return route.name.replace(/^Via /, '').trim();
+  if (route.source === 'fallback-anchor' && route.name.startsWith('Approximate via ')) return route.name.replace(/^Approximate via /, '').trim();
+  return '';
 }
 
-function buildExplanations(scoredHighlights: Highlight[], endpointContext: Highlight[], extraSeconds: number) {
+function buildExplanations(scoredHighlights: Highlight[], endpointContext: Highlight[], extraSeconds: number, route?: OrsRoute) {
+  if (route?.source.startsWith('fallback-')) {
+    const explanations = [
+      'Approximate fallback Corridor. Route provider geometry was unavailable, so this is planning scaffolding rather than turn-by-turn routing.'
+    ];
+
+    const anchorLabel = anchorLabelForRoute(route);
+    if (anchorLabel) {
+      explanations.push(`Approximate Anchor path via ${anchorLabel}.`);
+    }
+
+    if (endpointContext.length > 0) {
+      explanations.push(
+        `Destination context, not scored: ${endpointContext
+          .slice(0, 2)
+          .map((highlight) => highlight.name)
+          .join(', ')}.`
+      );
+    }
+
+    return explanations;
+  }
+
   const explanations = scoredHighlights.slice(0, 3).map((highlight) => {
     const label = highlight.category === 'scenic_segment' ? 'Scenic Segment' : 'Highlight';
     return `${label}: ${highlight.name} (${highlight.visitEffort})`;
