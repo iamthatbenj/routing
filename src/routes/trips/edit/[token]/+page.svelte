@@ -72,6 +72,11 @@
     return `${count} Shaping Stop${count === 1 ? '' : 's'}`;
   }
 
+  function diagnosticOutcomeLabel(outcome: string) {
+    if (outcome === 'fallback_complete') return 'fallback complete';
+    return outcome.replaceAll('_', ' ');
+  }
+
   function savedRouteForOption(leg: { savedRoutes: Array<{ routeOptionId: string | null; isPreferred: boolean }> }, routeOptionId: string) {
     return leg.savedRoutes.find((savedRoute) => savedRoute.routeOptionId === routeOptionId);
   }
@@ -213,7 +218,45 @@
 
             {#if leg.routeSearch?.status === 'failed'}
               <p class="route-error">{leg.routeSearch.errorMessage}</p>
-            {:else if leg.routeSearch?.options.length}
+            {/if}
+
+            {#if leg.routeSearch}
+              <details class="route-diagnostics">
+                <summary>Route Search diagnostics</summary>
+                <dl>
+                  <div>
+                    <dt>Provider</dt>
+                    <dd>{leg.routeSearch.diagnostics.provider}</dd>
+                  </div>
+                  <div>
+                    <dt>Outcome</dt>
+                    <dd>{diagnosticOutcomeLabel(leg.routeSearch.diagnostics.outcome)}</dd>
+                  </div>
+                  <div>
+                    <dt>Options</dt>
+                    <dd>{leg.routeSearch.diagnostics.optionCount}</dd>
+                  </div>
+                  <div>
+                    <dt>Sources</dt>
+                    <dd>{leg.routeSearch.diagnostics.routeSources.join(', ') || 'none'}</dd>
+                  </div>
+                  {#if leg.routeSearch.diagnostics.errorCategory}
+                    <div>
+                      <dt>Error category</dt>
+                      <dd>{leg.routeSearch.diagnostics.errorCategory}</dd>
+                    </div>
+                  {/if}
+                  {#if leg.routeSearch.diagnostics.errorStatus}
+                    <div>
+                      <dt>Provider status</dt>
+                      <dd>{leg.routeSearch.diagnostics.errorStatus}</dd>
+                    </div>
+                  {/if}
+                </dl>
+              </details>
+            {/if}
+
+            {#if leg.routeSearch?.options.length}
               <div class="route-options">
                 {#each leg.routeSearch.options as option}
                   <section
