@@ -3,7 +3,7 @@ import { routeCorridorCells, selectCorridorRouteOptions } from '$lib/route-corri
 import { parseRouteReasons, type RouteReason } from '$lib/route-reasons';
 import { db } from './db';
 import { findHighlightsByH3Cells, type Highlight } from './highlights';
-import { fetchDrivingRoutes, type OrsRoute } from './ors';
+import { fetchDrivingRoutes, OrsRouteError, type OrsRoute } from './ors';
 import { findRoutingPlaceBySearchLabel } from './routing-places';
 import type { Leg } from './trip-stops';
 
@@ -134,7 +134,8 @@ export async function startRouteSearch({ leg, directness }: { leg: Leg; directne
     await replaceRouteOptions(searchId, selectedRoutes);
     await updateRouteSearchStatus(searchId, 'complete');
   } catch (error) {
-    await updateRouteSearchStatus(searchId, 'failed', error instanceof Error ? error.message : 'Route Search failed.');
+    logRouteSearchFailure(error);
+    await updateRouteSearchStatus(searchId, 'failed', routeSearchFailureMessage(error));
   }
 
   return searchId;
@@ -301,6 +302,27 @@ async function replaceRouteOptions(routeSearchId: string, routes: ScoredRoute[])
       ]
     }))
   );
+}
+
+export function routeSearchFailureMessage(error: unknown) {
+  if (error instanceof OrsRouteError) return error.message;
+
+  return 'Route Search failed before Route Options could be created. Try again later.';
+}
+
+function logRouteSearchFailure(error: unknown) {
+  if (error instanceof OrsRouteError) {
+    console.warn('[route-search] provider failure', {
+      category: error.category,
+      status: error.status,
+      diagnosticMessage: error.diagnosticMessage
+    });
+    return;
+  }
+
+  console.warn('[route-search] unexpected failure', {
+    message: error instanceof Error ? error.message : 'Unknown Route Search failure'
+  });
 }
 
 async function updateRouteSearchStatus(id: string, status: RouteSearch['status'], errorMessage = '') {
