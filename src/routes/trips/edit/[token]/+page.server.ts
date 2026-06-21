@@ -129,7 +129,14 @@ export const actions = {
       return fail(400, { message: 'That Route Option does not belong to this Trip.' });
     }
 
-    await saveRouteOption({ tripId: trip.id, leg, routeSearch, routeOptionId });
+    try {
+      await saveRouteOption({ tripId: trip.id, leg, routeSearch, routeOptionId });
+    } catch (error) {
+      return fail(400, {
+        message: error instanceof Error ? error.message : 'Could not save that Route Option.'
+      });
+    }
+
     return { success: true };
   },
 
