@@ -88,6 +88,7 @@ a,
   background: var(--sky);
 }
 
+.itinerary-list,
 .stops,
 .leg-list {
   display: grid;
@@ -100,6 +101,106 @@ a,
 .stops li {
   grid-template-columns: auto 1fr;
   align-items: start;
+}
+
+.itinerary-stop,
+.itinerary-leg {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.75rem;
+  background: white;
+}
+
+.itinerary-stop {
+  border-left: 0.35rem solid var(--brand);
+}
+
+.itinerary-leg {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  border-left: 0.35rem solid var(--accent);
+  background: var(--accent-soft);
+}
+
+.itinerary-leg.missing {
+  border-left-color: var(--line);
+  background: #f9f7f1;
+}
+
+.itinerary-leg > div {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.itinerary-leg > .itinerary-index {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.itinerary-index {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.itinerary-stop strong,
+.itinerary-leg strong {
+  color: var(--ink);
+}
+
+.itinerary-stop small,
+.itinerary-leg small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.itinerary-leg-stops {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.45rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.itinerary-leg-stops li {
+  display: grid;
+  gap: 0.05rem;
+}
+
+.itinerary-leg-stops span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.itinerary-leg-stops p,
+.itinerary-stop p,
+.itinerary-leg p {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.itinerary-leg a {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  align-self: end;
+  border-radius: 999px;
+  padding: 0.65rem 0.8rem;
+  color: var(--brand-strong);
+  background: var(--sky);
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .stop-index {
@@ -231,12 +332,19 @@ a,
     align-self: start;
   }
 
+  .share-itinerary,
+  .share-stops {
+    grid-column: 1;
+  }
+
   .share-stops {
     position: sticky;
     top: 1rem;
   }
 
   .share-legs {
+    grid-column: 2;
+    grid-row: 2 / span 2;
     min-width: 0;
   }
 }
@@ -246,8 +354,13 @@ a,
     font-size: clamp(3rem, 4.8vw, 4.6rem);
   }
 
+  .share-page {
+    grid-template-columns: minmax(20rem, 0.85fr) minmax(0, 1.15fr);
+  }
+
   .leg-card {
     gap: 0.85rem;
+    scroll-margin-top: 1rem;
   }
 
   .saved-route-card {
