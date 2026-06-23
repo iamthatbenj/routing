@@ -26,6 +26,10 @@
   function shapingStopCountLabel(count: number) {
     return `${count} Shaping Stop${count === 1 ? '' : 's'}`;
   }
+
+  function legStatus(leg: { preferredSavedRoute: null | { title: string } }) {
+    return leg.preferredSavedRoute ? leg.preferredSavedRoute.title : 'No Preferred Saved Route selected yet';
+  }
 </script>
 
 <svelte:head>
@@ -42,6 +46,54 @@
     </p>
     <a href="/">Back to planner</a>
   </section>
+
+  {#if data.stops.length >= 2}
+    <section class="share-card share-itinerary" aria-labelledby="share-itinerary-heading">
+      <p class="eyebrow">Trip itinerary</p>
+      <h2 id="share-itinerary-heading">Whole Trip at a glance</h2>
+      <ol class="itinerary-list" aria-label="Shared Trip itinerary">
+        {#each data.stops as stop, index}
+          <li class="itinerary-stop">
+            <span class="itinerary-index">Stop {index + 1}</span>
+            <strong>{stop.routingPlace.name}</strong>
+            <small>{stop.routingPlace.region} · {stop.routingPlace.kind.replaceAll('_', ' ')}</small>
+            {#if stop.details}
+              <p>{stop.details}</p>
+            {/if}
+          </li>
+          {#if index < data.legs.length}
+            {@const leg = data.legs[index]}
+            <li class:missing={!leg.preferredSavedRoute} class="itinerary-leg">
+              <span class="itinerary-index">Leg {index + 1}</span>
+              <div>
+                <strong>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</strong>
+                <ul class="itinerary-leg-stops" aria-label={`Stop details for shared Leg ${index + 1}`}>
+                  <li>
+                    <span>From</span>
+                    <p>{leg.from.routingPlace.region}{leg.from.details ? ` · ${leg.from.details}` : ''}</p>
+                  </li>
+                  <li>
+                    <span>To</span>
+                    <p>{leg.to.routingPlace.region}{leg.to.details ? ` · ${leg.to.details}` : ''}</p>
+                  </li>
+                </ul>
+                {#if leg.preferredSavedRoute}
+                  <p>{leg.preferredSavedRoute.title}</p>
+                  <small>{formatDuration(leg.preferredSavedRoute.snapshot.durationSeconds)} · {formatDistance(leg.preferredSavedRoute.snapshot.distanceMeters)}</small>
+                {:else}
+                  <p>No Preferred Saved Route selected yet.</p>
+                  <small>This Leg is visible, but no route has been chosen for sharing.</small>
+                {/if}
+              </div>
+              {#if leg.preferredSavedRoute}
+                <a href={`#shared-leg-${leg.id}`}>View Leg</a>
+              {/if}
+            </li>
+          {/if}
+        {/each}
+      </ol>
+    </section>
+  {/if}
 
   <section class="share-card share-stops" aria-labelledby="stops-heading">
     <p class="eyebrow">Trip Stops</p>
@@ -71,9 +123,9 @@
     <h2 id="legs-heading">Preferred Saved Routes</h2>
     {#if data.legs.length}
       <div class="leg-list">
-        {#each data.legs as leg}
-          <article class="leg-card">
-            <p class="eyebrow">Leg</p>
+        {#each data.legs as leg, index}
+          <article class="leg-card" id={`shared-leg-${leg.id}`}>
+            <p class="eyebrow">Leg {index + 1} · {legStatus(leg)}</p>
             <h3>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</h3>
             {#if leg.preferredSavedRoute}
               <article class="saved-route-card">
