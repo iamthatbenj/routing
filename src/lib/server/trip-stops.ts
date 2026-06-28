@@ -89,6 +89,15 @@ export async function addTripStop(tripId: string, routingPlaceId: string, detail
   await touchTrip(tripId);
 }
 
+export async function updateTripStopDetails(tripId: string, stopId: string, details: string) {
+  await db.execute({
+    sql: 'UPDATE trip_stops SET details = ? WHERE id = ? AND trip_id = ?',
+    args: [details.trim(), stopId, tripId]
+  });
+
+  await touchTrip(tripId);
+}
+
 export async function moveTripStop(tripId: string, stopId: string, direction: 'up' | 'down') {
   const stops = await listTripStops(tripId);
   const index = stops.findIndex((stop) => stop.id === stopId);

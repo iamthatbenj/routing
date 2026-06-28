@@ -137,6 +137,7 @@ p {
 .primary,
 .secondary,
 .reorder button,
+.stop-details-form button,
 .save-route {
   border: 0;
   border-radius: 999px;
@@ -223,7 +224,39 @@ p {
 
 .stop-copy {
   display: grid;
-  gap: 0.2rem;
+  gap: 0.45rem;
+}
+
+.stop-details-form {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.stop-details-form label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stop-details-form div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.stop-details-form input {
+  min-width: min(18rem, 100%);
+  flex: 1;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+}
+
+.stop-details-form button {
+  color: var(--brand-strong);
+  background: var(--sky);
 }
 
 .stop-copy strong {
