@@ -4,7 +4,7 @@ import { latestSearchForLeg, listRouteSearchesForTrip, startRouteSearch } from '
 import type { Directness } from '$lib/server/route-searches';
 import { deleteSavedRoute, listSavedRoutesForTrip, markSavedRoutePreferred, renameSavedRoute, saveRouteOption } from '$lib/server/saved-routes';
 import { findRoutingPlaceBySearchLabel, listRoutingPlaces } from '$lib/server/routing-places';
-import { addTripStop, deriveLegs, listTripStops, moveTripStop, updateTripStopDetails } from '$lib/server/trip-stops';
+import { addTripStop, deleteTripStop, deriveLegs, listTripStops, moveTripStop, updateTripStopDetails } from '$lib/server/trip-stops';
 import { findTripByEditToken } from '$lib/server/trips';
 
 async function loadEditableTrip(token: string) {
@@ -87,6 +87,19 @@ export const actions = {
     }
 
     await updateTripStopDetails(trip.id, stopId, typeof details === 'string' ? details : '');
+    return { success: true };
+  },
+
+  deleteStop: async ({ request, params }) => {
+    const trip = await loadEditableTrip(params.token);
+    const formData = await request.formData();
+    const stopId = formData.get('stopId');
+
+    if (typeof stopId !== 'string') {
+      return fail(400, { message: 'Choose a Trip Stop to delete.' });
+    }
+
+    await deleteTripStop(trip.id, stopId);
     return { success: true };
   },
 
