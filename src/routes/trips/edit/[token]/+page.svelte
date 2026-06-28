@@ -183,9 +183,19 @@
             <div class="stop-copy">
               <strong>{stop.routingPlace.name}</strong>
               <p>{stop.routingPlace.region} · {stop.routingPlace.kind.replaceAll('_', ' ')}</p>
-              {#if stop.details}
-                <p>{stop.details}</p>
-              {/if}
+              <form class="stop-details-form" method="POST" action="?/updateStopDetails" aria-label={`Edit details for ${stop.routingPlace.name}`}>
+                <input type="hidden" name="stopId" value={stop.id} />
+                <label for={`stop-details-${stop.id}`}>Trip Stop details</label>
+                <div>
+                  <input
+                    id={`stop-details-${stop.id}`}
+                    name="details"
+                    value={stop.details}
+                    placeholder="Optional lodging area or notes"
+                  />
+                  <button type="submit">Save</button>
+                </div>
+              </form>
             </div>
             <form class="reorder" method="POST" action="?/moveStop" aria-label={`Reorder ${stop.routingPlace.name}`}>
               <input type="hidden" name="stopId" value={stop.id} />

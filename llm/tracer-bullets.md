@@ -379,6 +379,8 @@ A user can understand whether a Route Search succeeded, partially succeeded, or 
 
 ## TB13 — Multi-leg Trip workflow
 
+Status: Complete as of 2026-06-27. GitHub issues are closed and the work is at a stopping point.
+
 Goal: make Routing support a Trip with multiple Legs as a coherent planning workflow.
 
 A user can add 3+ Trip Stops, compare routes per Leg, select a Preferred Saved Route for each Leg, and understand the overall Trip plan.
@@ -409,3 +411,33 @@ A user can add 3+ Trip Stops, compare routes per Leg, select a Preferred Saved R
 - Lodging/date model.
 - Multi-leg map overview across the entire Trip.
 - Export whole Trip to navigation.
+
+## TB14 — Trip Stop management and Leg stability
+
+Goal: make multi-leg Trips maintainable after initial creation by letting travelers edit and remove Trip Stops while clearly preserving or invalidating Leg planning context.
+
+A traveler can edit Trip Stop details, delete unwanted Trip Stops, reorder stops, and still understand which current Legs have Route Searches, Saved Routes, Preferred Saved Routes, or need new planning work.
+
+### Scope
+
+- Edit Trip Stop details without changing the Routing Place or order.
+- Delete Trip Stops with clear messaging about adjacent Leg impact.
+- Prevent stale Saved Routes from appearing as current choices after Trip Stop deletion or reordering.
+- Improve current Leg states after Trip Stop changes.
+- Review single-Leg and multi-Leg Trip Stop management workflows.
+
+### GitHub issues
+
+1. [TB14.01 Edit Trip Stop details](https://github.com/iamthatbenj/routing/issues/125)
+2. [TB14.02 Delete Trip Stops with Leg impact messaging](https://github.com/iamthatbenj/routing/issues/126)
+3. [TB14.03 Guard Saved Routes when Trip Stop order changes](https://github.com/iamthatbenj/routing/issues/127)
+4. [TB14.04 Improve Trip Stop and Leg changed-state UI](https://github.com/iamthatbenj/routing/issues/128)
+5. [TB14.05 Trip Stop management workflow review](https://github.com/iamthatbenj/routing/issues/129)
+
+### Deferred from TB14
+
+- Drag-and-drop Trip Stop reordering.
+- Lodging/date model.
+- Day-by-day itinerary planning.
+- Whole-trip optimization.
+- Account/auth system.
