@@ -98,6 +98,28 @@ export async function updateTripStopDetails(tripId: string, stopId: string, deta
   await touchTrip(tripId);
 }
 
+export async function deleteTripStop(tripId: string, stopId: string) {
+  const stops = await listTripStops(tripId);
+  const deletedIndex = stops.findIndex((stop) => stop.id === stopId);
+
+  if (deletedIndex < 0) {
+    return;
+  }
+
+  await db.batch([
+    {
+      sql: 'DELETE FROM trip_stops WHERE id = ? AND trip_id = ?',
+      args: [stopId, tripId]
+    },
+    ...stops.slice(deletedIndex + 1).map((stop) => ({
+      sql: 'UPDATE trip_stops SET position = ? WHERE id = ? AND trip_id = ?',
+      args: [stop.position - 1, stop.id, tripId]
+    }))
+  ]);
+
+  await touchTrip(tripId);
+}
+
 export async function moveTripStop(tripId: string, stopId: string, direction: 'up' | 'down') {
   const stops = await listTripStops(tripId);
   const index = stops.findIndex((stop) => stop.id === stopId);
