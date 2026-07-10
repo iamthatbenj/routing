@@ -2,9 +2,11 @@
   import './+page.css';
   import MapShell from '$lib/components/MapShell.svelte';
   import { deriveLegPlanningState } from '$lib/leg-planning-state';
+  import { deriveTripPlanningCopy } from '$lib/trip-planning-copy';
 
   let { data, form } = $props();
   let mapLeg = $derived(data.legs.find((leg) => leg.routeSearch?.options.length));
+  let tripPlanningCopy = $derived(deriveTripPlanningCopy(data.stops.length, data.legs.length));
   let selectedMapRouteId = $state<string | undefined>();
 
   $effect(() => {
@@ -133,11 +135,8 @@
   <section class="planner" aria-labelledby="trip-stops-heading">
     <div class="section-heading">
       <p class="eyebrow">Trip Stops</p>
-      <h2 id="trip-stops-heading">Build the Denver → Moab Leg</h2>
-      <p>
-        Add Routing Places from the app-owned gazetteer. Adjacent Trip Stops automatically form
-        Legs for route comparison.
-      </p>
+      <h2 id="trip-stops-heading">{tripPlanningCopy.tripStopsHeading}</h2>
+      <p>{tripPlanningCopy.tripStopsSummary}</p>
     </div>
 
     {#if form?.message}
@@ -150,7 +149,7 @@
         id="routing-place"
         name="routingPlace"
         list="routing-places"
-        placeholder="Try Denver, Colorado"
+        placeholder={tripPlanningCopy.routingPlacePlaceholder}
         autocomplete="off"
       />
       <datalist id="routing-places">
@@ -167,8 +166,8 @@
 
     {#if data.stops.length === 0}
       <div class="empty-state">
-        <strong>No Trip Stops yet</strong>
-        <p>Add Denver, then Moab, to create the first Leg.</p>
+        <strong>{tripPlanningCopy.emptyTripStopsTitle}</strong>
+        <p>{tripPlanningCopy.emptyTripStopsBody}</p>
       </div>
     {:else}
       <ol class="stops" aria-label="Trip Stops">
@@ -256,8 +255,8 @@
 
     {#if data.legs.length === 0}
       <div class="empty-state">
-        <strong>No Leg yet</strong>
-        <p>Add at least two Trip Stops to derive the first Leg.</p>
+        <strong>{tripPlanningCopy.emptyLegTitle}</strong>
+        <p>{tripPlanningCopy.emptyLegBody}</p>
       </div>
     {:else}
       <div class="leg-list">
@@ -279,10 +278,7 @@
               <p>{planningState.summary}</p>
               <small>{planningState.action}</small>
             </section>
-            <p>
-              Compare real route geometry from OpenRouteService. Balanced is the default Directness
-              for this tracer bullet.
-            </p>
+            <p>{tripPlanningCopy.routeSearchSummary}</p>
 
             <form class="route-search-form" method="POST" action="?/startRouteSearch">
               <input type="hidden" name="fromStopId" value={leg.from.id} />
@@ -574,12 +570,9 @@
   {/if}
 
     <div class="section-heading">
-      <p class="eyebrow">Map preview</p>
-      <h2 id="map-heading">Corridors will land here</h2>
-      <p>
-        This MapLibre foundation keeps the Trip page card-first while making room for TB2 route
-        geometry, Highlights, and Shaping Stops.
-      </p>
+      <p class="eyebrow">Map context</p>
+      <h2 id="map-heading">{tripPlanningCopy.mapHeading}</h2>
+      <p>{tripPlanningCopy.mapSummary}</p>
     </div>
     {#if mapLeg}
       <MapShell
