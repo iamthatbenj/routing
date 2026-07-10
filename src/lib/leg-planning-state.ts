@@ -71,7 +71,7 @@ export function deriveLegPlanningState(leg: LegPlanningStateInput): LegPlanningS
       kind: 'fallback_corridors_only',
       label: 'Fallback Corridors only',
       summary: 'This current Leg has approximate fallback Corridors, but no provider-backed Saved Route for Leg Handoff.',
-      action: 'Try the Route Search again before saving a Preferred Saved Route for navigation handoff.'
+      action: 'Try the Route Search again before saving a Preferred Saved Route for Leg Handoff.'
     };
   }
 

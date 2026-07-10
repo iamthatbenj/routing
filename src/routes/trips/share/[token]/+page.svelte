@@ -44,17 +44,17 @@
       This is a read-only Trip share link. You can review the Trip context and Preferred Saved
       Routes, but you cannot edit Trip Stops or change Saved Routes from here.
     </p>
-    <a href="/">Back to planner</a>
+    <a href="/">Back to Routing home</a>
   </section>
 
   {#if data.stops.length >= 2}
-    <section class="share-card share-itinerary" aria-labelledby="share-itinerary-heading">
-      <p class="eyebrow">Trip itinerary</p>
-      <h2 id="share-itinerary-heading">Whole Trip at a glance</h2>
-      <ol class="itinerary-list" aria-label="Shared Trip itinerary">
+    <section class="share-card share-summary" aria-labelledby="share-summary-heading">
+      <p class="eyebrow">Trip summary</p>
+      <h2 id="share-summary-heading">Whole Trip at a glance</h2>
+      <ol class="trip-summary-list" aria-label="Shared Trip summary">
         {#each data.stops as stop, index}
-          <li class="itinerary-stop">
-            <span class="itinerary-index">Stop {index + 1}</span>
+          <li class="trip-summary-stop">
+            <span class="trip-summary-index">Stop {index + 1}</span>
             <strong>{stop.routingPlace.name}</strong>
             <small>{stop.routingPlace.region} · {stop.routingPlace.kind.replaceAll('_', ' ')}</small>
             {#if stop.details}
@@ -63,11 +63,11 @@
           </li>
           {#if index < data.legs.length}
             {@const leg = data.legs[index]}
-            <li class:missing={!leg.preferredSavedRoute} class="itinerary-leg">
-              <span class="itinerary-index">Leg {index + 1}</span>
+            <li class:missing={!leg.preferredSavedRoute} class="trip-summary-leg">
+              <span class="trip-summary-index">Leg {index + 1}</span>
               <div>
                 <strong>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</strong>
-                <ul class="itinerary-leg-stops" aria-label={`Stop details for shared Leg ${index + 1}`}>
+                <ul class="trip-summary-leg-stops" aria-label={`Stop details for shared Leg ${index + 1}`}>
                   <li>
                     <span>From</span>
                     <p>{leg.from.routingPlace.region}{leg.from.details ? ` · ${leg.from.details}` : ''}</p>
@@ -154,18 +154,18 @@
                     />
                   </div>
                 {/if}
-                <section class="handoff-context" aria-label={`Navigation handoff for ${leg.preferredSavedRoute.title}`}>
-                  <p class="eyebrow">Navigation Handoff</p>
+                <section class="handoff-context" aria-label={`Leg Handoff context for ${leg.preferredSavedRoute.title}`}>
+                  <p class="eyebrow">Leg Handoff</p>
                   <h4>Open this Preferred Saved Route</h4>
                   <p>{leg.geometryWarning}</p>
                   <div class="button-row">
                     <a class="primary-link" href={leg.googleMapsUrl} target="_blank" rel="noreferrer">Google Maps with Shaping Stops</a>
-                    <a class="secondary-link" href={leg.appleMapsUrl} target="_blank" rel="noreferrer">Apple Maps endpoints only</a>
+                    <a class="secondary-link" href={leg.appleMapsUrl} target="_blank" rel="noreferrer">Apple Maps Endpoints only</a>
                   </div>
                   {#if leg.preferredSavedRoute.snapshot.handoffStops.length}
                     <p>
-                      Google Maps receives the Shaping Stops as waypoints. Apple Maps web links do
-                      not reliably support intermediate stops, so the Apple Maps link opens endpoints only.
+                      Google Maps receives the Shaping Stops as provider waypoints. Apple Maps web links do
+                      not reliably support intermediate stops, so the Apple Maps link opens Endpoints only.
                     </p>
                   {/if}
                 </section>
@@ -183,7 +183,7 @@
                     <dd>{formatDistance(leg.preferredSavedRoute.snapshot.distanceMeters)}</dd>
                   </div>
                   <div>
-                    <dt>Handoff</dt>
+                    <dt>Leg Handoff</dt>
                     <dd>{shapingStopCountLabel(leg.preferredSavedRoute.snapshot.handoffStops.length)}</dd>
                   </div>
                 </dl>

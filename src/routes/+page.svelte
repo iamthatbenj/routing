@@ -115,7 +115,7 @@
         <p class="eyebrow">Maps and sharing</p>
         <h2>Context stays with the route</h2>
         <p>
-          MapLibre-compatible maps now show Route Option geometry, Highlights, endpoints, and Shaping
+          MapLibre-compatible maps now show Route Option geometry, Highlights, Endpoints, and Shaping
           Stops where route context is available. Read-only share links let others review the Trip
           without exposing the private edit link.
         </p>

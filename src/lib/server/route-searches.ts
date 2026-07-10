@@ -341,7 +341,7 @@ function buildExplanations(scoredHighlights: Highlight[], endpointContext: Highl
 
     if (endpointContext.length > 0) {
       explanations.push(
-        `Destination context, not scored: ${endpointContext
+        `Endpoint context, not scored: ${endpointContext
           .slice(0, 2)
           .map((highlight) => highlight.name)
           .join(', ')}.`
@@ -364,7 +364,7 @@ function buildExplanations(scoredHighlights: Highlight[], endpointContext: Highl
 
   if (endpointContext.length > 0) {
     explanations.push(
-      `Destination context, not scored: ${endpointContext
+      `Endpoint context, not scored: ${endpointContext
         .slice(0, 2)
         .map((highlight) => highlight.name)
         .join(', ')}.`

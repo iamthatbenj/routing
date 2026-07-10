@@ -455,7 +455,7 @@
         .setHTML(
           `<strong>${escapeHtml(String(feature.properties.name))}</strong><br>` +
             `${escapeHtml(category)} · ${escapeHtml(String(feature.properties.visitEffort))}` +
-            (endpointContext ? '<br><em>Destination context, not scored</em>' : '')
+            (endpointContext ? '<br><em>Endpoint context, not scored</em>' : '')
         )
         .addTo(activeMap);
     });
@@ -574,7 +574,7 @@
       {#if renderedHighlightCount > 0}
         <span><i class="legend-highlight"></i> Highlight</span>
         <span><i class="legend-scenic"></i> Scenic Segment</span>
-        <span><i class="legend-context"></i> Destination context</span>
+        <span><i class="legend-context"></i> Endpoint context</span>
       {/if}
     </div>
   {/if}

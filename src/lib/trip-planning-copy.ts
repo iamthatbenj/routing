@@ -29,8 +29,8 @@ export function deriveTripPlanningCopy(stopCount: number, legCount: number): Tri
     mapHeading: legCount > 0 ? 'Current Leg map context' : 'Trip map context',
     mapSummary:
       legCount > 0
-        ? 'Maps show current Leg Route Options, Highlights, endpoints, and Shaping Stops when route context is available.'
-        : 'Add Trip Stops and run a Route Search to show Route Options, Highlights, endpoints, and Shaping Stops on the map.'
+        ? 'Maps show current Leg Route Options, Highlights, Endpoints, and Shaping Stops when route context is available.'
+        : 'Add Trip Stops and run a Route Search to show Route Options, Highlights, Endpoints, and Shaping Stops on the map.'
   };
 }
 
