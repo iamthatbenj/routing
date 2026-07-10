@@ -96,6 +96,12 @@
     if (leg.routeSearch.options.length) return 'Route Options available';
     return `Route Search ${leg.routeSearch.status}`;
   }
+
+  function confirmTripStopDelete(event: SubmitEvent) {
+    if (!window.confirm('Delete this Trip Stop? Adjacent Legs and their Route Search or Saved Route context may change.')) {
+      event.preventDefault();
+    }
+  }
 </script>
 
 <svelte:head>
@@ -183,28 +189,45 @@
             <div class="stop-copy">
               <strong>{stop.routingPlace.name}</strong>
               <p>{stop.routingPlace.region} · {stop.routingPlace.kind.replaceAll('_', ' ')}</p>
-              <form class="stop-details-form" method="POST" action="?/updateStopDetails" aria-label={`Edit details for ${stop.routingPlace.name}`}>
+              {#if stop.details}
+                <p class="stop-details-text">{stop.details}</p>
+              {:else}
+                <p class="stop-details-empty">No Trip Stop details yet.</p>
+              {/if}
+              <details class="stop-details-editor">
+                <summary>{stop.details ? 'Edit details' : 'Add details'}</summary>
+                <form class="stop-details-form" method="POST" action="?/updateStopDetails" aria-label={`Edit details for ${stop.routingPlace.name}`}>
+                  <input type="hidden" name="stopId" value={stop.id} />
+                  <label for={`stop-details-${stop.id}`}>Trip Stop details</label>
+                  <div>
+                    <input
+                      id={`stop-details-${stop.id}`}
+                      name="details"
+                      value={stop.details}
+                      placeholder="Optional lodging area or notes"
+                    />
+                    <button type="submit">Save</button>
+                  </div>
+                </form>
+              </details>
+            </div>
+            <div class="stop-controls">
+              <form class="reorder" method="POST" action="?/moveStop" aria-label={`Reorder ${stop.routingPlace.name}`}>
                 <input type="hidden" name="stopId" value={stop.id} />
-                <label for={`stop-details-${stop.id}`}>Trip Stop details</label>
-                <div>
-                  <input
-                    id={`stop-details-${stop.id}`}
-                    name="details"
-                    value={stop.details}
-                    placeholder="Optional lodging area or notes"
-                  />
-                  <button type="submit">Save</button>
-                </div>
+                <button type="submit" name="direction" value="up" disabled={index === 0}>↑</button>
+                <button type="submit" name="direction" value="down" disabled={index === data.stops.length - 1}>↓</button>
+              </form>
+              <form class="delete-stop" method="POST" action="?/deleteStop" aria-label={`Delete ${stop.routingPlace.name}`} onsubmit={confirmTripStopDelete}>
+                <input type="hidden" name="stopId" value={stop.id} />
+                <button type="submit">
+                  Delete
+                </button>
               </form>
             </div>
-            <form class="reorder" method="POST" action="?/moveStop" aria-label={`Reorder ${stop.routingPlace.name}`}>
-              <input type="hidden" name="stopId" value={stop.id} />
-              <button type="submit" name="direction" value="up" disabled={index === 0}>↑</button>
-              <button type="submit" name="direction" value="down" disabled={index === data.stops.length - 1}>↓</button>
-            </form>
           </li>
         {/each}
       </ol>
+      <p class="trip-stop-warning">Deleting a Trip Stop can remove or change adjacent Legs and their Route Search or Saved Route context.</p>
     {/if}
   </section>
 

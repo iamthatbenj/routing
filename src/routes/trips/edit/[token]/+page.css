@@ -138,6 +138,7 @@ p {
 .secondary,
 .reorder button,
 .stop-details-form button,
+.delete-stop button,
 .save-route {
   border: 0;
   border-radius: 999px;
@@ -206,7 +207,7 @@ p {
 
 .stops li {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   gap: 0.8rem;
   align-items: start;
 }
@@ -225,11 +226,35 @@ p {
 .stop-copy {
   display: grid;
   gap: 0.45rem;
+  min-width: 0;
+}
+
+.stop-details-text,
+.stop-details-empty {
+  font-size: 0.95rem;
+}
+
+.stop-details-empty {
+  color: color-mix(in srgb, var(--muted), white 18%);
+  font-style: italic;
+}
+
+.stop-details-editor {
+  max-width: 34rem;
+}
+
+.stop-details-editor summary {
+  display: inline-flex;
+  cursor: pointer;
+  color: var(--brand-strong);
+  font-size: 0.88rem;
+  font-weight: 900;
 }
 
 .stop-details-form {
   display: grid;
   gap: 0.35rem;
+  margin-top: 0.5rem;
 }
 
 .stop-details-form label {
@@ -263,9 +288,39 @@ p {
   font-size: 1.05rem;
 }
 
+.stop-controls {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 2;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .reorder {
   display: flex;
   gap: 0.3rem;
+}
+
+.delete-stop {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: end;
+}
+
+.delete-stop button {
+  padding: 0.65rem 0.9rem;
+  color: #8a2f20;
+  background: #fce7df;
+}
+
+.trip-stop-warning {
+  border: 1px solid #f4c7b5;
+  border-radius: 1rem;
+  padding: 0.75rem 0.9rem;
+  color: #8a2f20;
+  background: #fff4ef;
+  font-size: 0.9rem;
 }
 
 .reorder button {
