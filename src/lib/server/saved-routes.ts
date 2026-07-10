@@ -106,7 +106,7 @@ export async function saveRouteOption({
   }
 
   if (routeOption.source.startsWith('fallback-')) {
-    throw new Error('Approximate fallback Corridors cannot be saved for navigation handoff.');
+    throw new Error('Approximate fallback Corridors cannot be saved for Leg Handoff.');
   }
 
   const existingCount = await countSavedRoutesForLeg(tripId, leg.from.id, leg.to.id);

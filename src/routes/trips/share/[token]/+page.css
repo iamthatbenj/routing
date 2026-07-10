@@ -88,7 +88,7 @@ a,
   background: var(--sky);
 }
 
-.itinerary-list,
+.trip-summary-list,
 .stops,
 .leg-list {
   display: grid;
@@ -103,8 +103,8 @@ a,
   align-items: start;
 }
 
-.itinerary-stop,
-.itinerary-leg {
+.trip-summary-stop,
+.trip-summary-leg {
   display: grid;
   gap: 0.25rem;
   border: 1px solid var(--line);
@@ -113,34 +113,34 @@ a,
   background: white;
 }
 
-.itinerary-stop {
+.trip-summary-stop {
   border-left: 0.35rem solid var(--brand);
 }
 
-.itinerary-leg {
+.trip-summary-leg {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   border-left: 0.35rem solid var(--accent);
   background: var(--accent-soft);
 }
 
-.itinerary-leg.missing {
+.trip-summary-leg.missing {
   border-left-color: var(--line);
   background: #f9f7f1;
 }
 
-.itinerary-leg > div {
+.trip-summary-leg > div {
   grid-column: 1;
   grid-row: 1 / span 2;
 }
 
-.itinerary-leg > .itinerary-index {
+.trip-summary-leg > .trip-summary-index {
   grid-column: 2;
   grid-row: 1;
   justify-self: end;
 }
 
-.itinerary-index {
+.trip-summary-index {
   color: var(--muted);
   font-size: 0.72rem;
   font-weight: 900;
@@ -148,19 +148,19 @@ a,
   text-transform: uppercase;
 }
 
-.itinerary-stop strong,
-.itinerary-leg strong {
+.trip-summary-stop strong,
+.trip-summary-leg strong {
   color: var(--ink);
 }
 
-.itinerary-stop small,
-.itinerary-leg small {
+.trip-summary-stop small,
+.trip-summary-leg small {
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 800;
 }
 
-.itinerary-leg-stops {
+.trip-summary-leg-stops {
   display: grid;
   gap: 0.25rem;
   margin: 0.45rem 0;
@@ -168,12 +168,12 @@ a,
   list-style: none;
 }
 
-.itinerary-leg-stops li {
+.trip-summary-leg-stops li {
   display: grid;
   gap: 0.05rem;
 }
 
-.itinerary-leg-stops span {
+.trip-summary-leg-stops span {
   color: var(--muted);
   font-size: 0.68rem;
   font-weight: 900;
@@ -181,14 +181,14 @@ a,
   text-transform: uppercase;
 }
 
-.itinerary-leg-stops p,
-.itinerary-stop p,
-.itinerary-leg p {
+.trip-summary-leg-stops p,
+.trip-summary-stop p,
+.trip-summary-leg p {
   margin: 0;
   font-size: 0.88rem;
 }
 
-.itinerary-leg a {
+.trip-summary-leg a {
   grid-column: 2;
   grid-row: 2;
   justify-self: end;
@@ -332,7 +332,7 @@ a,
     align-self: start;
   }
 
-  .share-itinerary,
+  .share-summary,
   .share-stops {
     grid-column: 1;
   }

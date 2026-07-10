@@ -78,12 +78,12 @@
     <h2 id="nav-heading">Open in your navigation app</h2>
     <div class="button-row">
       <a class="primary" href={data.googleMapsUrl} target="_blank" rel="noreferrer">Google Maps with Shaping Stops</a>
-      <a class="secondary" href={data.appleMapsUrl} target="_blank" rel="noreferrer">Apple Maps endpoints only</a>
+      <a class="secondary" href={data.appleMapsUrl} target="_blank" rel="noreferrer">Apple Maps Endpoints only</a>
     </div>
     {#if data.savedRoute.snapshot.handoffStops.length}
       <p>
-        Google Maps receives the Shaping Stops as waypoints. Apple Maps web links do not reliably
-        support intermediate stops, so this Apple Maps link opens endpoints only.
+        Google Maps receives the Shaping Stops as provider waypoints. Apple Maps web links do not reliably
+        support intermediate stops, so this Apple Maps link opens Endpoints only.
       </p>
       <ol class="manual-stops" aria-label="Stops to add manually in Apple Maps">
         <li>{data.savedRoute.snapshot.endpoints.from}</li>
@@ -150,7 +150,7 @@
               </li>
             {:else if reason.kind === 'endpoint_context'}
               <li class="context-only">
-                <span>Destination context</span>
+                <span>Endpoint context</span>
                 <strong>Not scored</strong>
                 <p>{reason.labels.slice(0, 2).join(', ')}</p>
               </li>
@@ -176,12 +176,12 @@
   <section class="handoff-card shaping-card" aria-labelledby="shaping-heading">
     <p class="eyebrow">Shaping Stops</p>
     <h2 id="shaping-heading">
-      {data.savedRoute.snapshot.handoffStops.length ? 'Included in the navigation handoff' : 'No Shaping Stops yet'}
+      {data.savedRoute.snapshot.handoffStops.length ? 'Included in the Leg Handoff' : 'No Shaping Stops yet'}
     </h2>
     {#if data.savedRoute.snapshot.handoffStops.length}
       <p>
-        These visible Shaping Stops are included where the navigation app supports waypoints. Remove
-        or change them in the navigation app if they do not match your plan.
+        These visible Shaping Stops are included where the navigation app supports provider waypoints. Remove
+        or change them in the navigation app if they do not match your intended Corridor.
       </p>
       <ol class="shaping-diagnostics">
         {#each data.savedRoute.snapshot.handoffStops as stop, index}

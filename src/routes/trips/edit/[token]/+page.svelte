@@ -382,7 +382,7 @@
                           <dd>{formatDistance(savedRoute.snapshot.distanceMeters)}</dd>
                         </div>
                         <div>
-                          <dt>Handoff</dt>
+                          <dt>Leg Handoff</dt>
                           <dd>{shapingStopCountLabel(savedRoute.snapshot.handoffStops.length)}</dd>
                         </div>
                       </dl>
@@ -472,7 +472,7 @@
                               </li>
                             {:else if reason.kind === 'endpoint_context'}
                               <li class="context-only">
-                                <span>Destination context</span>
+                                <span>Endpoint context</span>
                                 <strong>Not scored</strong>
                                 <p>{reason.labels.slice(0, 2).join(', ')}</p>
                               </li>
@@ -494,7 +494,7 @@
                       </ul>
                     {/if}
                     {#if isFallbackRoute(option.source)}
-                      <p class="fallback-save-note">Approximate fallback Corridors cannot be saved for this Leg's navigation Handoff.</p>
+                      <p class="fallback-save-note">Approximate fallback Corridors cannot be saved for this Leg Handoff.</p>
                     {:else}
                       <form method="POST" action="?/saveRoute">
                         <input type="hidden" name="fromStopId" value={leg.from.id} />
@@ -518,16 +518,16 @@
 
   <section class="map-panel" aria-labelledby="map-heading">
   {#if data.stops.length >= 2}
-    <section class="trip-itinerary" aria-labelledby="trip-itinerary-heading">
+    <section class="trip-summary" aria-labelledby="trip-summary-heading">
       <div class="section-heading">
-        <p class="eyebrow">Trip itinerary</p>
-        <h2 id="trip-itinerary-heading">Whole Trip at a glance</h2>
-        <p>Stops and selected routes interleaved in the order you will travel.</p>
+        <p class="eyebrow">Trip summary</p>
+        <h2 id="trip-summary-heading">Whole Trip at a glance</h2>
+        <p>Trip Stops and Preferred Saved Routes interleaved in travel order.</p>
       </div>
-      <ol class="itinerary-list" aria-label="Whole Trip itinerary">
+      <ol class="trip-summary-list" aria-label="Whole Trip summary">
         {#each data.stops as stop, index}
-          <li class="itinerary-stop">
-            <span class="itinerary-index">Stop {index + 1}</span>
+          <li class="trip-summary-stop">
+            <span class="trip-summary-index">Stop {index + 1}</span>
             <strong>{stop.routingPlace.name}</strong>
             <small>{stop.routingPlace.region} · {stop.routingPlace.kind.replaceAll('_', ' ')}</small>
           </li>
@@ -535,11 +535,11 @@
             {@const leg = data.legs[index]}
             {@const preferredRoute = preferredSavedRoute(leg)}
             {@const planningState = deriveLegPlanningState(leg)}
-            <li class:missing={!preferredRoute} class="itinerary-leg">
-              <span class="itinerary-index">Leg {index + 1}</span>
+            <li class:missing={!preferredRoute} class="trip-summary-leg">
+              <span class="trip-summary-index">Leg {index + 1}</span>
               <div>
                 <strong>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</strong>
-                <ul class="itinerary-leg-stops" aria-label={`Stop details for Leg ${index + 1}`}>
+                <ul class="trip-summary-leg-stops" aria-label={`Stop details for Leg ${index + 1}`}>
                   <li>
                     <span>From</span>
                     <p>{leg.from.routingPlace.region}{leg.from.details ? ` · ${leg.from.details}` : ''}</p>
@@ -558,7 +558,7 @@
                 {/if}
               </div>
               {#if preferredRoute}
-                <a href={`/trips/edit/${data.editToken}/handoff/${preferredRoute.id}`}>Handoff</a>
+                <a href={`/trips/edit/${data.editToken}/handoff/${preferredRoute.id}`}>Leg Handoff</a>
               {:else}
                 <a href={`#leg-${leg.id}`}>Choose route</a>
               {/if}
