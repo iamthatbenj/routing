@@ -443,3 +443,126 @@ A traveler can edit Trip Stop details, delete unwanted Trip Stops, reorder stops
 - Day-by-day itinerary planning.
 - Whole-trip optimization.
 - Account/auth system.
+
+## TB15 — Truthful product entry and core-loop confidence
+
+Status: Complete as of 2026-07-10. GitHub issues are closed and the work is at a stopping point.
+
+Goal: make the deployed app accurately describe the working product and protect the anonymous Trip planning loop with database-backed integration coverage.
+
+A new traveler can understand Routing, create a Trip, and move through private editing, read-only sharing, and Leg Handoff without obsolete tracer-bullet claims or conflicting domain language.
+
+### Scope
+
+- Real homepage entry into Trip creation.
+- Geography-neutral Trip and Leg UI.
+- Traveler-facing terminology audit against `CONTEXT.md`.
+- Anonymous edit/share boundary integration tests.
+- Persisted Trip Stop, Leg, Route Search, and Saved Route lifecycle integration tests.
+- Human-in-the-loop product truthfulness review.
+
+### GitHub issues
+
+1. [TB15.01 Replace the tracer homepage with real Trip creation](https://github.com/iamthatbenj/routing/issues/132)
+2. [TB15.02 Make Trip planning UI geography-neutral](https://github.com/iamthatbenj/routing/issues/133)
+3. [TB15.03 Align traveler-facing copy with the domain glossary](https://github.com/iamthatbenj/routing/issues/134)
+4. [TB15.04 Add anonymous Trip access integration coverage](https://github.com/iamthatbenj/routing/issues/135)
+5. [TB15.05 Add core Trip planning lifecycle integration coverage](https://github.com/iamthatbenj/routing/issues/136)
+6. [TB15.06 Product truthfulness and core-loop review](https://github.com/iamthatbenj/routing/issues/137)
+
+### Deferred from TB15
+
+- Broader Routing Place and Highlight coverage.
+- Account/auth system.
+- Editable collaboration or permission management.
+- Full browser automation against live routing and map providers.
+
+## TB16 — Source-backed geographic data foundation
+
+Goal: create a repeatable, bounded path for adding Routing Places and promoting source-backed Candidate Highlights into route-usable Highlights outside the original tracer region.
+
+Maintainers can import and review data for the Boston → Bar Harbor region without hand-writing fixture records or H3 cells, while travelers can search the imported Routing Places.
+
+### Scope
+
+- Human selection of second-region sources and promotion evidence.
+- Idempotent Routing Place import for the second region.
+- Candidate Highlight ingestion with source provenance.
+- Deliberate Candidate Highlight promotion.
+- Generated H3 indexes for promoted Highlights.
+- Human-in-the-loop regional data review.
+
+### GitHub issues
+
+1. [TB16.01 Choose second-region data sources and promotion evidence](https://github.com/iamthatbenj/routing/issues/138)
+2. [TB16.02 Import source-backed Routing Places for the second region](https://github.com/iamthatbenj/routing/issues/139)
+3. [TB16.03 Import source records as Candidate Highlights](https://github.com/iamthatbenj/routing/issues/140)
+4. [TB16.04 Promote reviewed candidates into route-usable Highlights](https://github.com/iamthatbenj/routing/issues/141)
+5. [TB16.05 Review second-region Routing Places and Highlights](https://github.com/iamthatbenj/routing/issues/142)
+
+### Deferred from TB16
+
+- Nationwide Highlight ingestion.
+- Automatic promotion without human evidence review.
+- Full Candidate Highlight administration UI.
+- Continuous background source synchronization.
+
+## TB17 — Second-region Interesting Route proof
+
+Goal: prove that the Interesting Route mechanism generalizes by producing locally relevant Corridors for Boston → Bar Harbor without contaminating either tracer region with the other's Anchors or Highlights.
+
+A traveler can compare a real fastest baseline and meaningful second-region Interesting Routes generated through the same Route Search, scoring, saving, and Handoff flow used by Denver → Moab.
+
+### Scope
+
+- Geographically relevant Anchor selection.
+- Real Boston → Bar Harbor provider routing.
+- Second-region Corridor deduplication, Highlight scoring, and explanations.
+- Deterministic two-region Route Search integration coverage.
+- Human-in-the-loop route-quality review across both regions.
+
+### GitHub issues
+
+1. [TB17.01 Select geographically relevant Anchors](https://github.com/iamthatbenj/routing/issues/143)
+2. [TB17.02 Generate Route Options for Boston to Bar Harbor](https://github.com/iamthatbenj/routing/issues/144)
+3. [TB17.03 Score and explain second-region Route Options](https://github.com/iamthatbenj/routing/issues/145)
+4. [TB17.04 Add two-region route-generation regressions](https://github.com/iamthatbenj/routing/issues/146)
+5. [TB17.05 Review Interesting Route quality across two regions](https://github.com/iamthatbenj/routing/issues/147)
+
+### Deferred from TB17
+
+- Nationwide route-quality claims.
+- Full production routing-provider commitment.
+- Automatic route-quality evaluation without human review.
+- Seasonal access and closure constraints.
+
+## TB18 — Directness and Constrained Route Options
+
+Goal: make Directness affect candidate generation and Route Option selection in a way that matches traveler expectations, while retaining useful out-of-expectation candidates as clearly cautioned Constrained Route Options.
+
+A traveler choosing Direct, Balanced, or Adventurous sees an explainably different comparison and can distinguish Interest Score from Directness constraints across both tracer regions.
+
+### Scope
+
+- Human definition of operational Directness expectations.
+- Structured Constrained Route Option assessment and explanation.
+- Directness-aware Anchor selection.
+- Directness-aware primary Route Option selection.
+- Two-region Directness integration coverage.
+- Human-in-the-loop behavior review.
+
+### GitHub issues
+
+1. [TB18.01 Define operational Directness expectations](https://github.com/iamthatbenj/routing/issues/148)
+2. [TB18.02 Assess and explain Constrained Route Options](https://github.com/iamthatbenj/routing/issues/149)
+3. [TB18.03 Make Anchor selection Directness-aware](https://github.com/iamthatbenj/routing/issues/150)
+4. [TB18.04 Make Route Option selection Directness-aware](https://github.com/iamthatbenj/routing/issues/151)
+5. [TB18.05 Add two-region Directness regressions](https://github.com/iamthatbenj/routing/issues/152)
+6. [TB18.06 Review Directness across both tracer regions](https://github.com/iamthatbenj/routing/issues/153)
+
+### Deferred from TB18
+
+- Date-aware and seasonal constraints.
+- Ferry Segment constraints.
+- Traveler-configurable numeric Directness budgets.
+- Whole-Trip optimization across Legs.
