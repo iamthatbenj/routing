@@ -52,6 +52,16 @@
 }
 
 .hero-actions {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.hero-actions label {
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.hero-actions > div {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -67,40 +77,18 @@
 }
 
 .form-error {
-  flex-basis: 100%;
   color: #8a2f20 !important;
   font-weight: 800;
 }
 
-.primary,
-.secondary,
-.stop-form button,
-.directness button {
+.primary {
   border: 0;
   border-radius: 999px;
-  font-weight: 800;
-}
-
-.secondary {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-.primary,
-.secondary {
   padding: 0.9rem 1.1rem;
-}
-
-.primary {
   color: white;
   background: var(--brand);
   box-shadow: 0 12px 24px rgba(35, 99, 75, 0.22);
-}
-
-.secondary {
-  color: var(--brand-strong);
-  background: var(--sky);
+  font-weight: 800;
 }
 
 .workspace {
@@ -148,7 +136,7 @@
   font-weight: 900;
 }
 
-.stops {
+.workflow-list {
   display: grid;
   gap: 0.75rem;
   margin: 0;
@@ -156,118 +144,18 @@
   list-style: none;
 }
 
-.stops li {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.8rem;
-  align-items: start;
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  padding: 0.85rem;
-  background: var(--surface-strong);
-}
-
-.stop-index {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  color: white;
-  background: var(--brand);
-  font-weight: 900;
-}
-
-.stops strong {
-  display: block;
-  margin-bottom: 0.15rem;
-}
-
-.stop-form {
+.workflow-list li,
+.example-card {
   display: grid;
   gap: 0.55rem;
-  border-radius: 1rem;
-  padding: 0.85rem;
-  background: var(--accent-soft);
-}
-
-.stop-form label {
-  font-weight: 900;
-}
-
-.stop-form div {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.stop-form input {
-  min-width: 0;
-  flex: 1;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 0.8rem 1rem;
-  background: white;
-}
-
-.stop-form button {
-  padding: 0 0.9rem;
-  color: white;
-  background: var(--accent);
-}
-
-.stop-form :disabled {
-  opacity: 0.72;
-  cursor: not-allowed;
-}
-
-.directness {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.4rem;
-  border-radius: 999px;
-  padding: 0.3rem;
-  background: #eee4d5;
-}
-
-.directness button {
-  padding: 0.7rem 0.35rem;
-  color: var(--muted);
-  background: transparent;
-  font-size: 0.82rem;
-}
-
-.directness .selected {
-  color: white;
-  background: var(--brand);
-}
-
-.route-options {
-  display: grid;
-  gap: 0.85rem;
-}
-
-.route-card {
-  display: grid;
-  gap: 0.75rem;
-  border: 1px solid rgba(35, 99, 75, 0.18);
-  border-radius: 1.2rem;
-  padding: 1rem;
+  border-radius: 1rem;
+  padding: 0.9rem;
   background: var(--surface-strong);
 }
 
-.route-card.baseline {
-  background: #f9f7f1;
-  box-shadow: none;
-}
-
-.route-card-heading {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.75rem;
-  align-items: start;
-}
-
-.route-card span {
+.workflow-list span,
+.example-card span {
   color: var(--accent);
   font-size: 0.75rem;
   font-weight: 900;
@@ -275,41 +163,10 @@
   letter-spacing: 0.08em;
 }
 
-.route-card h3 {
-  margin: 0.15rem 0 0;
-  font-size: 1.25rem;
-  letter-spacing: -0.035em;
-}
-
-.time {
-  text-align: right;
-}
-
-.time strong,
-.time small {
-  display: block;
-}
-
-.time small {
-  color: var(--muted);
-}
-
-.route-card ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.route-card li {
-  border-radius: 999px;
-  padding: 0.35rem 0.55rem;
-  color: var(--brand-strong);
-  background: var(--sky);
-  font-size: 0.82rem;
-  font-weight: 800;
+.workflow-list strong,
+.example-card strong {
+  color: var(--ink);
+  font-size: 1.08rem;
 }
 
 .map-preview {

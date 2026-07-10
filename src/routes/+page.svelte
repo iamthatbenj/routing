@@ -3,41 +3,32 @@
 
   let { form } = $props();
 
-  type TripStop = {
-    name: string;
-    detail: string;
+  type WorkflowStep = {
+    label: string;
+    title: string;
+    copy: string;
   };
 
-  type RouteOption = {
-    name: string;
-    badge: string;
-    duration: string;
-    delta: string;
-    summary: string;
-    highlights: string[];
-  };
-
-  const tripStops: TripStop[] = [
-    { name: 'Denver', detail: 'Start from the city you are leaving.' },
-    { name: 'Moab', detail: 'Add lodging or arrival notes later.' }
-  ];
-
-  const routeOptions: RouteOption[] = [
+  const workflowSteps: WorkflowStep[] = [
     {
-      name: 'Fastest baseline',
-      badge: 'Comparison',
-      duration: '5 hr 35 min',
-      delta: '+0 min',
-      summary: 'A practical baseline for deciding whether a more interesting corridor is worth it.',
-      highlights: ['Clear time comparison', 'Selectable later', 'No route personality yet']
+      label: '1 · Trip Stops',
+      title: 'Build a Trip from Routing Places',
+      copy: 'Start with city-level or travel-relevant Routing Places, then add optional Trip Stop details as your plans become clearer.'
     },
     {
-      name: 'Balanced scenic corridor',
-      badge: 'Recommended',
-      duration: '6 hr 20 min',
-      delta: '+45 min',
-      summary: 'A placeholder Interesting Route card showing how the Denver → Moab Leg will be compared.',
-      highlights: ['Glenwood Canyon', 'Colorado National Monument', 'Moab context']
+      label: '2 · Route Search',
+      title: 'Compare Route Options for each Leg',
+      copy: 'Each adjacent pair of Trip Stops becomes a Leg where you can compare a fastest baseline with more interesting Corridors.'
+    },
+    {
+      label: '3 · Saved Routes',
+      title: 'Choose a Preferred Saved Route',
+      copy: 'Save the Route Option you want to revisit, mark one Saved Route as preferred for the Leg, and keep alternatives for comparison.'
+    },
+    {
+      label: '4 · Leg Handoff',
+      title: 'Open navigation context when ready',
+      copy: 'Use the Leg Handoff page to open external navigation links while keeping the selected Corridor, Highlights, and Shaping Stops visible.'
     }
   ];
 </script>
@@ -46,108 +37,87 @@
   <title>Routing — Trip-first route planning</title>
   <meta
     name="description"
-    content="Plan Trips by comparing Interesting Routes between Routing Places."
+    content="Create a Trip, compare Interesting Routes for each Leg, save preferred routes, and share route context."
   />
 </svelte:head>
 
 <main class="shell">
   <section class="hero" aria-labelledby="page-title">
-    <p class="eyebrow">Tracer Bullet 1 · Denver to Moab</p>
+    <p class="eyebrow">Trip-first route planning</p>
     <div class="hero-copy">
-      <h1 id="page-title">Plan the Trip first. Pick the interesting Leg next.</h1>
+      <h1 id="page-title">Plan the Trip. Choose the interesting route.</h1>
       <p>
-        Routing helps travelers organize Trip Stops, compare Route Options for each Leg, and
-        hand off the preferred Saved Route to a navigation app when it is time to drive.
+        Routing helps travelers create Trips, add Trip Stops, compare Route Options for each Leg,
+        save a Preferred Saved Route, and share or hand off the route context when it is time to drive.
       </p>
     </div>
-    <form class="hero-actions" method="POST" action="?/createTrip" aria-label="Trip actions">
-      <label class="sr-only" for="trip-title">Trip title</label>
-      <input id="trip-title" name="title" value="Western parks sampler" />
-      <button class="primary" type="submit">Create Trip</button>
-      <a class="secondary" href="#open-edit-link">Open edit link</a>
+    <form class="hero-actions" method="POST" action="?/createTrip" aria-label="Create a Trip">
+      <label for="trip-title">Trip title</label>
+      <div>
+        <input id="trip-title" name="title" value="Western parks sampler" maxlength="90" />
+        <button class="primary" type="submit">Create Trip</button>
+      </div>
       {#if form?.message}
-        <p class="form-error">{form.message}</p>
+        <p class="form-error" role="alert">{form.message}</p>
       {/if}
     </form>
   </section>
 
-  <section class="workspace" aria-label="Trip planning workspace">
-    <article class="panel trip-panel">
+  <section class="workspace" aria-label="Routing workflow">
+    <article class="panel workflow-panel">
       <div class="panel-heading">
-        <p class="eyebrow">Trip</p>
-        <h2>Western parks sampler</h2>
-        <p>Anonymous Trip persistence lands next. This shell shows the mobile-first planning shape.</p>
+        <p class="eyebrow">How it works</p>
+        <h2>From Trip Stops to Leg Handoff</h2>
+        <p>
+          The app keeps planning Trip-first: add places, compare current Legs, save the route you intend
+          to use, then open a Leg Handoff with navigation links and context.
+        </p>
       </div>
 
-      <ol class="stops" aria-label="Trip Stops">
-        {#each tripStops as stop, index}
+      <ol class="workflow-list" aria-label="Trip planning workflow">
+        {#each workflowSteps as step}
           <li>
-            <span class="stop-index">{index + 1}</span>
+            <span>{step.label}</span>
             <div>
-              <strong>{stop.name}</strong>
-              <p>{stop.detail}</p>
+              <strong>{step.title}</strong>
+              <p>{step.copy}</p>
             </div>
           </li>
         {/each}
       </ol>
-
-      <form class="stop-form" aria-label="Add a Trip Stop placeholder">
-        <label for="routing-place">Add a Routing Place</label>
-        <div>
-          <input id="routing-place" value="" placeholder="Search cities and travel locales" disabled />
-          <button type="button" disabled>Add</button>
-        </div>
-        <p>Autocomplete is intentionally app-owned, not general geocoding.</p>
-      </form>
     </article>
 
-    <article class="panel leg-panel">
+    <article class="panel example-panel">
       <div class="panel-heading horizontal">
         <div>
-          <p class="eyebrow">Leg</p>
+          <p class="eyebrow">Example corridor</p>
           <h2>Denver → Moab</h2>
-          <p>Compare the fastest baseline against Interesting Route Options.</p>
+          <p>
+            The current demo data includes Denver, Moab, and nearby Colorado/Utah Highlights. It is an
+            example route-planning region, not the shape of every Trip.
+          </p>
         </div>
-        <span class="status">Balanced</span>
+        <span class="status">Example</span>
       </div>
 
-      <div class="directness" aria-label="Directness selector placeholder">
-        <button type="button">Direct</button>
-        <button class="selected" type="button">Balanced</button>
-        <button type="button">Adventurous</button>
-      </div>
-
-      <div class="route-options" aria-label="Route Options">
-        {#each routeOptions as option}
-          <section class:baseline={option.badge === 'Comparison'} class="route-card">
-            <div class="route-card-heading">
-              <div>
-                <span>{option.badge}</span>
-                <h3>{option.name}</h3>
-              </div>
-              <div class="time">
-                <strong>{option.duration}</strong>
-                <small>{option.delta}</small>
-              </div>
-            </div>
-            <p>{option.summary}</p>
-            <ul>
-              {#each option.highlights as highlight}
-                <li>{highlight}</li>
-              {/each}
-            </ul>
-          </section>
-        {/each}
+      <div class="example-card" aria-label="Example Route Search summary">
+        <span>Route Search</span>
+        <strong>Compare fastest and interesting Corridors</strong>
+        <p>
+          Route Options can include a fastest baseline, Anchor-generated alternatives, Interest Score
+          explanations, map context, Saved Routes, and Shaping Stops for Leg Handoff.
+        </p>
       </div>
     </article>
 
-    <aside class="map-preview" aria-label="Map preview placeholder">
+    <aside class="map-preview" aria-label="Current map capability">
       <div>
-        <p class="eyebrow">Map later in the process</p>
-        <h2>Route preview</h2>
+        <p class="eyebrow">Maps and sharing</p>
+        <h2>Context stays with the route</h2>
         <p>
-          The first slice keeps route choice card-first. MapLibre-compatible vector maps will fit here
-          when the route geometry work arrives.
+          MapLibre-compatible maps now show Route Option geometry, Highlights, endpoints, and Shaping
+          Stops where route context is available. Read-only share links let others review the Trip
+          without exposing the private edit link.
         </p>
       </div>
     </aside>
