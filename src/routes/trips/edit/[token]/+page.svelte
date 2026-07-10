@@ -282,6 +282,11 @@
               Compare real route geometry from OpenRouteService. Balanced is the default Directness
               for this tracer bullet.
             </p>
+            {#if !preferredRoute}
+              <p class="preferred-route-missing">
+                No Preferred Saved Route is selected for this current Leg. Run a Route Search or choose a Saved Route for this Leg before opening a Leg Handoff.
+              </p>
+            {/if}
 
             <form class="route-search-form" method="POST" action="?/startRouteSearch">
               <input type="hidden" name="fromStopId" value={leg.from.id} />

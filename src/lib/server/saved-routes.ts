@@ -61,6 +61,18 @@ function rowToSavedRoute(row: Record<string, unknown>): SavedRoute {
   };
 }
 
+export function savedRouteBelongsToLeg(savedRoute: SavedRoute, leg: Leg) {
+  return savedRoute.fromTripStopId === leg.from.id && savedRoute.toTripStopId === leg.to.id;
+}
+
+export function savedRouteBelongsToCurrentLeg(savedRoute: SavedRoute, legs: Leg[]) {
+  return legs.some((leg) => savedRouteBelongsToLeg(savedRoute, leg));
+}
+
+export function listSavedRoutesForLeg(savedRoutes: SavedRoute[], leg: Leg) {
+  return savedRoutes.filter((savedRoute) => savedRouteBelongsToLeg(savedRoute, leg));
+}
+
 export async function listSavedRoutesForTrip(tripId: string) {
   const result = await db.execute({
     sql: `

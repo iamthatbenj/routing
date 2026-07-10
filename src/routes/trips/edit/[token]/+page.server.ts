@@ -2,7 +2,7 @@ import { error, fail } from '@sveltejs/kit';
 import { listHighlights } from '$lib/server/highlights';
 import { latestSearchForLeg, listRouteSearchesForTrip, startRouteSearch } from '$lib/server/route-searches';
 import type { Directness } from '$lib/server/route-searches';
-import { deleteSavedRoute, listSavedRoutesForTrip, markSavedRoutePreferred, renameSavedRoute, saveRouteOption } from '$lib/server/saved-routes';
+import { deleteSavedRoute, findSavedRoute, listSavedRoutesForLeg, listSavedRoutesForTrip, markSavedRoutePreferred, renameSavedRoute, savedRouteBelongsToCurrentLeg, saveRouteOption } from '$lib/server/saved-routes';
 import { findRoutingPlaceBySearchLabel, listRoutingPlaces } from '$lib/server/routing-places';
 import { addTripStop, deleteTripStop, deriveLegs, listTripStops, moveTripStop, updateTripStopDetails } from '$lib/server/trip-stops';
 import { findTripByEditToken } from '$lib/server/trips';
@@ -34,9 +34,7 @@ export const load = async ({ params, url }) => {
     legs: legs.map((leg) => ({
       ...leg,
       routeSearch: latestSearchForLeg(routeSearches, leg) ?? null,
-      savedRoutes: savedRoutes.filter(
-        (savedRoute) => savedRoute.fromTripStopId === leg.from.id && savedRoute.toTripStopId === leg.to.id
-      )
+      savedRoutes: listSavedRoutesForLeg(savedRoutes, leg)
     }))
   };
 };
@@ -156,6 +154,10 @@ export const actions = {
       return fail(400, { message: 'That Route Option does not belong to this Trip.' });
     }
 
+    if (routeSearch.fromTripStopId !== leg.from.id || routeSearch.toTripStopId !== leg.to.id) {
+      return fail(400, { message: 'That Route Search no longer belongs to this current Leg.' });
+    }
+
     try {
       await saveRouteOption({ tripId: trip.id, leg, routeSearch, routeOptionId });
     } catch (error) {
@@ -174,6 +176,14 @@ export const actions = {
 
     if (typeof savedRouteId !== 'string') {
       return fail(400, { message: 'Choose a Saved Route to prefer.' });
+    }
+
+    const stops = await listTripStops(trip.id);
+    const currentLegs = deriveLegs(stops);
+    const savedRoute = await findSavedRoute(trip.id, savedRouteId);
+
+    if (!savedRoute || !savedRouteBelongsToCurrentLeg(savedRoute, currentLegs)) {
+      return fail(400, { message: 'That Saved Route no longer belongs to a current Leg.' });
     }
 
     await markSavedRoutePreferred(trip.id, savedRouteId);

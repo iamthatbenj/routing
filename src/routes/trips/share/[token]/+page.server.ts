@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { appleMapsUrl, googleMapsUrl, routeGeometryWarning } from '$lib/leg-handoff';
 import { listHighlights } from '$lib/server/highlights';
 import { findRoutingPlaceBySearchLabel } from '$lib/server/routing-places';
-import { listSavedRoutesForTrip, type HandoffStop } from '$lib/server/saved-routes';
+import { listSavedRoutesForLeg, listSavedRoutesForTrip, type HandoffStop } from '$lib/server/saved-routes';
 import { deriveLegs, listTripStops } from '$lib/server/trip-stops';
 import { findTripByShareToken } from '$lib/server/trips';
 
@@ -17,13 +17,7 @@ export const load = async ({ params }) => {
   const savedRoutes = await listSavedRoutesForTrip(trip.id);
   const legs = await Promise.all(
     deriveLegs(stops).map(async (leg) => {
-      const preferredSavedRoute =
-        savedRoutes.find(
-          (savedRoute) =>
-            savedRoute.fromTripStopId === leg.from.id &&
-            savedRoute.toTripStopId === leg.to.id &&
-            savedRoute.isPreferred
-        ) ?? null;
+      const preferredSavedRoute = listSavedRoutesForLeg(savedRoutes, leg).find((savedRoute) => savedRoute.isPreferred) ?? null;
 
       return {
         ...leg,
