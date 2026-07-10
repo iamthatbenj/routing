@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit';
 import { appleMapsUrl, googleMapsUrl, routeGeometryWarning } from '$lib/leg-handoff';
 import { findRoutingPlaceBySearchLabel } from '$lib/server/routing-places';
-import { findSavedRoute } from '$lib/server/saved-routes';
-import { listTripStops } from '$lib/server/trip-stops';
+import { findSavedRoute, savedRouteBelongsToCurrentLeg } from '$lib/server/saved-routes';
+import { deriveLegs, listTripStops } from '$lib/server/trip-stops';
 import { findTripByEditToken } from '$lib/server/trips';
 
 export const load = async ({ params, url }) => {
@@ -19,6 +19,12 @@ export const load = async ({ params, url }) => {
   }
 
   const tripStops = await listTripStops(trip.id);
+  const currentLegs = deriveLegs(tripStops);
+
+  if (!savedRouteBelongsToCurrentLeg(savedRoute, currentLegs)) {
+    throw error(404, 'Preferred Saved Route not found for a current Leg');
+  }
+
   const fromStop = tripStops.find((stop) => stop.id === savedRoute.fromTripStopId);
   const toStop = tripStops.find((stop) => stop.id === savedRoute.toTripStopId);
   const shapingStops = await Promise.all(
