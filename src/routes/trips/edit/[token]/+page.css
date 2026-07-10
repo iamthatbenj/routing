@@ -323,13 +323,35 @@ p {
   font-size: 0.9rem;
 }
 
-.preferred-route-missing {
+.leg-state-card {
+  display: grid;
+  gap: 0.25rem;
   border: 1px solid color-mix(in srgb, var(--brand), white 58%);
   border-radius: 1rem;
-  padding: 0.75rem 0.9rem;
+  padding: 0.8rem 0.9rem;
   color: var(--brand-strong);
-  background: color-mix(in srgb, var(--brand), white 88%);
-  font-size: 0.92rem;
+  background: color-mix(in srgb, var(--brand), white 90%);
+}
+
+.leg-state-card[data-state='ready_for_handoff'] {
+  border-color: rgba(35, 99, 75, 0.45);
+  background: var(--sky);
+}
+
+.leg-state-card[data-state='fallback_corridors_only'],
+.leg-state-card[data-state='route_search_failed'] {
+  border-color: rgba(217, 139, 43, 0.45);
+  background: var(--accent-soft);
+}
+
+.leg-state-card p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.94rem;
+}
+
+.leg-state-card small {
+  color: var(--muted);
   font-weight: 800;
 }
 
@@ -482,6 +504,11 @@ p {
 .leg-summary-list a.fallback {
   border-color: rgba(217, 139, 43, 0.45);
   background: var(--accent-soft);
+}
+
+.leg-summary-list a.needs-attention:not(.fallback) {
+  border-color: color-mix(in srgb, var(--brand), white 58%);
+  background: color-mix(in srgb, var(--brand), white 91%);
 }
 
 .leg-summary-list span,

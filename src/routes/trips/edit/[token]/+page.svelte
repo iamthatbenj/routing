@@ -1,6 +1,7 @@
 <script lang="ts">
   import './+page.css';
   import MapShell from '$lib/components/MapShell.svelte';
+  import { deriveLegPlanningState } from '$lib/leg-planning-state';
 
   let { data, form } = $props();
   let mapLeg = $derived(data.legs.find((leg) => leg.routeSearch?.options.length));
@@ -83,18 +84,6 @@
 
   function preferredSavedRoute<T extends { isPreferred: boolean }>(leg: { savedRoutes: T[] }) {
     return leg.savedRoutes.find((savedRoute) => savedRoute.isPreferred);
-  }
-
-  function legStatus(leg: {
-    routeSearch: null | { status: string; options: Array<{ source: string }>; diagnostics: { usedFallback: boolean } };
-    savedRoutes: Array<{ isPreferred: boolean }>;
-  }) {
-    if (preferredSavedRoute(leg)) return 'Preferred Saved Route selected';
-    if (!leg.routeSearch) return 'Ready for Route Search';
-    if (leg.routeSearch.status === 'failed') return 'Route Search failed';
-    if (leg.routeSearch.diagnostics.usedFallback || leg.routeSearch.options.some((option) => isFallbackRoute(option.source))) return 'Fallback Corridors available';
-    if (leg.routeSearch.options.length) return 'Route Options available';
-    return `Route Search ${leg.routeSearch.status}`;
   }
 
   function confirmTripStopDelete(event: SubmitEvent) {
@@ -243,10 +232,16 @@
       <nav class="leg-summary-list" aria-label="Leg navigation">
         {#each data.legs as leg, index}
           {@const preferredRoute = preferredSavedRoute(leg)}
-          <a href={`#leg-${leg.id}`} class:complete={Boolean(preferredRoute)} class:fallback={leg.routeSearch?.diagnostics.usedFallback}>
-            <span>Leg {index + 1}</span>
+          {@const planningState = deriveLegPlanningState(leg)}
+          <a
+            href={`#leg-${leg.id}`}
+            class:complete={planningState.kind === 'ready_for_handoff'}
+            class:fallback={planningState.kind === 'fallback_corridors_only'}
+            class:needs-attention={planningState.kind !== 'ready_for_handoff'}
+          >
+            <span>Leg {index + 1} · {planningState.label}</span>
             <strong>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</strong>
-            <small>{preferredRoute ? preferredRoute.title : legStatus(leg)}</small>
+            <small>{preferredRoute ? preferredRoute.title : planningState.action}</small>
           </a>
         {/each}
       </nav>
@@ -268,25 +263,26 @@
       <div class="leg-list">
         {#each data.legs as leg, index}
           {@const preferredRoute = preferredSavedRoute(leg)}
+          {@const planningState = deriveLegPlanningState(leg)}
           <article class="leg-card" id={`leg-${leg.id}`}>
             <div class="leg-card-heading">
               <div>
-                <span>Leg {index + 1} · {legStatus(leg)}</span>
+                <span>Leg {index + 1} · {planningState.label}</span>
                 <h3>{leg.from.routingPlace.name} → {leg.to.routingPlace.name}</h3>
               </div>
               {#if preferredRoute}
-                <a class="leg-handoff-link" href={`/trips/edit/${data.editToken}/handoff/${preferredRoute.id}`}>Open Handoff</a>
+                <a class="leg-handoff-link" href={`/trips/edit/${data.editToken}/handoff/${preferredRoute.id}`}>Open Leg Handoff</a>
               {/if}
             </div>
+            <section class="leg-state-card" data-state={planningState.kind} aria-label={`Current planning state for Leg ${index + 1}`}>
+              <strong>{planningState.label}</strong>
+              <p>{planningState.summary}</p>
+              <small>{planningState.action}</small>
+            </section>
             <p>
               Compare real route geometry from OpenRouteService. Balanced is the default Directness
               for this tracer bullet.
             </p>
-            {#if !preferredRoute}
-              <p class="preferred-route-missing">
-                No Preferred Saved Route is selected for this current Leg. Run a Route Search or choose a Saved Route for this Leg before opening a Leg Handoff.
-              </p>
-            {/if}
 
             <form class="route-search-form" method="POST" action="?/startRouteSearch">
               <input type="hidden" name="fromStopId" value={leg.from.id} />
@@ -542,6 +538,7 @@
           {#if index < data.legs.length}
             {@const leg = data.legs[index]}
             {@const preferredRoute = preferredSavedRoute(leg)}
+            {@const planningState = deriveLegPlanningState(leg)}
             <li class:missing={!preferredRoute} class="itinerary-leg">
               <span class="itinerary-index">Leg {index + 1}</span>
               <div>
@@ -561,7 +558,7 @@
                   <small>{formatDuration(preferredRoute.snapshot.durationSeconds)} · {formatDistance(preferredRoute.snapshot.distanceMeters)}</small>
                 {:else}
                   <p>No Preferred Saved Route selected yet.</p>
-                  <small>{legStatus(leg)}</small>
+                  <small>{planningState.label}</small>
                 {/if}
               </div>
               {#if preferredRoute}
