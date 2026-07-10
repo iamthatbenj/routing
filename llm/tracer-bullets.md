@@ -414,6 +414,8 @@ A user can add 3+ Trip Stops, compare routes per Leg, select a Preferred Saved R
 
 ## TB14 — Trip Stop management and Leg stability
 
+Status: Complete as of 2026-07-10. GitHub issues are closed and the work is at a stopping point.
+
 Goal: make multi-leg Trips maintainable after initial creation by letting travelers edit and remove Trip Stops while clearly preserving or invalidating Leg planning context.
 
 A traveler can edit Trip Stop details, delete unwanted Trip Stops, reorder stops, and still understand which current Legs have Route Searches, Saved Routes, Preferred Saved Routes, or need new planning work.
