@@ -12,6 +12,7 @@
     "db:import:routing-places": "node scripts/import-second-region-routing-places.mjs",
     "db:import:candidate-highlights": "node scripts/import-candidate-highlights.mjs",
     "db:promote:highlights": "node scripts/promote-reviewed-candidate-highlights.mjs",
+    "db:review:candidate-highlights": "node scripts/export-candidate-highlight-review.mjs",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",
     "lint": "npm run check"
