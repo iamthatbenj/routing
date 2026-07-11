@@ -1,0 +1,74 @@
+[
+  {
+    "geonameId": "4930956",
+    "name": "Boston",
+    "adminName1": "Massachusetts",
+    "featureCode": "PPLA2",
+    "latitude": 42.35843,
+    "longitude": -71.05977,
+    "population": 675647
+  },
+  {
+    "geonameId": "4948247",
+    "name": "Gloucester",
+    "adminName1": "Massachusetts",
+    "featureCode": "PPL",
+    "latitude": 42.61593,
+    "longitude": -70.66199,
+    "population": 30273
+  },
+  {
+    "geonameId": "4945952",
+    "name": "Salem",
+    "adminName1": "Massachusetts",
+    "featureCode": "PPL",
+    "latitude": 42.51954,
+    "longitude": -70.89672,
+    "population": 42869
+  },
+  {
+    "geonameId": "5091383",
+    "name": "Portsmouth",
+    "adminName1": "New Hampshire",
+    "featureCode": "PPL",
+    "latitude": 43.07176,
+    "longitude": -70.76255,
+    "population": 21530
+  },
+  {
+    "geonameId": "4975802",
+    "name": "Portland",
+    "adminName1": "Maine",
+    "featureCode": "PPL",
+    "latitude": 43.66147,
+    "longitude": -70.25533,
+    "population": 66881
+  },
+  {
+    "geonameId": "4977222",
+    "name": "Rockland",
+    "adminName1": "Maine",
+    "featureCode": "PPL",
+    "latitude": 44.10369,
+    "longitude": -69.10893,
+    "population": 7202
+  },
+  {
+    "geonameId": "4974194",
+    "name": "Camden",
+    "adminName1": "Maine",
+    "featureCode": "PPL",
+    "latitude": 44.2098,
+    "longitude": -69.06476,
+    "population": 3485
+  },
+  {
+    "geonameId": "4957320",
+    "name": "Bar Harbor",
+    "adminName1": "Maine",
+    "featureCode": "PPL",
+    "latitude": 44.38758,
+    "longitude": -68.2039,
+    "population": 5235
+  }
+]
