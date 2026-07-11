@@ -492,6 +492,20 @@ Maintainers can import and review data for the Boston → Bar Harbor region with
 - Generated H3 indexes for promoted Highlights.
 - Human-in-the-loop regional data review.
 
+### TB16.01 data decisions
+
+- Use **Boston → Bar Harbor** as the second-region proof corridor.
+- Use **GeoNames US populated places**, filtered to the second-region area, as the initial source-backed Routing Place import path. Allow a small curated regional addition file for travel-relevant locales that the source misses or represents poorly.
+- Use the existing **Turso POI database** as the first app-owned source for regional Candidate Highlights when it has relevant second-region POI coverage. Treat these records as Candidate Highlights until reviewed; do not let raw POI records influence Route Options directly.
+- Use bounded **NPS** data as a high-confidence Candidate Highlight source for Nature Highlights and Landmark Highlights in the second region, especially where it complements or validates existing Turso POI records.
+- Use bounded **OSM/Wikidata-derived tourism or scenic candidates** as supplemental sources only when records keep inspectable source identity and provenance; prefer reusing the existing Turso POI data over re-ingesting broad raw POI data.
+- Allow a small curated **Scenic Segment** seed list for second-region coastal or parkway drives when source data does not model the road experience well enough.
+- Retain source provenance for every imported Routing Place and Candidate Highlight: source system, source database or dataset, source record id, source URL when available, source name/category, imported coordinates, import timestamp or source version, and evidence fields used for review.
+- Promote a Candidate Highlight to a Highlight only after human review confirms travel relevance, stable identity, plausible coordinates, correct category, and sufficient evidence that it should influence route choice.
+- Do not ingest Food Highlights in TB16.
+- No ADR is needed yet: these are bounded tracer-bullet source choices, not an irreversible production data commitment.
+- No `CONTEXT.md` change is needed yet: the existing Candidate Highlight, Highlight, Routing Place, Scenic Segment, and Food Highlight terms cover these decisions.
+
 ### GitHub issues
 
 1. [TB16.01 Choose second-region data sources and promotion evidence](https://github.com/iamthatbenj/routing/issues/138)
