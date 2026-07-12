@@ -1,0 +1,147 @@
+{
+  "sourceSystem": "nps",
+  "sourceDatabase": "acad-nps-supplement",
+  "sourceUrl": "https://www.nps.gov/acad/",
+  "records": [
+    {
+      "sourceRecordId": "acad-acadia-national-park",
+      "name": "Acadia National Park",
+      "latitude": 44.3386,
+      "longitude": -68.2733,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://www.nps.gov/acad/",
+      "description": "Major coastal Nature Highlight around Mount Desert Island and nearby peninsulas.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "national park, rocky coast, mountains, carriage roads, ocean views"
+      }
+    },
+    {
+      "sourceRecordId": "acad-cadillac-mountain",
+      "name": "Cadillac Mountain",
+      "latitude": 44.3512,
+      "longitude": -68.2258,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://www.nps.gov/acad/planyourvisit/cadillac-mountain.htm",
+      "description": "High-elevation Acadia destination with broad views over Mount Desert Island and the Atlantic.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "summit views, sunrise, signature Acadia landscape"
+      }
+    },
+    {
+      "sourceRecordId": "acad-jordan-pond",
+      "name": "Jordan Pond",
+      "latitude": 44.3206,
+      "longitude": -68.2539,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://www.nps.gov/acad/planyourvisit/jordan-pond.htm",
+      "description": "Clear glacial pond and classic Acadia landscape below the Bubbles.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "pond views, hiking access, iconic Acadia scenery"
+      }
+    },
+    {
+      "sourceRecordId": "acad-park-loop-road",
+      "name": "Park Loop Road",
+      "latitude": 44.329,
+      "longitude": -68.205,
+      "sourceCategory": "scenic_segment",
+      "sourceUrl": "https://www.nps.gov/acad/planyourvisit/park-loop-road.htm",
+      "description": "Signature Acadia Scenic Segment connecting ocean, forest, mountain, and lake views.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "scenic drive, ocean overlooks, access to major Acadia stops"
+      }
+    },
+    {
+      "sourceRecordId": "acad-thunder-hole",
+      "name": "Thunder Hole",
+      "latitude": 44.3209,
+      "longitude": -68.1896,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.nps.gov/places/thunder-hole.htm",
+      "description": "Rocky shoreline Landmark known for wave action and ocean sound near Park Loop Road.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "coastal geology, wave action, quick stop along scenic drive"
+      }
+    },
+    {
+      "sourceRecordId": "acad-sand-beach",
+      "name": "Sand Beach",
+      "latitude": 44.3296,
+      "longitude": -68.1831,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://www.nps.gov/places/sand-beach.htm",
+      "description": "Small ocean beach between rocky headlands on the east side of Mount Desert Island.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "beach, cliffs, ocean access, Park Loop Road stop"
+      }
+    },
+    {
+      "sourceRecordId": "acad-otter-cliff",
+      "name": "Otter Cliff",
+      "latitude": 44.3112,
+      "longitude": -68.1886,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.nps.gov/places/otter-cliff.htm",
+      "description": "Prominent sea cliff and coastal Landmark along Acadia's ocean drive.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "sea cliffs, ocean views, photography, climbing context"
+      }
+    },
+    {
+      "sourceRecordId": "acad-bass-harbor-head-light-station",
+      "name": "Bass Harbor Head Light Station",
+      "latitude": 44.221,
+      "longitude": -68.3379,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.nps.gov/places/bass-harbor-head-light-station.htm",
+      "description": "Historic lighthouse Landmark on the southwestern side of Mount Desert Island.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "lighthouse, coastal views, historic landmark"
+      }
+    },
+    {
+      "sourceRecordId": "acad-schoodic-peninsula",
+      "name": "Schoodic Peninsula",
+      "latitude": 44.352,
+      "longitude": -68.061,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://www.nps.gov/acad/planyourvisit/schoodic.htm",
+      "description": "Quieter mainland section of Acadia with rocky coast, ocean views, and scenic driving.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "rocky coast, quieter Acadia experience, scenic drive"
+      }
+    },
+    {
+      "sourceRecordId": "acad-ship-harbor-trail",
+      "name": "Ship Harbor Trail",
+      "latitude": 44.2364,
+      "longitude": -68.3265,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://www.nps.gov/places/ship-harbor-trail.htm",
+      "description": "Short coastal trail through forest and rocky shoreline near Bass Harbor.",
+      "evidence": {
+        "officialUnitCode": "acad",
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "short hike, shoreline, forest, quieter southwest Mount Desert Island"
+      }
+    }
+  ]
+}

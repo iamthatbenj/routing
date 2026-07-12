@@ -1,0 +1,182 @@
+[
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-acadia-national-park",
+    "review": {
+      "highlightId": "acadia-national-park-me",
+      "category": "nature",
+      "strength": 98,
+      "visitEffort": "Full Day+",
+      "description": "Major coastal Nature Highlight around Mount Desert Island and nearby Acadia landscapes.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Acadia is the primary Nature Highlight for the Boston to Bar Harbor proof corridor and a likely reason to choose regional Route Options.",
+        "stableIdentity": "National Park Service unit with stable public identity and official source record.",
+        "coordinateCheck": "Coordinates are plausible for the Mount Desert Island core of Acadia National Park.",
+        "categoryRationale": "Nature Highlight because the appeal is public land, coast, mountains, carriage roads, and outdoor scenery.",
+        "routeInfluence": "High enough importance to influence Anchor selection, Route Option scoring, and traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-cadillac-mountain",
+    "review": {
+      "highlightId": "cadillac-mountain-me",
+      "category": "nature",
+      "strength": 94,
+      "visitEffort": "Short Visit",
+      "description": "Signature Acadia mountain summit with broad views over Mount Desert Island and the Atlantic.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Cadillac Mountain is one of Acadia's strongest named places and can justify a route or Anchor near Bar Harbor.",
+        "stableIdentity": "Official National Park Service place identity within Acadia.",
+        "coordinateCheck": "Coordinates are plausible for Cadillac Mountain summit area.",
+        "categoryRationale": "Nature Highlight because the appeal is mountain scenery and summit views.",
+        "routeInfluence": "Strong enough to influence Route Option explanations and second-region Anchor selection."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-jordan-pond",
+    "review": {
+      "highlightId": "jordan-pond-me",
+      "category": "nature",
+      "strength": 88,
+      "visitEffort": "Short Visit",
+      "description": "Classic Acadia pond landscape below the Bubbles with strong hiking and scenery context.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Jordan Pond is a well-known Acadia place that helps explain route interest near Bar Harbor.",
+        "stableIdentity": "Official National Park Service place identity within Acadia.",
+        "coordinateCheck": "Coordinates are plausible for Jordan Pond on Mount Desert Island.",
+        "categoryRationale": "Nature Highlight because the appeal is pond, mountain, and hiking scenery.",
+        "routeInfluence": "Strong supporting Highlight for Route Option scoring and explanations in Acadia corridors."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-park-loop-road",
+    "review": {
+      "highlightId": "park-loop-road-me",
+      "category": "scenic_segment",
+      "strength": 90,
+      "visitEffort": "Half Day",
+      "description": "Signature Acadia Scenic Segment connecting ocean, forest, mountain, and lake views.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Park Loop Road is a drive-experience Highlight rather than a single stop and is central to Acadia route planning.",
+        "stableIdentity": "Official National Park Service named road experience within Acadia.",
+        "coordinateCheck": "Representative coordinates are plausible for the Park Loop Road ocean-side corridor.",
+        "categoryRationale": "Scenic Segment because the appeal comes from the experience of driving the road corridor.",
+        "routeInfluence": "Strong enough to influence Corridor selection and distinguish Scenic Segment behavior from place-based Highlights."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-thunder-hole",
+    "review": {
+      "highlightId": "thunder-hole-me",
+      "category": "landmark",
+      "strength": 78,
+      "visitEffort": "Quick Stop",
+      "description": "Rocky shoreline Landmark known for wave action near Park Loop Road.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Thunder Hole is a recognizable Acadia stop that can explain local interest along the ocean-side route.",
+        "stableIdentity": "Official National Park Service place identity within Acadia.",
+        "coordinateCheck": "Coordinates are plausible for Thunder Hole along the Acadia shoreline.",
+        "categoryRationale": "Landmark Highlight because the appeal is a named coastal feature and quick stop.",
+        "routeInfluence": "Useful supporting Highlight for explanations along Park Loop Road and nearby Corridors."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-sand-beach",
+    "review": {
+      "highlightId": "sand-beach-acadia-me",
+      "category": "nature",
+      "strength": 80,
+      "visitEffort": "Quick Stop",
+      "description": "Small ocean beach between rocky headlands on Acadia's east side.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Sand Beach is a distinct and easily understood Acadia stop along the scenic ocean corridor.",
+        "stableIdentity": "Official National Park Service place identity within Acadia.",
+        "coordinateCheck": "Coordinates are plausible for Sand Beach near Park Loop Road.",
+        "categoryRationale": "Nature Highlight because the appeal is beach, cliffs, and ocean scenery.",
+        "routeInfluence": "Useful supporting Highlight for local Route Option explanation near Bar Harbor."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-otter-cliff",
+    "review": {
+      "highlightId": "otter-cliff-me",
+      "category": "landmark",
+      "strength": 82,
+      "visitEffort": "Quick Stop",
+      "description": "Prominent Acadia sea cliff and coastal Landmark along the ocean drive.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Otter Cliff is a named coastal Landmark that strengthens Acadia route explanations.",
+        "stableIdentity": "Official National Park Service place identity within Acadia.",
+        "coordinateCheck": "Coordinates are plausible for Otter Cliff on Mount Desert Island's east coast.",
+        "categoryRationale": "Landmark Highlight because the appeal is a named sea cliff and coastal viewpoint.",
+        "routeInfluence": "Useful supporting Highlight for the Park Loop Road Scenic Segment and local Route Options."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-bass-harbor-head-light-station",
+    "review": {
+      "highlightId": "bass-harbor-head-light-station-me",
+      "category": "landmark",
+      "strength": 84,
+      "visitEffort": "Quick Stop",
+      "description": "Historic lighthouse Landmark on the southwestern side of Mount Desert Island.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Bass Harbor Head Light Station broadens Acadia coverage beyond Bar Harbor and supports southwest Mount Desert Island Corridors.",
+        "stableIdentity": "Official National Park Service place identity within Acadia.",
+        "coordinateCheck": "Coordinates are plausible for Bass Harbor Head Light Station.",
+        "categoryRationale": "Landmark Highlight because the appeal is a historic lighthouse and coastal viewpoint.",
+        "routeInfluence": "Strong enough to influence explanations and potential Anchors for southwest Acadia routes."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-schoodic-peninsula",
+    "review": {
+      "highlightId": "schoodic-peninsula-me",
+      "category": "nature",
+      "strength": 83,
+      "visitEffort": "Half Day",
+      "description": "Quieter mainland Acadia section with rocky coast, ocean views, and scenic driving.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Schoodic Peninsula is a meaningful Acadia alternative area east of Mount Desert Island.",
+        "stableIdentity": "Official National Park Service area identity within Acadia.",
+        "coordinateCheck": "Coordinates are plausible for the Schoodic Peninsula section of Acadia.",
+        "categoryRationale": "Nature Highlight because the appeal is rocky coast, public land, and scenic driving.",
+        "routeInfluence": "Useful for explaining second-region Corridors that continue beyond Bar Harbor or explore coastal Maine."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "nps-acad-nps-supplement-acad-ship-harbor-trail",
+    "review": {
+      "highlightId": "ship-harbor-trail-me",
+      "category": "nature",
+      "strength": 70,
+      "visitEffort": "Short Visit",
+      "description": "Short coastal trail through forest and rocky shoreline near Bass Harbor.",
+      "reviewedBy": "maintainer",
+      "evidence": {
+        "travelRelevance": "Ship Harbor Trail gives southwest Mount Desert Island a quieter nature stop near Bass Harbor.",
+        "stableIdentity": "Official National Park Service trail identity within Acadia.",
+        "coordinateCheck": "Coordinates are plausible for Ship Harbor Trail near Bass Harbor.",
+        "categoryRationale": "Nature Highlight because the appeal is trail, forest, and shoreline scenery.",
+        "routeInfluence": "Supporting Highlight for local Acadia explanations, below the main park and lighthouse Anchors."
+      }
+    }
+  }
+]
