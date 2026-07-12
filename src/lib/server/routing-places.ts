@@ -32,6 +32,17 @@ export async function listRoutingPlaces() {
   return result.rows.map(rowToRoutingPlace);
 }
 
+export async function listImportantRoutingPlacesForAnchors() {
+  const result = await db.execute(`
+    SELECT id, name, region, kind, latitude, longitude, search_label
+    FROM routing_places
+    WHERE kind IN ('national_park', 'national_monument')
+    ORDER BY name
+  `);
+
+  return result.rows.map(rowToRoutingPlace);
+}
+
 export async function findRoutingPlaceBySearchLabel(searchLabel: string) {
   const result = await db.execute({
     sql: `

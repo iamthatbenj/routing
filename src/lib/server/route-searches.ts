@@ -2,19 +2,14 @@ import { randomUUID } from 'node:crypto';
 import { routeCorridorCells, selectCorridorRouteOptions } from '$lib/route-corridors';
 import { parseRouteReasons, type RouteReason } from '$lib/route-reasons';
 import { db } from './db';
-import { findHighlightsByH3Cells, type Highlight } from './highlights';
+import { findHighlightsByH3Cells, listHighlights, type Highlight } from './highlights';
 import { fetchDrivingRoutes, OrsRouteError, type OrsRoute } from './ors';
-import { findRoutingPlaceBySearchLabel } from './routing-places';
+import { listImportantRoutingPlacesForAnchors } from './routing-places';
+import { highlightToAnchorCandidate, routingPlaceToAnchorCandidate, selectRelevantAnchors } from './anchor-selection';
 import type { Leg } from './trip-stops';
 import type { RoutingPlace } from './routing-places';
 
 export type Directness = 'Direct' | 'Balanced' | 'Adventurous';
-
-export const tracerRouteAnchorLabels = [
-  'Colorado National Monument, Colorado',
-  'Black Canyon of the Gunnison, Colorado',
-  'Dinosaur National Monument, Utah / Colorado'
-];
 
 export type RouteOption = {
   id: string;
@@ -168,14 +163,11 @@ async function generateRouteOptions(leg: Leg): Promise<{ routes: OrsRoute[]; pro
     return { routes: await generateFallbackAnchorCorridors(leg), providerFailure: error };
   }
 
-  for (const anchorLabel of tracerRouteAnchorLabels) {
-    const anchor = await findRoutingPlaceBySearchLabel(anchorLabel);
-    if (anchor && anchor.id !== from.id && anchor.id !== to.id) {
-      try {
-        routes.push(...(await fetchDrivingRoutes({ from, to, via: anchor })));
-      } catch {
-        // Keep the direct Route Search useful even if a tracer-bullet Anchor route fails.
-      }
+  for (const anchor of await selectAnchorsForLeg(leg)) {
+    try {
+      routes.push(...(await fetchDrivingRoutes({ from, to, via: anchor })));
+    } catch {
+      // Keep the direct Route Search useful even if an Anchor route fails.
     }
   }
 
@@ -187,14 +179,22 @@ export async function generateFallbackAnchorCorridors(leg: Leg) {
   const to = leg.to.routingPlace;
   const routes: OrsRoute[] = [fallbackRoute({ from, to })];
 
-  for (const anchorLabel of tracerRouteAnchorLabels) {
-    const anchor = await findRoutingPlaceBySearchLabel(anchorLabel);
-    if (anchor && anchor.id !== from.id && anchor.id !== to.id) {
-      routes.push(fallbackRoute({ from, to, via: anchor }));
-    }
+  for (const anchor of await selectAnchorsForLeg(leg)) {
+    routes.push(fallbackRoute({ from, to, via: anchor }));
   }
 
   return dedupeExactRoutes(routes);
+}
+
+async function selectAnchorsForLeg(leg: Leg) {
+  const highlights = await listHighlights();
+  const importantRoutingPlaces = await listImportantRoutingPlacesForAnchors();
+  const candidates = [
+    ...highlights.map(highlightToAnchorCandidate),
+    ...importantRoutingPlaces.map(routingPlaceToAnchorCandidate)
+  ];
+
+  return selectRelevantAnchors(leg.from.routingPlace, leg.to.routingPlace, candidates);
 }
 
 export function fallbackRoute({ from, to, via }: { from: RoutingPlace; to: RoutingPlace; via?: RoutingPlace }): OrsRoute {
