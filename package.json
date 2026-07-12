@@ -11,6 +11,7 @@
     "db:status": "node scripts/db-status.mjs",
     "db:import:routing-places": "node scripts/import-second-region-routing-places.mjs",
     "db:import:candidate-highlights": "node scripts/import-candidate-highlights.mjs",
+    "db:import:supplemental-candidates": "node scripts/import-supplemental-candidate-highlights.mjs",
     "db:promote:highlights": "node scripts/promote-reviewed-candidate-highlights.mjs",
     "db:review:candidate-highlights": "node scripts/export-candidate-highlight-review.mjs",
     "db:prepare:highlight-promotions": "node scripts/prepare-highlight-promotions.mjs",
