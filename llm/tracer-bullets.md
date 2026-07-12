@@ -479,6 +479,8 @@ A new traveler can understand Routing, create a Trip, and move through private e
 
 ## TB16 — Source-backed geographic data foundation
 
+Status: Complete as of 2026-07-11. GitHub issues are closed and the work is at a stopping point.
+
 Goal: create a repeatable, bounded path for adding Routing Places and promoting source-backed Candidate Highlights into route-usable Highlights outside the original tracer region.
 
 Maintainers can import and review data for the Boston → Bar Harbor region without hand-writing fixture records or H3 cells, while travelers can search the imported Routing Places.
