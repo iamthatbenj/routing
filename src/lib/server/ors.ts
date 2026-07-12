@@ -61,23 +61,7 @@ export async function fetchDrivingRoutes({
     );
   }
 
-  const coordinates = via
-    ? [toCoordinate(from), toCoordinate(via), toCoordinate(to)]
-    : [toCoordinate(from), toCoordinate(to)];
-
-  const body: Record<string, unknown> = {
-    coordinates,
-    instructions: false,
-    preference: 'recommended'
-  };
-
-  if (!via && approximateDistanceMeters(from, to) <= 100_000) {
-    body.alternative_routes = {
-      target_count: 2,
-      share_factor: 0.6,
-      weight_factor: 1.6
-    };
-  }
+  const body = buildOrsDirectionsBody({ from, to, via });
 
   let response: Response;
 
@@ -140,6 +124,36 @@ export async function fetchDrivingRoutes({
       geometry: feature.geometry
     };
   });
+}
+
+export function buildOrsDirectionsBody({
+  from,
+  to,
+  via
+}: {
+  from: RoutingPlace;
+  to: RoutingPlace;
+  via?: RoutingPlace;
+}) {
+  const coordinates = via
+    ? [toCoordinate(from), toCoordinate(via), toCoordinate(to)]
+    : [toCoordinate(from), toCoordinate(to)];
+
+  const body: Record<string, unknown> = {
+    coordinates,
+    instructions: false,
+    preference: 'recommended'
+  };
+
+  if (!via && approximateDistanceMeters(from, to) <= 100_000) {
+    body.alternative_routes = {
+      target_count: 2,
+      share_factor: 0.6,
+      weight_factor: 1.6
+    };
+  }
+
+  return body;
 }
 
 function toCoordinate(place: RoutingPlace) {
