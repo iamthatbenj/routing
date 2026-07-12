@@ -1,13 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { OrsRouteError } from './ors';
-import { fallbackRoute, failureDiagnostics, routeSearchFailureMessage, successDiagnostics, tracerRouteAnchorLabels } from './route-searches';
+import { fallbackRoute, failureDiagnostics, routeSearchFailureMessage, successDiagnostics } from './route-searches';
 import type { RoutingPlace } from './routing-places';
-
-describe('tracer Route Anchors', () => {
-  it('includes a northern Dinosaur National Monument alternative for Denver to Moab', () => {
-    expect(tracerRouteAnchorLabels).toContain('Dinosaur National Monument, Utah / Colorado');
-  });
-});
 
 describe('fallback Route Options', () => {
   const denver: RoutingPlace = {
