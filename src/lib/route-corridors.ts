@@ -11,6 +11,9 @@ export type CorridorCandidate = {
   distanceMeters: number;
   interestScore: number;
   geometry: unknown;
+  directnessConstraint?: {
+    status: 'normal' | 'constrained' | 'omitted';
+  };
 };
 
 export function routeCorridorCells(geometry: unknown, resolution = 5) {
@@ -53,8 +56,8 @@ export function selectCorridorRouteOptions<T extends CorridorCandidate>(
 
   const fastest = findFastestBaseline(candidates);
   const alternatives = candidates
-    .filter((candidate) => candidate !== fastest)
-    .sort((left, right) => right.interestScore - left.interestScore || left.durationSeconds - right.durationSeconds);
+    .filter((candidate) => candidate !== fastest && candidate.directnessConstraint?.status !== 'omitted')
+    .sort(compareRouteAlternatives);
 
   const selected = fastest ? [fastest] : [];
   const selectedAlternatives: T[] = [];
@@ -77,6 +80,18 @@ export function selectCorridorRouteOptions<T extends CorridorCandidate>(
   }
 
   return selected;
+}
+
+function compareRouteAlternatives<T extends CorridorCandidate>(left: T, right: T) {
+  const leftRank = routeConstraintRank(left);
+  const rightRank = routeConstraintRank(right);
+  return leftRank - rightRank || right.interestScore - left.interestScore || left.durationSeconds - right.durationSeconds;
+}
+
+function routeConstraintRank(candidate: CorridorCandidate) {
+  if (candidate.directnessConstraint?.status === 'normal') return 0;
+  if (candidate.directnessConstraint?.status === 'constrained') return 1;
+  return 0;
 }
 
 function findFastestBaseline<T extends CorridorCandidate>(candidates: T[]) {

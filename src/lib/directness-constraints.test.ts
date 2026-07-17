@@ -41,6 +41,19 @@ describe('Directness constraint assessment', () => {
     expect(assessment.reason).not.toMatch(/bad|risky|unavailable/i);
   });
 
+  it('omits out-of-expectation routes without strong comparison reasons', () => {
+    const assessment = assessDirectnessConstraint({
+      directness: 'Direct',
+      durationSeconds: 19_000,
+      fastestDurationSeconds: 17_000,
+      source: 'ors-anchor',
+      hasStrongReason: false
+    });
+
+    expect(assessment.status).toBe('omitted');
+    expect(assessment.reason).toContain('without enough route-relevant Anchor or Highlight interest');
+  });
+
   it('uses broader normal expectations for Adventurous', () => {
     expect(
       assessDirectnessConstraint({

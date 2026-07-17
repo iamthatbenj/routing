@@ -81,7 +81,7 @@ describe('Boston to Bar Harbor Route Option generation', () => {
     expect(requestBodies.slice(1).map((body) => anchorNameForCoordinates(body.coordinates))).toEqual([
       'Acadia National Park',
       'Cadillac Mountain',
-      'Jordan Pond'
+      'Park Loop Road'
     ]);
 
     const [routeSearch] = await listRouteSearchesForTrip(tripAccess.id);
@@ -134,6 +134,25 @@ describe('Boston to Bar Harbor Route Option generation', () => {
         expect.objectContaining({ kind: 'highlight', label: 'Bar Harbor Shoreline Context' })
       ])
     );
+
+    const directOptionNames = routeSearch.options.map((option) => option.name);
+    fetchMock.mockClear();
+
+    await startRouteSearch({ leg, directness: 'Adventurous' });
+
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+    const adventurousRequestBodies = fetchMock.mock.calls.map(([, init]) => JSON.parse(String(init?.body ?? '{}')) as { coordinates: [number, number][] });
+    expect(adventurousRequestBodies.slice(1).map((body) => anchorNameForCoordinates(body.coordinates))).toEqual([
+      'Acadia National Park',
+      'Cadillac Mountain',
+      'Park Loop Road'
+    ]);
+
+    const [adventurousSearch] = await listRouteSearchesForTrip(tripAccess.id);
+    expect(adventurousSearch.directness).toBe('Adventurous');
+    expect(adventurousSearch.options.map((option) => option.name)).toEqual(directOptionNames);
+    expect(routeSearch.options.some((option) => option.directnessConstraint.status === 'constrained')).toBe(true);
+    expect(adventurousSearch.options.every((option) => option.directnessConstraint.status === 'normal')).toBe(true);
 
     const editPage = await import('../../routes/trips/edit/[token]/+page.server');
     const editData = await editPage.load({
@@ -193,11 +212,11 @@ function anchorNameForCoordinates(coordinates: [number, number][]) {
 }
 
 function durationForAnchor(anchor: string) {
-  return anchor === 'Acadia National Park' ? 19_000 : anchor === 'Cadillac Mountain' ? 19_100 : anchor === 'Jordan Pond' ? 19_400 : 19_700;
+  return anchor === 'Acadia National Park' ? 19_000 : anchor === 'Cadillac Mountain' ? 19_100 : anchor === 'Jordan Pond' ? 20_600 : 19_700;
 }
 
 function distanceForAnchor(anchor: string) {
-  return anchor === 'Acadia National Park' ? 470_000 : anchor === 'Cadillac Mountain' ? 482_000 : anchor === 'Jordan Pond' ? 486_000 : 489_000;
+  return anchor === 'Acadia National Park' ? 470_000 : anchor === 'Cadillac Mountain' ? 482_000 : anchor === 'Jordan Pond' ? 510_000 : 489_000;
 }
 
 function near(left: number, right: number) {
