@@ -37,6 +37,25 @@ export async function listHighlights() {
   return result.rows.map(rowToHighlight);
 }
 
+export async function listHighlightsByNames(names: string[]) {
+  if (names.length === 0) return [];
+
+  const uniqueNames = [...new Set(names)];
+  const placeholders = uniqueNames.map(() => '?').join(', ');
+  const result = await db.execute({
+    sql: `
+      SELECT id, name, category, latitude, longitude, strength, visit_effort,
+        endpoint_context_place_id, description
+      FROM highlights
+      WHERE name IN (${placeholders})
+      ORDER BY strength DESC
+    `,
+    args: uniqueNames
+  });
+
+  return result.rows.map(rowToHighlight);
+}
+
 export async function findHighlightsByH3Cells(cells: string[], resolution: number) {
   if (cells.length === 0) return [];
 

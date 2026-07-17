@@ -8,7 +8,7 @@ import { createTrip } from './trips';
 import { addTripStop, deriveLegs, listTripStops } from './trip-stops';
 import { findRoutingPlaceBySearchLabel } from './routing-places';
 import { importCandidateHighlights, normalizeSourcePoiRecords } from './candidate-highlight-importer';
-import { promoteCandidateHighlight, type PromotionReview } from './highlight-promotion';
+import { h3CellsForHighlight, promoteCandidateHighlight, type PromotionReview } from './highlight-promotion';
 import { listRouteSearchesForTrip, startRouteSearch } from './route-searches';
 
 let db: Client;
@@ -38,6 +38,7 @@ describe('Boston to Bar Harbor Route Option generation', () => {
   it('requests and persists a fastest baseline plus regional Anchor Route Options without live provider calls', async () => {
     await importSecondRegionRoutingPlaces(db);
     await importAndPromoteAcadiaHighlights();
+    await insertBarHarborEndpointContextHighlight();
     const tripAccess = await createTrip('Boston to Bar Harbor Route Option test');
     await addTripStop(tripAccess.id, (await requiredRoutingPlace('Boston, Massachusetts')).id);
     await addTripStop(tripAccess.id, (await requiredRoutingPlace('Bar Harbor, Maine')).id);
@@ -45,13 +46,16 @@ describe('Boston to Bar Harbor Route Option generation', () => {
     const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
       const body = JSON.parse(String(init?.body ?? '{}')) as { coordinates: [number, number][] };
       const viaName = anchorNameForCoordinates(body.coordinates);
+      const geometryCoordinates = viaName
+        ? body.coordinates
+        : [body.coordinates[0], [-68.205, 44.329], body.coordinates[1]];
       return new Response(
         JSON.stringify({
           type: 'FeatureCollection',
           features: [
             {
               type: 'Feature',
-              geometry: { type: 'LineString', coordinates: body.coordinates },
+              geometry: { type: 'LineString', coordinates: geometryCoordinates },
               properties: {
                 summary: {
                   duration: viaName ? durationForAnchor(viaName) : 17_000,
@@ -97,6 +101,40 @@ describe('Boston to Bar Harbor Route Option generation', () => {
     });
     expect(routeSearch.options.some((option) => option.name === 'Via Acadia National Park')).toBe(true);
     expect(routeSearch.options.every((option) => option.geometryJson.includes('LineString'))).toBe(true);
+
+    const acadiaOption = routeSearch.options.find((option) => option.name === 'Via Acadia National Park');
+    expect(acadiaOption?.reasons).toEqual(expect.arrayContaining([{ kind: 'anchor', label: 'Acadia National Park' }]));
+
+    const scenicOption = routeSearch.options.find((option) =>
+      option.reasons.some((reason) => reason.kind === 'highlight' && reason.label === 'Park Loop Road')
+    );
+    expect(scenicOption?.reasons).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: 'highlight', label: 'Park Loop Road', category: 'scenic_segment' }),
+        expect.objectContaining({ kind: 'tradeoff', directness: 'Balanced' }),
+        { kind: 'endpoint_context', labels: ['Bar Harbor Shoreline Context'] }
+      ])
+    );
+    expect(scenicOption?.explanations).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Scenic Segment: Park Loop Road'),
+        'Endpoint context, not scored: Bar Harbor Shoreline Context.'
+      ])
+    );
+    expect(scenicOption?.reasons).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: 'highlight', label: 'Bar Harbor Shoreline Context' })
+      ])
+    );
+
+    const editPage = await import('../../routes/trips/edit/[token]/+page.server');
+    const editData = await editPage.load({
+      params: { token: tripAccess.editToken },
+      url: new URL(`https://routing.test/trips/edit/${tripAccess.editToken}`)
+    } as Parameters<typeof editPage.load>[0]);
+    const mappedHighlightNames = editData.highlights.map((highlight) => highlight.name);
+    expect(mappedHighlightNames).toEqual(expect.arrayContaining(['Acadia National Park', 'Park Loop Road', 'Bar Harbor Shoreline Context']));
+    expect(mappedHighlightNames).not.toContain('Colorado National Monument');
   });
 });
 
@@ -109,6 +147,24 @@ async function importAndPromoteAcadiaHighlights() {
 
   for (const promotion of acadiaPromotions) {
     await promoteCandidateHighlight(db, promotion.candidateHighlightId, promotion.review as PromotionReview);
+  }
+}
+
+async function insertBarHarborEndpointContextHighlight() {
+  const barHarbor = await requiredRoutingPlace('Bar Harbor, Maine');
+  await db.execute({
+    sql: `
+      INSERT INTO highlights (id, name, category, latitude, longitude, strength, visit_effort, endpoint_context_place_id, description)
+      VALUES ('bar-harbor-shoreline-context', 'Bar Harbor Shoreline Context', 'landmark', 44.38758, -68.2039, 99, 'Quick Stop', ?, 'Endpoint context used to explain Bar Harbor without scoring it as on-route interest.')
+    `,
+    args: [barHarbor.id]
+  });
+
+  for (const cell of h3CellsForHighlight(44.38758, -68.2039, 5)) {
+    await db.execute({
+      sql: 'INSERT INTO highlight_h3_cells (highlight_id, resolution, cell) VALUES (?, 5, ?)',
+      args: ['bar-harbor-shoreline-context', cell]
+    });
   }
 }
 
