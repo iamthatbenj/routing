@@ -525,6 +525,8 @@ Maintainers can import and review data for the Boston → Bar Harbor region with
 
 ## TB17 — Second-region Interesting Route proof
 
+Status: Complete as of 2026-07-17. GitHub issues are closed and the work is at a stopping point.
+
 Goal: prove that the Interesting Route mechanism generalizes by producing locally relevant Corridors for Boston → Bar Harbor without contaminating either tracer region with the other's Anchors or Highlights.
 
 A traveler can compare a real fastest baseline and meaningful second-region Interesting Routes generated through the same Route Search, scoring, saving, and Handoff flow used by Denver → Moab.
