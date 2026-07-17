@@ -5,6 +5,7 @@ import {
   GEONAMES_US_POPULATED_PLACES_SOURCE,
   importRoutingPlaces,
   importSecondRegionRoutingPlaces,
+  importThirdRegionRoutingPlaces,
   normalizeGeoNamesRoutingPlaces
 } from './routing-place-importer';
 
@@ -126,6 +127,51 @@ describe('source-backed Routing Place importer', () => {
     });
   });
 
+  it('imports Reston to Niagara Falls Routing Places with provenance, bounds, and idempotence', async () => {
+    const firstImport = await importThirdRegionRoutingPlaces(db);
+    const secondImport = await importThirdRegionRoutingPlaces(db);
+
+    expect(firstImport.imported).toBeGreaterThanOrEqual(20);
+    expect(secondImport.imported).toBe(firstImport.imported);
+    expect(firstImport.places.every((place) => place.latitude >= 38.5 && place.latitude <= 43.4)).toBe(true);
+    expect(firstImport.places.every((place) => place.longitude >= -80.9 && place.longitude <= -76.0)).toBe(true);
+
+    const count = await db.execute({
+      sql: `
+        SELECT COUNT(*) AS count
+        FROM routing_places
+        WHERE source_system = ? AND source_dataset = ?
+      `,
+      args: [GEONAMES_US_POPULATED_PLACES_SOURCE.system, GEONAMES_US_POPULATED_PLACES_SOURCE.dataset]
+    });
+    expect(Number(count.rows[0].count)).toBe(firstImport.imported);
+
+    const reston = await routingPlaceRow('Reston, Virginia');
+    expect(reston).toMatchObject({
+      id: 'geonames-us-4781530',
+      name: 'Reston',
+      region: 'Virginia',
+      kind: 'city',
+      source_system: 'geonames',
+      source_dataset: 'US populated places',
+      source_record_id: '4781530'
+    });
+    expect(JSON.parse(String(reston.source_provenance_json))).toMatchObject({
+      sourceSystem: 'geonames',
+      sourceDataset: 'US populated places',
+      geonameId: '4781530',
+      importedCoordinates: { latitude: 38.96872, longitude: -77.3411 }
+    });
+
+    const niagaraFalls = await routingPlaceRow('Niagara Falls, New York');
+    expect(niagaraFalls).toMatchObject({
+      id: 'geonames-us-5128723',
+      name: 'Niagara Falls',
+      region: 'New York',
+      source_record_id: '5128723'
+    });
+  });
+
   it('updates imported records on rerun without creating duplicates', async () => {
     const [barHarbor] = normalizeGeoNamesRoutingPlaces([
       {
@@ -156,7 +202,7 @@ describe('source-backed Routing Place importer', () => {
     expect(Number(result.rows[0].longitude)).toBe(-68.21);
   });
 
-  it('makes imported places searchable as Endpoints and Trip Stops through the existing Routing Place workflow', async () => {
+  it('makes imported second-region places searchable as Endpoints and Trip Stops through the existing Routing Place workflow', async () => {
     await importSecondRegionRoutingPlaces(db);
     const { findRoutingPlaceBySearchLabel, listRoutingPlaces } = await import('./routing-places');
 
@@ -169,6 +215,24 @@ describe('source-backed Routing Place importer', () => {
     expect(bostonCaseInsensitive?.searchLabel).toBe('Boston, Massachusetts');
     expect(barHarborByName?.searchLabel).toBe('Bar Harbor, Maine');
     expect(listedLabels).toEqual(expect.arrayContaining(['Boston, Massachusetts', 'Bar Harbor, Maine', 'Portland, Maine']));
+  });
+
+  it('makes imported third-region places searchable without changing earlier tracer region behavior', async () => {
+    await importSecondRegionRoutingPlaces(db);
+    await importThirdRegionRoutingPlaces(db);
+    const { findRoutingPlaceBySearchLabel, listRoutingPlaces } = await import('./routing-places');
+
+    const reston = await findRoutingPlaceBySearchLabel('Reston, Virginia');
+    const niagaraFallsCaseInsensitive = await findRoutingPlaceBySearchLabel('niagara falls, new york');
+    const niagaraFallsByName = await findRoutingPlaceBySearchLabel('Niagara Falls');
+    const boston = await findRoutingPlaceBySearchLabel('Boston, Massachusetts');
+    const listedLabels = (await listRoutingPlaces()).map((place) => place.searchLabel);
+
+    expect(reston?.searchLabel).toBe('Reston, Virginia');
+    expect(niagaraFallsCaseInsensitive?.searchLabel).toBe('Niagara Falls, New York');
+    expect(niagaraFallsByName?.searchLabel).toBe('Niagara Falls, New York');
+    expect(boston?.searchLabel).toBe('Boston, Massachusetts');
+    expect(listedLabels).toEqual(expect.arrayContaining(['Reston, Virginia', 'Niagara Falls, New York', 'Boston, Massachusetts']));
   });
 });
 

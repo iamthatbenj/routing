@@ -1,5 +1,6 @@
 import type { Client } from '@libsql/client';
 import secondRegionGeoNames from '../../../data/routing-places/boston-bar-harbor-geonames.json';
+import thirdRegionGeoNames from '../../../data/routing-places/reston-niagara-geonames.json';
 
 export const GEONAMES_US_POPULATED_PLACES_SOURCE = {
   system: 'geonames',
@@ -131,6 +132,10 @@ export async function importRoutingPlaces(client: Client, places: ImportedRoutin
 
 export async function importSecondRegionRoutingPlaces(client: Client) {
   return importRoutingPlaces(client, normalizeGeoNamesRoutingPlaces(secondRegionGeoNames));
+}
+
+export async function importThirdRegionRoutingPlaces(client: Client) {
+  return importRoutingPlaces(client, normalizeGeoNamesRoutingPlaces(thirdRegionGeoNames));
 }
 
 function kindForGeoNamesRecord(record: GeoNamesRoutingPlaceRecord): ImportedRoutingPlace['kind'] {

@@ -16,7 +16,8 @@ printDatabaseTarget(config);
 const db = createDatabaseClient(config);
 
 try {
-  const records = JSON.parse(await readFile(new URL('../data/routing-places/boston-bar-harbor-geonames.json', import.meta.url), 'utf8'));
+  const { sourceFile, regionLabel } = parseArgs(process.argv.slice(2));
+  const records = JSON.parse(await readFile(new URL(sourceFile, import.meta.url), 'utf8'));
   const places = normalize(records);
   const now = new Date().toISOString();
 
@@ -58,9 +59,29 @@ try {
     });
   }
 
-  console.log(`Imported ${places.length} source-backed Routing Places for Boston → Bar Harbor.`);
+  console.log(`Imported ${places.length} source-backed Routing Places for ${regionLabel}.`);
 } finally {
   await db.close();
+}
+
+function parseArgs(args) {
+  let sourceFile = '../data/routing-places/boston-bar-harbor-geonames.json';
+  let regionLabel = 'Boston → Bar Harbor';
+
+  for (const arg of args) {
+    if (arg === '--third-region') {
+      sourceFile = '../data/routing-places/reston-niagara-geonames.json';
+      regionLabel = 'Reston → Niagara Falls';
+    } else if (arg.startsWith('--file=')) {
+      sourceFile = arg.slice('--file='.length);
+      regionLabel = sourceFile;
+    } else if (arg === '--help') {
+      console.log(`Import source-backed GeoNames Routing Places.\n\nOptions:\n  --third-region  Import Reston → Niagara Falls Routing Places.\n  --file=path     Import a custom JSON file relative to this script.`);
+      process.exit(0);
+    }
+  }
+
+  return { sourceFile, regionLabel };
 }
 
 function normalize(records) {

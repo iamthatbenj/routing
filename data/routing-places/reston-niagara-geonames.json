@@ -1,0 +1,191 @@
+[
+  {
+    "geonameId": "4781530",
+    "name": "Reston",
+    "adminName1": "Virginia",
+    "featureCode": "PPL",
+    "latitude": 38.96872,
+    "longitude": -77.3411,
+    "population": 63226
+  },
+  {
+    "geonameId": "4140963",
+    "name": "Leesburg",
+    "adminName1": "Virginia",
+    "featureCode": "PPLA2",
+    "latitude": 39.11566,
+    "longitude": -77.5636,
+    "population": 51314
+  },
+  {
+    "geonameId": "4791259",
+    "name": "Winchester",
+    "adminName1": "Virginia",
+    "featureCode": "PPLA2",
+    "latitude": 39.18566,
+    "longitude": -78.16333,
+    "population": 28078
+  },
+  {
+    "geonameId": "4808945",
+    "name": "Harpers Ferry",
+    "adminName1": "West Virginia",
+    "featureCode": "PPL",
+    "latitude": 39.32538,
+    "longitude": -77.73888,
+    "population": 293
+  },
+  {
+    "geonameId": "4813878",
+    "name": "Martinsburg",
+    "adminName1": "West Virginia",
+    "featureCode": "PPLA2",
+    "latitude": 39.45621,
+    "longitude": -77.96389,
+    "population": 17700
+  },
+  {
+    "geonameId": "4357141",
+    "name": "Frederick",
+    "adminName1": "Maryland",
+    "featureCode": "PPLA2",
+    "latitude": 39.41427,
+    "longitude": -77.41054,
+    "population": 69479
+  },
+  {
+    "geonameId": "4372777",
+    "name": "Hagerstown",
+    "adminName1": "Maryland",
+    "featureCode": "PPLA2",
+    "latitude": 39.64176,
+    "longitude": -77.71999,
+    "population": 40432
+  },
+  {
+    "geonameId": "4558183",
+    "name": "Gettysburg",
+    "adminName1": "Pennsylvania",
+    "featureCode": "PPL",
+    "latitude": 39.83093,
+    "longitude": -77.2311,
+    "population": 7620
+  },
+  {
+    "geonameId": "5192726",
+    "name": "Harrisburg",
+    "adminName1": "Pennsylvania",
+    "featureCode": "PPLA",
+    "latitude": 40.2737,
+    "longitude": -76.88442,
+    "population": 49081
+  },
+  {
+    "geonameId": "5178195",
+    "name": "Altoona",
+    "adminName1": "Pennsylvania",
+    "featureCode": "PPL",
+    "latitude": 40.51868,
+    "longitude": -78.39474,
+    "population": 45254
+  },
+  {
+    "geonameId": "5188140",
+    "name": "Johnstown",
+    "adminName1": "Pennsylvania",
+    "featureCode": "PPL",
+    "latitude": 40.32674,
+    "longitude": -78.92197,
+    "population": 19967
+  },
+  {
+    "geonameId": "5213681",
+    "name": "State College",
+    "adminName1": "Pennsylvania",
+    "featureCode": "PPL",
+    "latitude": 40.7934,
+    "longitude": -77.86,
+    "population": 42161
+  },
+  {
+    "geonameId": "5219585",
+    "name": "Williamsport",
+    "adminName1": "Pennsylvania",
+    "featureCode": "PPLA2",
+    "latitude": 41.24119,
+    "longitude": -77.00108,
+    "population": 28562
+  },
+  {
+    "geonameId": "5188843",
+    "name": "Lewisburg",
+    "adminName1": "Pennsylvania",
+    "featureCode": "PPL",
+    "latitude": 40.96453,
+    "longitude": -76.88441,
+    "population": 5792
+  },
+  {
+    "geonameId": "5110629",
+    "name": "Buffalo",
+    "adminName1": "New York",
+    "featureCode": "PPL",
+    "latitude": 42.88645,
+    "longitude": -78.87837,
+    "population": 258071
+  },
+  {
+    "geonameId": "5128723",
+    "name": "Niagara Falls",
+    "adminName1": "New York",
+    "featureCode": "PPL",
+    "latitude": 43.0945,
+    "longitude": -79.05671,
+    "population": 48671
+  },
+  {
+    "geonameId": "5134086",
+    "name": "Rochester",
+    "adminName1": "New York",
+    "featureCode": "PPL",
+    "latitude": 43.15478,
+    "longitude": -77.61556,
+    "population": 209802
+  },
+  {
+    "geonameId": "5122432",
+    "name": "Ithaca",
+    "adminName1": "New York",
+    "featureCode": "PPL",
+    "latitude": 42.44063,
+    "longitude": -76.49661,
+    "population": 30164
+  },
+  {
+    "geonameId": "5113760",
+    "name": "Corning",
+    "adminName1": "New York",
+    "featureCode": "PPL",
+    "latitude": 42.14285,
+    "longitude": -77.05469,
+    "population": 10899
+  },
+  {
+    "geonameId": "5116497",
+    "name": "Elmira",
+    "adminName1": "New York",
+    "featureCode": "PPL",
+    "latitude": 42.0898,
+    "longitude": -76.80773,
+    "population": 28165
+  },
+  {
+    "geonameId": "5143268",
+    "name": "Watkins Glen",
+    "adminName1": "New York",
+    "featureCode": "PPL",
+    "latitude": 42.38063,
+    "longitude": -76.87329,
+    "population": 1862
+  }
+]
