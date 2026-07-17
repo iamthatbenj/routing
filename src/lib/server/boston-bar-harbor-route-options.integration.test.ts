@@ -81,7 +81,7 @@ describe('Boston to Bar Harbor Route Option generation', () => {
     expect(requestBodies.slice(1).map((body) => anchorNameForCoordinates(body.coordinates))).toEqual([
       'Acadia National Park',
       'Cadillac Mountain',
-      'Park Loop Road'
+      'Jordan Pond'
     ]);
 
     const [routeSearch] = await listRouteSearchesForTrip(tripAccess.id);
@@ -187,16 +187,17 @@ function anchorNameForCoordinates(coordinates: [number, number][]) {
   const [longitude, latitude] = coordinates[1];
   if (near(latitude, 44.3386) && near(longitude, -68.2733)) return 'Acadia National Park';
   if (near(latitude, 44.3512) && near(longitude, -68.2258)) return 'Cadillac Mountain';
+  if (near(latitude, 44.3206) && near(longitude, -68.2539)) return 'Jordan Pond';
   if (near(latitude, 44.329) && near(longitude, -68.205)) return 'Park Loop Road';
   return `unknown anchor at ${latitude},${longitude}`;
 }
 
 function durationForAnchor(anchor: string) {
-  return anchor === 'Acadia National Park' ? 19_000 : anchor === 'Cadillac Mountain' ? 19_100 : 19_700;
+  return anchor === 'Acadia National Park' ? 19_000 : anchor === 'Cadillac Mountain' ? 19_100 : anchor === 'Jordan Pond' ? 19_400 : 19_700;
 }
 
 function distanceForAnchor(anchor: string) {
-  return anchor === 'Acadia National Park' ? 470_000 : anchor === 'Cadillac Mountain' ? 482_000 : 489_000;
+  return anchor === 'Acadia National Park' ? 470_000 : anchor === 'Cadillac Mountain' ? 482_000 : anchor === 'Jordan Pond' ? 486_000 : 489_000;
 }
 
 function near(left: number, right: number) {
