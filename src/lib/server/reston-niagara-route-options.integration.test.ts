@@ -10,7 +10,7 @@ import { createTrip } from './trips';
 import { addTripStop, deriveLegs, listTripStops, type Leg } from './trip-stops';
 import { findRoutingPlaceBySearchLabel } from './routing-places';
 import { listRouteSearchesForTrip, startRouteSearch, type Directness, type RouteSearch } from './route-searches';
-import { saveRouteOption } from './saved-routes';
+import { findSavedRoute, saveRouteOption } from './saved-routes';
 
 let db: Client;
 let cleanup: (() => Promise<void>) | undefined;
@@ -72,6 +72,66 @@ describe('Reston to Niagara Falls Route Option generation', () => {
       expect(routeSearch.options.map((option) => option.name).join(' ')).not.toMatch(/Acadia|Colorado National Monument|Rocky Mountain/);
     }
 
+  });
+
+  it('preserves third-region score, reasons, Directness context, and relevant map Highlights through save, share, and Leg Handoff', async () => {
+    await seedThirdRegionData();
+    vi.stubGlobal('fetch', vi.fn(async (_url: string, init?: RequestInit) => providerResponseFor(JSON.parse(String(init?.body ?? '{}')))));
+    const tripAccess = await createTrip('Reston to Niagara preserved route context test');
+    await addTripStop(tripAccess.id, (await requiredRoutingPlace('Reston, Virginia')).id);
+    await addTripStop(tripAccess.id, (await requiredRoutingPlace('Niagara Falls, New York')).id);
+    const [leg] = deriveLegs(await listTripStops(tripAccess.id));
+
+    await startRouteSearch({ leg, directness: 'Balanced' });
+    const [routeSearch] = await listRouteSearchesForTrip(tripAccess.id);
+    const interestingOption = routeSearch.options.find((option) => option.source === 'ors-anchor');
+    expect(interestingOption?.reasons.some((reason) => reason.kind === 'anchor')).toBe(true);
+    expect(interestingOption?.reasons.some((reason) => reason.kind === 'highlight')).toBe(true);
+    expect(typeof interestingOption?.interestScore).toBe('number');
+    expect(interestingOption?.directnessConstraint).toMatchObject({ directness: 'Balanced' });
+
+    const savedRouteId = await saveRouteOption({ tripId: tripAccess.id, leg, routeSearch, routeOptionId: interestingOption?.id ?? '' });
+    const savedRoute = await findSavedRoute(tripAccess.id, savedRouteId);
+    expect(savedRoute?.snapshot).toMatchObject({
+      routeOptionId: interestingOption?.id,
+      interestScore: interestingOption?.interestScore,
+      directness: 'Balanced',
+      directnessConstraint: interestingOption?.directnessConstraint
+    });
+    expect(savedRoute?.snapshot.reasons.some((reason) => reason.kind === 'anchor')).toBe(true);
+    expect(savedRoute?.snapshot.reasons.some((reason) => reason.kind === 'highlight')).toBe(true);
+
+    const editPage = await import('../../routes/trips/edit/[token]/+page.server');
+    const editData = await editPage.load({
+      params: { token: tripAccess.editToken },
+      url: new URL(`https://routing.test/trips/edit/${tripAccess.editToken}`)
+    } as Parameters<typeof editPage.load>[0]);
+    const editHighlightNames = editData.highlights.map((highlight) => highlight.name);
+    expect(editHighlightNames).toEqual(expect.arrayContaining(highlightReasonNames(savedRoute?.snapshot.reasons ?? [])));
+    expect(editHighlightNames.join(' ')).not.toMatch(/Acadia|Colorado National Monument/);
+
+    const sharePage = await import('../../routes/trips/share/[token]/+page.server');
+    const shareData = await sharePage.load({ params: { token: tripAccess.shareToken } } as Parameters<typeof sharePage.load>[0]);
+    const sharedPreferredRoute = shareData.legs[0].preferredSavedRoute;
+    expect(sharedPreferredRoute?.snapshot).toMatchObject({
+      interestScore: savedRoute?.snapshot.interestScore,
+      directnessConstraint: savedRoute?.snapshot.directnessConstraint
+    });
+    expect(sharedPreferredRoute?.snapshot.reasons).toEqual(savedRoute?.snapshot.reasons);
+    expect(shareData.highlights.map((highlight) => highlight.name)).toEqual(expect.arrayContaining(highlightReasonNames(savedRoute?.snapshot.reasons ?? [])));
+    expect(shareData.highlights.map((highlight) => highlight.name).join(' ')).not.toMatch(/Acadia|Colorado National Monument/);
+
+    const handoffPage = await import('../../routes/trips/edit/[token]/handoff/[savedRouteId]/+page.server');
+    const handoffData = await handoffPage.load({
+      params: { token: tripAccess.editToken, savedRouteId },
+      url: new URL(`https://routing.test/trips/edit/${tripAccess.editToken}/handoff/${savedRouteId}`)
+    } as Parameters<typeof handoffPage.load>[0]);
+    expect(handoffData.savedRoute.snapshot).toMatchObject({
+      interestScore: savedRoute?.snapshot.interestScore,
+      directnessConstraint: savedRoute?.snapshot.directnessConstraint,
+      endpoints: { from: 'Reston, Virginia', to: 'Niagara Falls, New York' }
+    });
+    expect(handoffData.geometryWarning).toContain('Shaping Stops');
   });
 
   it('uses fallback Corridors with Directness assessment and keeps them unsaveable for Leg Handoff', async () => {
@@ -238,6 +298,12 @@ function distanceFor(label: string) {
     'Niagara Falls State Park': 645_000
   };
   return distances[label] ?? 710_000;
+}
+
+function highlightReasonNames(reasons: RouteSearch['options'][number]['reasons']) {
+  return reasons
+    .filter((reason) => reason.kind === 'highlight')
+    .map((reason) => reason.label);
 }
 
 function near(left: number, right: number) {
