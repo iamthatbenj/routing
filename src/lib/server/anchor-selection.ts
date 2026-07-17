@@ -1,3 +1,4 @@
+import type { Directness } from '$lib/directness-constraints';
 import type { Highlight } from './highlights';
 import type { RoutingPlace } from './routing-places';
 
@@ -15,6 +16,7 @@ export type AnchorCandidate = {
 };
 
 export type AnchorSelectionOptions = {
+  directness?: Directness;
   maxAnchors?: number;
   maxDetourRatio?: number;
   boundingBoxPaddingDegrees?: number;
@@ -50,9 +52,10 @@ export function selectRelevantAnchors(
   to: RoutingPlace,
   candidates: AnchorCandidate[],
   {
+    directness = 'Balanced',
     maxAnchors = MAX_ANCHOR_ROUTE_REQUESTS,
-    maxDetourRatio = 1.75,
-    boundingBoxPaddingDegrees = 1.25
+    maxDetourRatio = anchorPolicyForDirectness(directness).maxDetourRatio,
+    boundingBoxPaddingDegrees = anchorPolicyForDirectness(directness).boundingBoxPaddingDegrees
   }: AnchorSelectionOptions = {}
 ) {
   const directDistance = approximateDistanceMeters(from, to);
@@ -67,12 +70,7 @@ export function selectRelevantAnchors(
       detourRatio: directDistance > 0 ? detourDistanceMeters(from, candidate, to) / directDistance : Infinity
     }))
     .filter(({ detourRatio }) => detourRatio <= maxDetourRatio)
-    .sort(
-      (left, right) =>
-        right.candidate.strength - left.candidate.strength ||
-        left.detourRatio - right.detourRatio ||
-        left.candidate.name.localeCompare(right.candidate.name)
-    )
+    .sort((left, right) => compareAnchors(left, right, directness))
     .filter(({ candidate }) => {
       const key = candidate.name.toLowerCase();
       if (seenNames.has(key)) return false;
@@ -116,6 +114,32 @@ function isInsideExpandedEndpointBounds(
 
 function detourDistanceMeters(from: RoutingPlace, via: AnchorCandidate, to: RoutingPlace) {
   return approximateDistanceMeters(from, via) + approximateDistanceMeters(via, to);
+}
+
+function compareAnchors(
+  left: { candidate: AnchorCandidate; detourRatio: number },
+  right: { candidate: AnchorCandidate; detourRatio: number },
+  directness: Directness
+) {
+  if (directness === 'Direct') {
+    return (
+      left.detourRatio - right.detourRatio ||
+      right.candidate.strength - left.candidate.strength ||
+      left.candidate.name.localeCompare(right.candidate.name)
+    );
+  }
+
+  return (
+    right.candidate.strength - left.candidate.strength ||
+    left.detourRatio - right.detourRatio ||
+    left.candidate.name.localeCompare(right.candidate.name)
+  );
+}
+
+function anchorPolicyForDirectness(directness: Directness) {
+  if (directness === 'Direct') return { maxDetourRatio: 1.18, boundingBoxPaddingDegrees: 0.75 };
+  if (directness === 'Adventurous') return { maxDetourRatio: 2.35, boundingBoxPaddingDegrees: 2.5 };
+  return { maxDetourRatio: 1.75, boundingBoxPaddingDegrees: 1.25 };
 }
 
 function routingPlaceAnchorStrength(place: RoutingPlace) {

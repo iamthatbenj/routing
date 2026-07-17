@@ -142,7 +142,7 @@ export async function startRouteSearch({ leg, directness }: { leg: Leg; directne
   });
 
   try {
-    const { routes, providerFailure } = await generateRouteOptions(leg);
+    const { routes, providerFailure } = await generateRouteOptions(leg, directness);
     const scoredRoutes = await scoreRouteOptions(routes, leg, directness);
     const selectedRoutes = selectCorridorRouteOptions(scoredRoutes);
     await replaceRouteOptions(searchId, selectedRoutes);
@@ -155,7 +155,7 @@ export async function startRouteSearch({ leg, directness }: { leg: Leg; directne
   return searchId;
 }
 
-async function generateRouteOptions(leg: Leg): Promise<{ routes: OrsRoute[]; providerFailure?: unknown }> {
+async function generateRouteOptions(leg: Leg, directness: Directness): Promise<{ routes: OrsRoute[]; providerFailure?: unknown }> {
   const from = leg.from.routingPlace;
   const to = leg.to.routingPlace;
   let routes: OrsRoute[];
@@ -164,10 +164,10 @@ async function generateRouteOptions(leg: Leg): Promise<{ routes: OrsRoute[]; pro
     routes = await fetchDrivingRoutes({ from, to });
   } catch (error) {
     logRouteSearchFailure(error);
-    return { routes: await generateFallbackAnchorCorridors(leg), providerFailure: error };
+    return { routes: await generateFallbackAnchorCorridors(leg, directness), providerFailure: error };
   }
 
-  for (const anchor of await selectAnchorsForLeg(leg)) {
+  for (const anchor of await selectAnchorsForLeg(leg, directness)) {
     try {
       routes.push(...(await fetchDrivingRoutes({ from, to, via: anchor })));
     } catch {
@@ -178,19 +178,19 @@ async function generateRouteOptions(leg: Leg): Promise<{ routes: OrsRoute[]; pro
   return { routes: dedupeExactRoutes(routes) };
 }
 
-export async function generateFallbackAnchorCorridors(leg: Leg) {
+export async function generateFallbackAnchorCorridors(leg: Leg, directness: Directness = 'Balanced') {
   const from = leg.from.routingPlace;
   const to = leg.to.routingPlace;
   const routes: OrsRoute[] = [fallbackRoute({ from, to })];
 
-  for (const anchor of await selectAnchorsForLeg(leg)) {
+  for (const anchor of await selectAnchorsForLeg(leg, directness)) {
     routes.push(fallbackRoute({ from, to, via: anchor }));
   }
 
   return dedupeExactRoutes(routes);
 }
 
-async function selectAnchorsForLeg(leg: Leg) {
+async function selectAnchorsForLeg(leg: Leg, directness: Directness) {
   const highlights = await listHighlights();
   const importantRoutingPlaces = await listImportantRoutingPlacesForAnchors();
   const candidates = [
@@ -198,7 +198,7 @@ async function selectAnchorsForLeg(leg: Leg) {
     ...importantRoutingPlaces.map(routingPlaceToAnchorCandidate)
   ];
 
-  return selectRelevantAnchors(leg.from.routingPlace, leg.to.routingPlace, candidates);
+  return selectRelevantAnchors(leg.from.routingPlace, leg.to.routingPlace, candidates, { directness });
 }
 
 export function fallbackRoute({ from, to, via }: { from: RoutingPlace; to: RoutingPlace; via?: RoutingPlace }): OrsRoute {

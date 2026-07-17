@@ -48,6 +48,26 @@ describe('regional Anchor selection', () => {
     expect(second.map((anchor) => anchor.name)).toEqual(first.map((anchor) => anchor.name));
   });
 
+  it('makes Direct prefer near-corridor Anchors before stronger but farther Anchors', () => {
+    const anchors = selectRelevantAnchors(denver, moab, candidates, { directness: 'Direct' });
+
+    expect(anchors.map((anchor) => anchor.name)).toEqual([
+      'Colorado National Monument',
+      'Black Canyon of the Gunnison'
+    ]);
+  });
+
+  it('lets Adventurous consider farther worthwhile Anchors while keeping the request cap deterministic', () => {
+    const anchors = selectRelevantAnchors(boston, barHarbor, candidates, { directness: 'Adventurous', maxAnchors: 4 });
+
+    expect(anchors.map((anchor) => anchor.name)).toEqual([
+      'Acadia National Park',
+      'Cadillac Mountain',
+      'Park Loop Road',
+      'Grafton Notch State Park'
+    ]);
+  });
+
   it('deduplicates same-name candidates from multiple source types', () => {
     const anchors = selectRelevantAnchors(boston, barHarbor, [
       anchor('acadia-highlight', 'Acadia National Park', 44.3386, -68.2733, 'nature', 98, 'highlight'),
