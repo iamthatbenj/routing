@@ -1,7 +1,7 @@
 export type Directness = 'Direct' | 'Balanced' | 'Adventurous';
 
 export type DirectnessConstraintAssessment = {
-  status: 'normal' | 'constrained';
+  status: 'normal' | 'constrained' | 'omitted';
   directness: Directness;
   extraSeconds: number;
   extraRatio: number;
@@ -82,13 +82,13 @@ export function assessDirectnessConstraint({
   }
 
   return {
-    status: 'constrained',
+    status: 'omitted',
     directness,
     extraSeconds,
     extraRatio,
     normalLimitSeconds,
     constrainedLimitSeconds,
-    reason: `${directness} expectation exceeded.`
+    reason: `${directness} expectation exceeded without enough route-relevant Anchor or Highlight interest to compare.`
   };
 }
 
@@ -97,7 +97,7 @@ export function parseDirectnessConstraint(value: string | null | undefined): Dir
 
   try {
     const parsed = JSON.parse(value) as Partial<DirectnessConstraintAssessment>;
-    if (parsed.status !== 'normal' && parsed.status !== 'constrained') return defaultAssessment();
+    if (parsed.status !== 'normal' && parsed.status !== 'constrained' && parsed.status !== 'omitted') return defaultAssessment();
     if (parsed.directness !== 'Direct' && parsed.directness !== 'Balanced' && parsed.directness !== 'Adventurous') return defaultAssessment();
 
     return {

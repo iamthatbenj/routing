@@ -3,6 +3,7 @@ import type { Highlight } from './highlights';
 import type { RoutingPlace } from './routing-places';
 
 export const MAX_ANCHOR_ROUTE_REQUESTS = 3;
+const DIRECT_DETOUR_TIE_RATIO = 0.015;
 
 export type AnchorCandidate = {
   id: string;
@@ -122,11 +123,10 @@ function compareAnchors(
   directness: Directness
 ) {
   if (directness === 'Direct') {
-    return (
-      left.detourRatio - right.detourRatio ||
-      right.candidate.strength - left.candidate.strength ||
-      left.candidate.name.localeCompare(right.candidate.name)
-    );
+    const detourDelta = left.detourRatio - right.detourRatio;
+    if (Math.abs(detourDelta) > DIRECT_DETOUR_TIE_RATIO) return detourDelta;
+
+    return right.candidate.strength - left.candidate.strength || left.candidate.name.localeCompare(right.candidate.name);
   }
 
   return (

@@ -10,13 +10,15 @@ function candidate({
   source = 'ors-anchor',
   score,
   duration,
-  geometry
+  geometry,
+  constraintStatus = 'normal'
 }: {
   name: string;
   source?: string;
   score: number;
   duration: number;
   geometry: LineStringGeometry;
+  constraintStatus?: 'normal' | 'constrained' | 'omitted';
 }) {
   return {
     name,
@@ -24,7 +26,8 @@ function candidate({
     interestScore: score,
     durationSeconds: duration,
     distanceMeters: duration * 20,
-    geometry
+    geometry,
+    directnessConstraint: { status: constraintStatus }
   };
 }
 
@@ -117,6 +120,65 @@ describe('corridor selection', () => {
     const selected = selectCorridorRouteOptions([fastest, overlappingAlternative, lowerScoringOverlap]);
 
     expect(selected.map((route) => route.name)).toEqual(['Fastest baseline', 'Small interesting detour']);
+  });
+
+  it('prioritizes normal alternatives before constrained alternatives', () => {
+    const fastest = candidate({
+      name: 'Fastest baseline',
+      source: 'ors-fastest',
+      score: 10,
+      duration: 100,
+      geometry: line([[-105, 39], [-106, 39]])
+    });
+    const highScoringConstrained = candidate({
+      name: 'High scoring constrained',
+      score: 95,
+      duration: 160,
+      constraintStatus: 'constrained',
+      geometry: line([[-105, 40], [-106, 40]])
+    });
+    const normalAlternative = candidate({
+      name: 'Normal useful detour',
+      score: 40,
+      duration: 120,
+      constraintStatus: 'normal',
+      geometry: line([[-105, 38], [-106, 38]])
+    });
+
+    const selected = selectCorridorRouteOptions([fastest, highScoringConstrained, normalAlternative]);
+
+    expect(selected.map((route) => route.name)).toEqual([
+      'Fastest baseline',
+      'Normal useful detour',
+      'High scoring constrained'
+    ]);
+  });
+
+  it('omits alternatives outside Directness comparison bounds', () => {
+    const fastest = candidate({
+      name: 'Fastest baseline',
+      source: 'ors-fastest',
+      score: 10,
+      duration: 100,
+      geometry: line([[-105, 39], [-106, 39]])
+    });
+    const omitted = candidate({
+      name: 'Too far for this Directness',
+      score: 95,
+      duration: 200,
+      constraintStatus: 'omitted',
+      geometry: line([[-105, 40], [-106, 40]])
+    });
+    const normal = candidate({
+      name: 'Normal Route Option',
+      score: 30,
+      duration: 115,
+      geometry: line([[-105, 38], [-106, 38]])
+    });
+
+    const selected = selectCorridorRouteOptions([fastest, omitted, normal]);
+
+    expect(selected.map((route) => route.name)).toEqual(['Fastest baseline', 'Normal Route Option']);
   });
 
   it('measures overlapping Corridors from route geometry cells', () => {
