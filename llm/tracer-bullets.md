@@ -626,6 +626,43 @@ A traveler can create a Trip from Reston to Niagara Falls, run Direct, Balanced,
 - Three-region regression coverage.
 - Human-in-the-loop route-quality review on the real Reston → Niagara Falls trip.
 
+### TB19.01 third-region data decisions
+
+Use **Reston, Virginia → Niagara Falls, New York** as the third-region proof corridor because it is a real upcoming trip and exercises a Mid-Atlantic/Appalachian/Finger Lakes route space that differs from both Denver → Moab and Boston → Bar Harbor.
+
+Corridor bounds for TB19 imports should be deliberately bounded rather than nationwide. Use a primary bounding box that includes Reston, northern Virginia, central and western Pennsylvania, western New York, Finger Lakes-adjacent alternatives, and Niagara Falls:
+
+- Latitude: **38.5 to 43.4**
+- Longitude: **-80.9 to -76.0**
+
+Allow a small curated exception list inside TB19 source files for travel-relevant places just outside the box when they are needed to explain a plausible Corridor. Do not use the third-region import as a general East Coast or nationwide expansion.
+
+Source choices:
+
+- **Routing Places**: reuse the GeoNames US populated-places import path with a bounded Reston → Niagara source file, plus curated additions for widely recognized travel places that GeoNames misses or models poorly, such as Reston if needed, Niagara Falls, state/national park gateways, and regionally meaningful towns along plausible Corridors.
+- **Candidate Highlights**: start with the existing Turso POI source when it has records inside the TB19 bounds. Treat imported records as Candidate Highlights only; raw POIs must not influence Route Options.
+- **NPS supplemental records**: use bounded, source-backed supplemental data for high-confidence federally managed Nature Highlights or Landmark Highlights where relevant, such as Harpers Ferry, C&O Canal-adjacent context, Gettysburg, Flight 93, or other route-relevant NPS units inside the bounds.
+- **OSM/Wikidata supplemental records**: use sparingly for route-relevant state parks, waterfalls, scenic overlooks, or landmarks that are central to Reston → Niagara but absent from the existing POI/NPS sources. Each supplemental record must retain inspectable source identity and provenance.
+- **Scenic Segments**: allow a small curated Scenic Segment set only where the road experience itself is the reason for the Route Option, such as Appalachian ridge routes, Pennsylvania Wilds routes, Finger Lakes routes, or Niagara approach segments. Scenic Segment records need clear labels and enough coordinates/H3 coverage to influence route scoring.
+- **Food Highlights**: defer from TB19 unless a later review identifies an exceptional independent food place that clearly explains a Corridor. Ordinary restaurant data remains out of scope.
+
+Promotion and review criteria:
+
+- Promote a Candidate Highlight only when it has stable identity, plausible coordinates, source provenance, travel relevance, correct category, and enough evidence to influence a Route Option.
+- Prefer Highlights that explain a Corridor choice, not merely attractions near an Endpoint.
+- Endpoint context may explain Reston or Niagara Falls but should not inflate Interest Score as on-route interest.
+- Scenic Segments should represent a meaningful driving experience, not just a named highway.
+- Avoid duplicate identity across source systems before promotion.
+
+Expected Directness review questions for TB19.08:
+
+- **Direct**: does Reston → Niagara favor near-corridor options and avoid long Pennsylvania/Finger Lakes detours unless extra time is modest?
+- **Balanced**: does it surface moderate Appalachian, Pennsylvania, or western New York alternatives when they add meaningful Highlights without overwhelming the fastest baseline?
+- **Adventurous**: can it consider farther but worthwhile nature/landmark Corridors while still respecting provider-request caps and Constrained Route Option caution?
+- Across all Directness choices: are Interest Score and Directness constraint status visibly separate, and do third-region Anchors avoid Denver/Moab or Boston/Bar Harbor contamination?
+
+No ADR is needed yet: these are bounded tracer-bullet source choices, not an irreversible production data commitment. No `CONTEXT.md` change is needed: the existing Routing Place, Candidate Highlight, Highlight, Scenic Segment, Directness, and Constrained Route Option terms cover the decisions.
+
 ### GitHub issues
 
 1. [TB19.01 Choose third-region data sources and corridor bounds](https://github.com/iamthatbenj/routing/issues/182)
