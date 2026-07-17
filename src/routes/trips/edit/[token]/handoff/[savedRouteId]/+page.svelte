@@ -31,6 +31,10 @@
     return route.source === 'ors-anchor' && route.name.startsWith('Via ') ? route.name.replace(/^Via /, '').trim() : '';
   }
 
+  function isConstrainedRoute(route: { snapshot: { directnessConstraint?: { status?: string } } }) {
+    return route.snapshot.directnessConstraint?.status === 'constrained';
+  }
+
   function formatScoreImpact(value: number) {
     return `+${Math.round(value)}`;
   }
@@ -109,6 +113,9 @@
     <p class="eyebrow">Preferred Saved Route</p>
     <h2 id="summary-heading">{data.savedRoute.title}</h2>
     <p class="route-origin">{routeKind(data.savedRoute.snapshot.source)}</p>
+    {#if isConstrainedRoute(data.savedRoute)}
+      <p class="constraint-note"><strong>Constrained Route Option</strong>: {data.savedRoute.snapshot.directnessConstraint.reason}</p>
+    {/if}
     {#if anchorLabel(data.savedRoute.snapshot)}
       <p>This Interesting Route was generated through the Anchor: <strong>{anchorLabel(data.savedRoute.snapshot)}</strong>.</p>
     {/if}

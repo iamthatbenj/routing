@@ -27,6 +27,10 @@
     return `${count} Shaping Stop${count === 1 ? '' : 's'}`;
   }
 
+  function isConstrainedRoute(route: { snapshot: { directnessConstraint?: { status?: string } } }) {
+    return route.snapshot.directnessConstraint?.status === 'constrained';
+  }
+
   function legStatus(leg: { preferredSavedRoute: null | { title: string } }) {
     return leg.preferredSavedRoute ? leg.preferredSavedRoute.title : 'No Preferred Saved Route selected yet';
   }
@@ -136,6 +140,9 @@
                     <small>Original Route Option: {leg.preferredSavedRoute.snapshot.name}</small>
                   </div>
                 </div>
+                {#if isConstrainedRoute(leg.preferredSavedRoute)}
+                  <p class="constraint-note"><strong>Constrained Route Option</strong>: {leg.preferredSavedRoute.snapshot.directnessConstraint.reason}</p>
+                {/if}
                 <p class="route-origin">
                   {#if anchorLabel(leg.preferredSavedRoute.snapshot)}
                     Anchor-generated Corridor via {anchorLabel(leg.preferredSavedRoute.snapshot)}

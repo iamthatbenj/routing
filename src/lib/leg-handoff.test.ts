@@ -28,6 +28,15 @@ function savedRoute(overrides: Partial<SavedRoute['snapshot']> = {}): SavedRoute
       interestScore: 10,
       explanations: [],
       reasons: [],
+      directnessConstraint: {
+        status: 'normal',
+        directness: 'Balanced',
+        extraSeconds: 0,
+        extraRatio: 0,
+        normalLimitSeconds: 0,
+        constrainedLimitSeconds: 0,
+        reason: ''
+      },
       fastestBaselineDeltaSeconds: 1,
       warnings: [],
       handoffStops: [],

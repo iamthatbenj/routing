@@ -86,6 +86,15 @@ function savedRoute(id: string, fromTripStopId: string, toTripStopId: string, is
       interestScore: 0,
       explanations: [],
       reasons: [],
+      directnessConstraint: {
+        status: 'normal',
+        directness: 'Balanced',
+        extraSeconds: 0,
+        extraRatio: 0,
+        normalLimitSeconds: 0,
+        constrainedLimitSeconds: 0,
+        reason: ''
+      },
       fastestBaselineDeltaSeconds: 0,
       warnings: [],
       handoffStops: []

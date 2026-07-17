@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { RouteReason } from '$lib/route-reasons';
+import type { DirectnessConstraintAssessment } from '$lib/directness-constraints';
 import { shapingStopsFromGeometry } from '$lib/shaping-stops';
 import { db } from './db';
 import type { RouteOption, RouteSearch } from './route-searches';
@@ -20,6 +21,7 @@ export type SavedRouteSnapshot = {
   interestScore: number;
   explanations: string[];
   reasons: RouteReason[];
+  directnessConstraint: DirectnessConstraintAssessment;
   fastestBaselineDeltaSeconds: number;
   warnings: string[];
   handoffStops: HandoffStop[];
@@ -275,6 +277,7 @@ function buildSnapshot(
     interestScore: routeOption.interestScore,
     explanations: routeOption.explanations,
     reasons: routeOption.reasons,
+    directnessConstraint: routeOption.directnessConstraint,
     fastestBaselineDeltaSeconds: Math.max(0, routeOption.durationSeconds - fastestDuration),
     warnings: [],
     handoffStops: handoffStopsForRouteOption(routeOption)
@@ -294,6 +297,15 @@ function parseSnapshot(value: string): SavedRouteSnapshot {
   return {
     ...snapshot,
     reasons: snapshot.reasons ?? [],
+    directnessConstraint: snapshot.directnessConstraint ?? {
+      status: 'normal',
+      directness: 'Balanced',
+      extraSeconds: 0,
+      extraRatio: 0,
+      normalLimitSeconds: 0,
+      constrainedLimitSeconds: 0,
+      reason: ''
+    },
     handoffStops: snapshot.handoffStops ?? []
   };
 }
