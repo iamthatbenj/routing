@@ -1,5 +1,5 @@
 import { error, fail } from '@sveltejs/kit';
-import { listHighlights } from '$lib/server/highlights';
+import { listHighlightsRelevantToRouteOptions } from '$lib/server/route-highlight-relevance';
 import { latestSearchForLeg, listRouteSearchesForTrip, startRouteSearch } from '$lib/server/route-searches';
 import type { Directness } from '$lib/server/route-searches';
 import { deleteSavedRoute, findSavedRoute, listSavedRoutesForLeg, listSavedRoutesForTrip, markSavedRoutePreferred, renameSavedRoute, savedRouteBelongsToCurrentLeg, saveRouteOption } from '$lib/server/saved-routes';
@@ -24,18 +24,21 @@ export const load = async ({ params, url }) => {
   const routeSearches = await listRouteSearchesForTrip(trip.id);
   const savedRoutes = await listSavedRoutesForTrip(trip.id);
 
+  const plannedLegs = legs.map((leg) => ({
+    ...leg,
+    routeSearch: latestSearchForLeg(routeSearches, leg) ?? null,
+    savedRoutes: listSavedRoutesForLeg(savedRoutes, leg)
+  }));
+  const routeOptions = plannedLegs.flatMap((leg) => leg.routeSearch?.options ?? []);
+
   return {
     trip,
     editToken: params.token,
     shareUrl: new URL(`/trips/share/${trip.shareToken}`, url).toString(),
     routingPlaces: await listRoutingPlaces(),
-    highlights: await listHighlights(),
+    highlights: await listHighlightsRelevantToRouteOptions(routeOptions),
     stops,
-    legs: legs.map((leg) => ({
-      ...leg,
-      routeSearch: latestSearchForLeg(routeSearches, leg) ?? null,
-      savedRoutes: listSavedRoutesForLeg(savedRoutes, leg)
-    }))
+    legs: plannedLegs
   };
 };
 

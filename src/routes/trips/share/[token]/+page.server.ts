@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { appleMapsUrl, googleMapsUrl, routeGeometryWarning } from '$lib/leg-handoff';
-import { listHighlights } from '$lib/server/highlights';
+import { listHighlightsRelevantToSavedRoutes } from '$lib/server/route-highlight-relevance';
 import { findRoutingPlaceBySearchLabel } from '$lib/server/routing-places';
 import { listSavedRoutesForLeg, listSavedRoutesForTrip, type HandoffStop } from '$lib/server/saved-routes';
 import { deriveLegs, listTripStops } from '$lib/server/trip-stops';
@@ -56,7 +56,9 @@ export const load = async ({ params }) => {
     })
   );
 
-  return { trip, stops, legs, highlights: await listHighlights() };
+  const preferredSavedRoutes = legs.flatMap((leg) => (leg.preferredSavedRoute ? [leg.preferredSavedRoute] : []));
+
+  return { trip, stops, legs, highlights: await listHighlightsRelevantToSavedRoutes(preferredSavedRoutes) };
 };
 
 async function mapStopsForHandoffStops(handoffStops: HandoffStop[]) {
