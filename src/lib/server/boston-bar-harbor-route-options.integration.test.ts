@@ -70,7 +70,7 @@ describe('Boston to Bar Harbor Route Option generation', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    await startRouteSearch({ leg, directness: 'Balanced' });
+    await startRouteSearch({ leg, directness: 'Direct' });
 
     expect(fetchMock).toHaveBeenCalledTimes(4);
     const requestBodies = fetchMock.mock.calls.map(([, init]) => JSON.parse(String(init?.body ?? '{}')) as { coordinates: [number, number][] });
@@ -105,13 +105,21 @@ describe('Boston to Bar Harbor Route Option generation', () => {
     const acadiaOption = routeSearch.options.find((option) => option.name === 'Via Acadia National Park');
     expect(acadiaOption?.reasons).toEqual(expect.arrayContaining([{ kind: 'anchor', label: 'Acadia National Park' }]));
 
+    const constrainedOption = routeSearch.options.find((option) => option.directnessConstraint.status === 'constrained');
+    expect(constrainedOption?.directnessConstraint).toMatchObject({
+      status: 'constrained',
+      directness: 'Direct'
+    });
+    expect(constrainedOption?.directnessConstraint.reason).toContain('compare with caution');
+    expect(constrainedOption?.explanations).toEqual(expect.arrayContaining([expect.stringContaining('Constrained Route Option')]));
+
     const scenicOption = routeSearch.options.find((option) =>
       option.reasons.some((reason) => reason.kind === 'highlight' && reason.label === 'Park Loop Road')
     );
     expect(scenicOption?.reasons).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ kind: 'highlight', label: 'Park Loop Road', category: 'scenic_segment' }),
-        expect.objectContaining({ kind: 'tradeoff', directness: 'Balanced' }),
+        expect.objectContaining({ kind: 'tradeoff', directness: 'Direct' }),
         { kind: 'endpoint_context', labels: ['Bar Harbor Shoreline Context'] }
       ])
     );
@@ -184,7 +192,7 @@ function anchorNameForCoordinates(coordinates: [number, number][]) {
 }
 
 function durationForAnchor(anchor: string) {
-  return anchor === 'Acadia National Park' ? 18_500 : anchor === 'Cadillac Mountain' ? 19_100 : 19_700;
+  return anchor === 'Acadia National Park' ? 19_000 : anchor === 'Cadillac Mountain' ? 19_100 : 19_700;
 }
 
 function distanceForAnchor(anchor: string) {

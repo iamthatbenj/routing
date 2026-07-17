@@ -71,6 +71,10 @@
     return rounded > 0 ? `-${rounded}` : '0';
   }
 
+  function isConstrainedRoute(option: { directnessConstraint?: { status?: string } }) {
+    return option.directnessConstraint?.status === 'constrained';
+  }
+
   function shapingStopCountLabel(count: number) {
     return `${count} Shaping Stop${count === 1 ? '' : 's'}`;
   }
@@ -351,6 +355,9 @@
                           <em>Preferred</em>
                         {/if}
                       </div>
+                      {#if isConstrainedRoute(savedRoute.snapshot)}
+                        <p class="constraint-note"><strong>Constrained Route Option</strong>: {savedRoute.snapshot.directnessConstraint.reason}</p>
+                      {/if}
                       <p class="route-origin">
                         {#if anchorLabel(savedRoute.snapshot)}
                           Anchor-generated Corridor via {anchorLabel(savedRoute.snapshot)}
@@ -428,6 +435,9 @@
                       <div>
                         <span>{routeKind(option.source)}</span>
                         <h4>{option.name}</h4>
+                        {#if isConstrainedRoute(option)}
+                          <p class="constraint-note"><strong>Constrained Route Option</strong>: {option.directnessConstraint.reason}</p>
+                        {/if}
                         {#if anchorLabel(option)}
                           <p class="route-origin">Anchor: {anchorLabel(option)}</p>
                         {:else if option.source === 'ors-fastest'}

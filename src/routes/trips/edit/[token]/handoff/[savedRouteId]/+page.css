@@ -350,3 +350,13 @@ ul,
     text-align: center;
   }
 }
+
+.constraint-note {
+  margin: 0.45rem 0 0;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgba(168, 112, 28, 0.35);
+  border-radius: 0.75rem;
+  background: rgba(255, 245, 224, 0.82);
+  color: #6f4a0d;
+  font-size: 0.9rem;
+}

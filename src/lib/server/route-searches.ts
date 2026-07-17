@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { routeCorridorCells, selectCorridorRouteOptions } from '$lib/route-corridors';
 import { parseRouteReasons, type RouteReason } from '$lib/route-reasons';
+import { assessDirectnessConstraint, parseDirectnessConstraint, type DirectnessConstraintAssessment } from '$lib/directness-constraints';
 import { db } from './db';
 import { findHighlightsByH3Cells, listHighlights, type Highlight } from './highlights';
 import { fetchDrivingRoutes, OrsRouteError, type OrsRoute } from './ors';
@@ -23,6 +24,7 @@ export type RouteOption = {
   interestScore: number;
   explanations: string[];
   reasons: RouteReason[];
+  directnessConstraint: DirectnessConstraintAssessment;
 };
 
 export type RouteSearchDiagnostics = {
@@ -54,6 +56,7 @@ type ScoredRoute = OrsRoute & {
   interestScore: number;
   explanations: string[];
   reasons: RouteReason[];
+  directnessConstraint: DirectnessConstraintAssessment;
 };
 
 function rowToRouteSearch(row: Record<string, unknown>, options: RouteOption[]): RouteSearch {
@@ -85,7 +88,8 @@ function rowToRouteOption(row: Record<string, unknown>): RouteOption {
     sortOrder: Number(row.sort_order),
     interestScore: Number(row.interest_score ?? 0),
     explanations: parseExplanations(String(row.explanation_json ?? '[]')),
-    reasons: parseRouteReasons(String(row.reason_json ?? '[]'))
+    reasons: parseRouteReasons(String(row.reason_json ?? '[]')),
+    directnessConstraint: parseDirectnessConstraint(String(row.constraint_json ?? '{}'))
   };
 }
 
@@ -105,7 +109,7 @@ export async function listRouteSearchesForTrip(tripId: string) {
       SELECT route_options.id, route_options.route_search_id, route_options.name, route_options.source,
         route_options.duration_seconds, route_options.distance_meters, route_options.geometry_json,
         route_options.sort_order, route_options.interest_score, route_options.explanation_json,
-        route_options.reason_json
+        route_options.reason_json, route_options.constraint_json
       FROM route_options
       JOIN route_searches ON route_searches.id = route_options.route_search_id
       WHERE route_searches.trip_id = ?
@@ -266,12 +270,21 @@ async function scoreRouteOptions(routes: OrsRoute[], leg: Leg, directness: Direc
       const extraSeconds = route.durationSeconds - fastestDuration;
       const penalty = directnessPenalty(extraSeconds, directness);
       const interestScore = Math.max(0, Math.round(highlightScore - penalty));
+      const reasons = buildReasons(route, scoredHighlights, endpointContext, extraSeconds, directness, penalty);
+      const directnessConstraint = assessDirectnessConstraint({
+        directness,
+        durationSeconds: route.durationSeconds,
+        fastestDurationSeconds: fastestDuration,
+        source: route.source,
+        hasStrongReason: interestScore >= 60 || reasons.some((reason) => reason.kind === 'anchor' || reason.kind === 'highlight')
+      });
 
       return {
         ...route,
         interestScore,
-        explanations: buildExplanations(scoredHighlights, endpointContext, extraSeconds, route),
-        reasons: buildReasons(route, scoredHighlights, endpointContext, extraSeconds, directness, penalty)
+        explanations: buildExplanations(scoredHighlights, endpointContext, extraSeconds, route, directnessConstraint),
+        reasons,
+        directnessConstraint
       };
     })
   );
@@ -328,7 +341,13 @@ function anchorLabelForRoute(route: OrsRoute) {
   return '';
 }
 
-function buildExplanations(scoredHighlights: Highlight[], endpointContext: Highlight[], extraSeconds: number, route?: OrsRoute) {
+function buildExplanations(
+  scoredHighlights: Highlight[],
+  endpointContext: Highlight[],
+  extraSeconds: number,
+  route?: OrsRoute,
+  directnessConstraint?: DirectnessConstraintAssessment
+) {
   if (route?.source.startsWith('fallback-')) {
     const explanations = [
       'Approximate fallback Corridor. Route provider geometry was unavailable, so this is planning scaffolding rather than turn-by-turn routing.'
@@ -362,6 +381,10 @@ function buildExplanations(scoredHighlights: Highlight[], endpointContext: Highl
     explanations.push('Fastest baseline for comparison.');
   }
 
+  if (directnessConstraint?.status === 'constrained') {
+    explanations.push(`Constrained Route Option: ${directnessConstraint.reason}`);
+  }
+
   if (endpointContext.length > 0) {
     explanations.push(
       `Endpoint context, not scored: ${endpointContext
@@ -386,9 +409,9 @@ async function replaceRouteOptions(routeSearchId: string, routes: ScoredRoute[])
       sql: `
         INSERT INTO route_options (
           id, route_search_id, name, source, duration_seconds, distance_meters,
-          geometry_json, sort_order, interest_score, explanation_json, reason_json
+          geometry_json, sort_order, interest_score, explanation_json, reason_json, constraint_json
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       args: [
         randomUUID(),
@@ -401,7 +424,8 @@ async function replaceRouteOptions(routeSearchId: string, routes: ScoredRoute[])
         index + 1,
         route.interestScore,
         JSON.stringify(route.explanations),
-        JSON.stringify(route.reasons)
+        JSON.stringify(route.reasons),
+        JSON.stringify(route.directnessConstraint)
       ]
     }))
   );
