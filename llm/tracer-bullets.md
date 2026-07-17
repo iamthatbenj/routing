@@ -569,6 +569,28 @@ A traveler choosing Direct, Balanced, or Adventurous sees an explainably differe
 - Two-region Directness integration coverage.
 - Human-in-the-loop behavior review.
 
+### TB18.01 Directness policy
+
+Directness is an operational preference over extra travel time relative to the fastest baseline for the same Leg. Distance is retained for explanation and diagnostics, but time is the primary traveler-facing constraint because it better reflects the cost of an Interesting Route.
+
+| Directness | Normal expectation | Constrained but showable | Omit by default |
+| --- | --- | --- | --- |
+| Direct | Up to 10% or 20 minutes slower, whichever is greater | Up to 18% or 35 minutes slower when the Route Option has a strong Anchor or Highlight reason | Beyond the constrained threshold unless it is the fastest baseline |
+| Balanced | Up to 25% or 45 minutes slower, whichever is greater | Up to 40% or 75 minutes slower when the Route Option has a strong Anchor or Highlight reason | Beyond the constrained threshold unless it is the fastest baseline |
+| Adventurous | Up to 60% or 2 hours slower, whichever is greater | Up to 90% or 3 hours slower when the Route Option has a strong Anchor or Highlight reason | Beyond the constrained threshold unless it is the fastest baseline |
+
+Implementation rules:
+
+- The fastest baseline is always retained and is never treated as constrained for Directness, even when it has a low Interest Score.
+- A normal Route Option fits the selected Directness expectation and can be presented without caution.
+- A Constrained Route Option is useful enough to compare but outside the normal Directness expectation. It should be shown with clear caution, not described as bad, risky, or unavailable.
+- A candidate beyond the constrained threshold is omitted by default unless a later issue deliberately adds an exceptional-review path.
+- A strong Anchor or Highlight reason means a generated candidate has a route-usable Anchor, Scenic Segment, or Highlight reason with enough Interest Score to be worth comparing despite extra time. TB18.02 will encode the exact boundary in structured assessment logic.
+- Provider fallback Corridors receive the same Directness assessment for explanation, but remain approximate planning scaffolding and still cannot be saved for Leg Handoff navigation.
+- Denver → Moab stress case: Direct should favor near-corridor options such as Colorado National Monument over long northern/southern detours; Balanced may show moderate canyon/park alternatives; Adventurous may retain broader regional alternatives with caution if they are substantially slower.
+- Boston → Bar Harbor stress case: Direct should favor coastal or near-destination Acadia options only when extra time is modest; Balanced may include Acadia/Cadillac/Park Loop Road alternatives; Adventurous may retain farther coastal or inland nature alternatives with caution if they remain plausibly useful.
+- No `CONTEXT.md` change is needed yet: the glossary already distinguishes Directness, Constrained Route Option, Interest Score, Anchor, Highlight, and Scenic Segment. This section records implementation policy, not new domain language.
+
 ### GitHub issues
 
 1. [TB18.01 Define operational Directness expectations](https://github.com/iamthatbenj/routing/issues/148)
