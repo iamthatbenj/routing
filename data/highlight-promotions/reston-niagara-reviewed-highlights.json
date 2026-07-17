@@ -1,0 +1,230 @@
+[
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-harpers-ferry-nhp",
+    "review": {
+      "highlightId": "harpers-ferry-national-historical-park-wv",
+      "category": "landmark",
+      "strength": 86,
+      "visitEffort": "Short Visit",
+      "description": "Historic Potomac and Shenandoah confluence Landmark near a plausible western Virginia/Maryland Corridor.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Harpers Ferry National Historical Park is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-harpers-ferry-nhp provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 39.32538, -77.73888 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Landmark Highlight category accepted from source category landmark.",
+        "routeInfluence": "Promoted with strength 86; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-chesapeake-ohio-canal-great-falls",
+    "review": {
+      "highlightId": "chesapeake-and-ohio-canal-great-falls-md",
+      "category": "landmark",
+      "strength": 72,
+      "visitEffort": "Quick Stop",
+      "description": "Canal and Potomac River Landmark near the Reston Endpoint context and early Corridor options.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Chesapeake and Ohio Canal at Great Falls is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-chesapeake-ohio-canal-great-falls provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 38.994, -77.255 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Landmark Highlight category accepted from source category landmark.",
+        "routeInfluence": "Promoted with strength 72; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-gettysburg-nmp",
+    "review": {
+      "highlightId": "gettysburg-national-military-park-pa",
+      "category": "landmark",
+      "strength": 92,
+      "visitEffort": "Half Day",
+      "description": "Major historic Landmark that can explain a south-central Pennsylvania Corridor.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Gettysburg National Military Park is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-gettysburg-nmp provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 39.83093, -77.2311 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Landmark Highlight category accepted from source category landmark.",
+        "routeInfluence": "Promoted with strength 92; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-flight-93-national-memorial",
+    "review": {
+      "highlightId": "flight-93-national-memorial-pa",
+      "category": "landmark",
+      "strength": 84,
+      "visitEffort": "Short Visit",
+      "description": "National memorial Landmark in southwestern Pennsylvania for a more western Corridor.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Flight 93 National Memorial is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-flight-93-national-memorial provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 40.0556, -78.9053 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Landmark Highlight category accepted from source category landmark.",
+        "routeInfluence": "Promoted with strength 84; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-allegheny-portage-railroad-nhs",
+    "review": {
+      "highlightId": "allegheny-portage-railroad-national-historic-site-pa",
+      "category": "landmark",
+      "strength": 76,
+      "visitEffort": "Quick Stop",
+      "description": "Allegheny crossing Landmark that can help explain a central Pennsylvania route choice.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Allegheny Portage Railroad National Historic Site is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-allegheny-portage-railroad-nhs provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 40.459, -78.549 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Landmark Highlight category accepted from source category landmark.",
+        "routeInfluence": "Promoted with strength 76; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-johnstown-flood-national-memorial",
+    "review": {
+      "highlightId": "johnstown-flood-national-memorial-pa",
+      "category": "landmark",
+      "strength": 74,
+      "visitEffort": "Quick Stop",
+      "description": "Historic Landmark near a western Pennsylvania Corridor through Johnstown and the Alleghenies.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Johnstown Flood National Memorial is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-johnstown-flood-national-memorial provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 40.3459, -78.7714 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Landmark Highlight category accepted from source category landmark.",
+        "routeInfluence": "Promoted with strength 74; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-pine-creek-gorge",
+    "review": {
+      "highlightId": "pine-creek-gorge-pa",
+      "category": "nature",
+      "strength": 86,
+      "visitEffort": "Short Visit",
+      "description": "Pennsylvania Grand Canyon Nature Highlight that can explain a north-central Pennsylvania Corridor.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Pine Creek Gorge is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-pine-creek-gorge provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 41.7001, -77.4558 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Nature Highlight category accepted from source category nature.",
+        "routeInfluence": "Promoted with strength 86; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-kinzua-bridge-state-park",
+    "review": {
+      "highlightId": "kinzua-bridge-state-park-pa",
+      "category": "landmark",
+      "strength": 82,
+      "visitEffort": "Quick Stop",
+      "description": "Distinctive skywalk Landmark in northern Pennsylvania for a western or Pennsylvania Wilds Corridor.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Kinzua Bridge State Park is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-kinzua-bridge-state-park provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 41.7592, -78.5865 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Landmark Highlight category accepted from source category landmark.",
+        "routeInfluence": "Promoted with strength 82; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-watkins-glen-state-park",
+    "review": {
+      "highlightId": "watkins-glen-state-park-ny",
+      "category": "nature",
+      "strength": 90,
+      "visitEffort": "Short Visit",
+      "description": "Finger Lakes gorge and waterfall Nature Highlight for an Adventurous or Finger Lakes Corridor.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Watkins Glen State Park is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-watkins-glen-state-park provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 42.3736, -76.8795 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Nature Highlight category accepted from source category nature.",
+        "routeInfluence": "Promoted with strength 90; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-letchworth-state-park",
+    "review": {
+      "highlightId": "letchworth-state-park-ny",
+      "category": "nature",
+      "strength": 88,
+      "visitEffort": "Short Visit",
+      "description": "Major western New York gorge and waterfall Nature Highlight that can explain a route toward Niagara Falls.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Letchworth State Park is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-letchworth-state-park provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 42.5845, -78.0431 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Nature Highlight category accepted from source category nature.",
+        "routeInfluence": "Promoted with strength 88; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-finger-lakes-scenic-route",
+    "review": {
+      "highlightId": "finger-lakes-scenic-route-ny",
+      "category": "scenic_segment",
+      "strength": 82,
+      "visitEffort": "Half Day",
+      "description": "Curated Scenic Segment representing a Finger Lakes driving alternative rather than a single stop.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Finger Lakes Scenic Route is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-finger-lakes-scenic-route provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 42.45, -76.9 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Scenic Segment category accepted from source category scenic_segment.",
+        "routeInfluence": "Promoted with strength 82; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  },
+  {
+    "candidateHighlightId": "tb19-supplemental-reston-niagara-source-backed-review-reston-niagara-niagara-falls-state-park",
+    "review": {
+      "highlightId": "niagara-falls-state-park-ny",
+      "category": "nature",
+      "strength": 94,
+      "visitEffort": "Short Visit",
+      "description": "Endpoint-context Nature Highlight for Niagara Falls that should explain the Endpoint without automatically inflating on-route Interest Score.",
+      "reviewedBy": "maintainer",
+      "reviewedAt": "2026-07-17T00:00:00.000Z",
+      "evidence": {
+        "travelRelevance": "Niagara Falls State Park is route-relevant for the Reston to Niagara Falls proof corridor and can help explain at least one plausible Corridor choice.",
+        "stableIdentity": "Source record reston-niagara-niagara-falls-state-park provides a stable public identity with inspectable source provenance.",
+        "coordinateCheck": "Reviewed coordinates 43.0838, -79.0642 are inside the TB19 Reston to Niagara Falls corridor bounds.",
+        "categoryRationale": "Nature Highlight category accepted from source category nature.",
+        "routeInfluence": "Promoted with strength 94; reviewer judged this Candidate Highlight strong enough to influence Anchor selection, Route Option scoring, or traveler explanations."
+      }
+    }
+  }
+]

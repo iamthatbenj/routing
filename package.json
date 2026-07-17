@@ -15,6 +15,7 @@
     "db:import:supplemental-candidates": "node scripts/import-supplemental-candidate-highlights.mjs",
     "db:import:third-region-candidates": "node scripts/import-supplemental-candidate-highlights.mjs --file=data/candidate-highlights/reston-niagara-supplement.json",
     "db:promote:highlights": "node scripts/promote-reviewed-candidate-highlights.mjs",
+    "db:promote:third-region-highlights": "node scripts/promote-reviewed-candidate-highlights.mjs --file=data/highlight-promotions/reston-niagara-reviewed-highlights.json",
     "db:review:candidate-highlights": "node scripts/export-candidate-highlight-review.mjs",
     "db:prepare:highlight-promotions": "node scripts/prepare-highlight-promotions.mjs",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
