@@ -560,6 +560,8 @@ Goal: make Directness affect candidate generation and Route Option selection in 
 
 A traveler choosing Direct, Balanced, or Adventurous sees an explainably different comparison and can distinguish Interest Score from Directness constraints across both tracer regions.
 
+Status: completed after TB18.06 HITL approval; behavior is good enough for broader geographic expansion.
+
 ### Scope
 
 - Human definition of operational Directness expectations.
