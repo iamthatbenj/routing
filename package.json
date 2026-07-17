@@ -10,6 +10,7 @@
     "db:migrate": "node scripts/migrate.mjs",
     "db:status": "node scripts/db-status.mjs",
     "db:import:routing-places": "node scripts/import-second-region-routing-places.mjs",
+    "db:import:third-region-routing-places": "node scripts/import-second-region-routing-places.mjs --third-region",
     "db:import:candidate-highlights": "node scripts/import-candidate-highlights.mjs",
     "db:import:supplemental-candidates": "node scripts/import-supplemental-candidate-highlights.mjs",
     "db:promote:highlights": "node scripts/promote-reviewed-candidate-highlights.mjs",
