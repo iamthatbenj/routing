@@ -54,6 +54,36 @@ describe('Directness constraint assessment', () => {
     expect(assessment.reason).toContain('without enough route-relevant Anchor or Highlight interest');
   });
 
+  it('treats exact policy boundaries as normal or constrained consistently', () => {
+    expect(
+      assessDirectnessConstraint({
+        directness: 'Balanced',
+        durationSeconds: 10_000 + 45 * 60,
+        fastestDurationSeconds: 10_000,
+        source: 'ors-anchor',
+        hasStrongReason: true
+      }).status
+    ).toBe('normal');
+    expect(
+      assessDirectnessConstraint({
+        directness: 'Balanced',
+        durationSeconds: 10_000 + 75 * 60,
+        fastestDurationSeconds: 10_000,
+        source: 'ors-anchor',
+        hasStrongReason: true
+      }).status
+    ).toBe('constrained');
+    expect(
+      assessDirectnessConstraint({
+        directness: 'Balanced',
+        durationSeconds: 10_000 + 75 * 60 + 1,
+        fastestDurationSeconds: 10_000,
+        source: 'ors-anchor',
+        hasStrongReason: true
+      }).status
+    ).toBe('omitted');
+  });
+
   it('uses broader normal expectations for Adventurous', () => {
     expect(
       assessDirectnessConstraint({
