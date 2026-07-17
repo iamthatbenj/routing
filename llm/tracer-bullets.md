@@ -608,3 +608,39 @@ Implementation rules:
 - Ferry Segment constraints.
 - Traveler-configurable numeric Directness budgets.
 - Whole-Trip optimization across Legs.
+
+## TB19 — Third-region proof: Reston → Niagara Falls
+
+Goal: prove the generalized Routing data and Directness-aware Route Search loop on a real third-region Trip corridor: Reston, Virginia → Niagara Falls, New York.
+
+A traveler can create a Trip from Reston to Niagara Falls, run Direct, Balanced, and Adventurous Route Searches, compare locally relevant Route Options without contaminating earlier tracer regions, save a preferred route, share it, and open Leg Handoff with preserved context.
+
+### Scope
+
+- Human selection of third-region corridor bounds, data sources, and review expectations.
+- Source-backed Routing Place import for Reston → Niagara Falls.
+- Source-backed Candidate Highlight import for plausible Corridors.
+- Reviewed promotion into route-usable Highlights and Scenic Segments.
+- Provider-backed and fallback Route Search behavior for the third region.
+- Interest Score, Directness constraint, Saved Route, share, and Leg Handoff preservation.
+- Three-region regression coverage.
+- Human-in-the-loop route-quality review on the real Reston → Niagara Falls trip.
+
+### GitHub issues
+
+1. [TB19.01 Choose third-region data sources and corridor bounds](https://github.com/iamthatbenj/routing/issues/182)
+2. [TB19.02 Import Reston → Niagara Routing Places](https://github.com/iamthatbenj/routing/issues/183)
+3. [TB19.03 Import third-region Candidate Highlights](https://github.com/iamthatbenj/routing/issues/184)
+4. [TB19.04 Promote reviewed third-region Highlights](https://github.com/iamthatbenj/routing/issues/185)
+5. [TB19.05 Generate Reston → Niagara Route Options](https://github.com/iamthatbenj/routing/issues/186)
+6. [TB19.06 Score, explain, and preserve third-region Route Options](https://github.com/iamthatbenj/routing/issues/187)
+7. [TB19.07 Add three-region regressions](https://github.com/iamthatbenj/routing/issues/188)
+8. [TB19.08 Review Reston → Niagara route quality](https://github.com/iamthatbenj/routing/issues/189)
+
+### Deferred from TB19
+
+- Nationwide data coverage.
+- Fully automated Highlight promotion.
+- Account/auth or traveler-specific saved defaults.
+- Production routing-provider commitment unless the third-region proof exposes a blocking provider issue.
+- Date-aware seasonal/access constraints beyond existing Constrained Route Option language.
