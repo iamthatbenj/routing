@@ -1,0 +1,176 @@
+{
+  "sourceSystem": "tb19-supplemental",
+  "sourceDatabase": "reston-niagara-source-backed-review",
+  "sourceUrl": "https://github.com/iamthatbenj/routing/issues/184",
+  "records": [
+    {
+      "sourceRecordId": "reston-niagara-harpers-ferry-nhp",
+      "name": "Harpers Ferry National Historical Park",
+      "latitude": 39.32538,
+      "longitude": -77.73888,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.nps.gov/hafe/",
+      "description": "Historic Potomac and Shenandoah confluence Landmark near a plausible western Virginia/Maryland Corridor.",
+      "evidence": {
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "historic town, river confluence, Appalachian Trail context, scenic overlook access",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-chesapeake-ohio-canal-great-falls",
+      "name": "Chesapeake and Ohio Canal at Great Falls",
+      "latitude": 38.994,
+      "longitude": -77.255,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.nps.gov/choh/planyourvisit/greatfallstavernvisitorcenter.htm",
+      "description": "Canal and Potomac River Landmark near the Reston Endpoint context and early Corridor options.",
+      "evidence": {
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "canal history, Potomac falls, quick-stop outdoor landmark",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-gettysburg-nmp",
+      "name": "Gettysburg National Military Park",
+      "latitude": 39.83093,
+      "longitude": -77.2311,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.nps.gov/gett/",
+      "description": "Major historic Landmark that can explain a south-central Pennsylvania Corridor.",
+      "evidence": {
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "Civil War battlefield, museum, historic driving tour",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-flight-93-national-memorial",
+      "name": "Flight 93 National Memorial",
+      "latitude": 40.0556,
+      "longitude": -78.9053,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.nps.gov/flni/",
+      "description": "National memorial Landmark in southwestern Pennsylvania for a more western Corridor.",
+      "evidence": {
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "national memorial, solemn historic stop, western Pennsylvania context",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-allegheny-portage-railroad-nhs",
+      "name": "Allegheny Portage Railroad National Historic Site",
+      "latitude": 40.459,
+      "longitude": -78.549,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.nps.gov/alpo/",
+      "description": "Allegheny crossing Landmark that can help explain a central Pennsylvania route choice.",
+      "evidence": {
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "transportation history, Allegheny crossing, short historic stop",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-johnstown-flood-national-memorial",
+      "name": "Johnstown Flood National Memorial",
+      "latitude": 40.3459,
+      "longitude": -78.7714,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.nps.gov/jofl/",
+      "description": "Historic Landmark near a western Pennsylvania Corridor through Johnstown and the Alleghenies.",
+      "evidence": {
+        "sourceAuthority": "National Park Service",
+        "travelerAppeal": "historic disaster site, museum, Allegheny region context",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-pine-creek-gorge",
+      "name": "Pine Creek Gorge",
+      "latitude": 41.7001,
+      "longitude": -77.4558,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://www.dcnr.pa.gov/StateParks/FindAPark/LeonardHarrisonStatePark/Pages/default.aspx",
+      "description": "Pennsylvania Grand Canyon Nature Highlight that can explain a north-central Pennsylvania Corridor.",
+      "evidence": {
+        "sourceAuthority": "Pennsylvania Department of Conservation and Natural Resources",
+        "travelerAppeal": "gorge views, state park overlooks, scenic Pennsylvania Wilds context",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-kinzua-bridge-state-park",
+      "name": "Kinzua Bridge State Park",
+      "latitude": 41.7592,
+      "longitude": -78.5865,
+      "sourceCategory": "landmark",
+      "sourceUrl": "https://www.dcnr.pa.gov/StateParks/FindAPark/KinzuaBridgeStatePark/Pages/default.aspx",
+      "description": "Distinctive skywalk Landmark in northern Pennsylvania for a western or Pennsylvania Wilds Corridor.",
+      "evidence": {
+        "sourceAuthority": "Pennsylvania Department of Conservation and Natural Resources",
+        "travelerAppeal": "skywalk, historic railroad bridge, scenic overlook",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-watkins-glen-state-park",
+      "name": "Watkins Glen State Park",
+      "latitude": 42.3736,
+      "longitude": -76.8795,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://parks.ny.gov/parks/watkinsglen/details.aspx",
+      "description": "Finger Lakes gorge and waterfall Nature Highlight for an Adventurous or Finger Lakes Corridor.",
+      "evidence": {
+        "sourceAuthority": "New York State Parks",
+        "travelerAppeal": "gorge trail, waterfalls, Finger Lakes scenery",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-letchworth-state-park",
+      "name": "Letchworth State Park",
+      "latitude": 42.5845,
+      "longitude": -78.0431,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://parks.ny.gov/parks/letchworth/details.aspx",
+      "description": "Major western New York gorge and waterfall Nature Highlight that can explain a route toward Niagara Falls.",
+      "evidence": {
+        "sourceAuthority": "New York State Parks",
+        "travelerAppeal": "gorge views, waterfalls, state park drives",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-finger-lakes-scenic-route",
+      "name": "Finger Lakes Scenic Route",
+      "latitude": 42.45,
+      "longitude": -76.9,
+      "sourceCategory": "scenic_segment",
+      "sourceUrl": "https://www.fingerlakes.org/",
+      "description": "Curated Scenic Segment representing a Finger Lakes driving alternative rather than a single stop.",
+      "evidence": {
+        "sourceAuthority": "Curated TB19 scenic review seed",
+        "travelerAppeal": "lake country, gorges, small towns, scenic driving",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds"
+      }
+    },
+    {
+      "sourceRecordId": "reston-niagara-niagara-falls-state-park",
+      "name": "Niagara Falls State Park",
+      "latitude": 43.0838,
+      "longitude": -79.0642,
+      "sourceCategory": "nature",
+      "sourceUrl": "https://parks.ny.gov/parks/niagarafalls/details.aspx",
+      "description": "Endpoint-context Nature Highlight for Niagara Falls that should explain the Endpoint without automatically inflating on-route Interest Score.",
+      "evidence": {
+        "sourceAuthority": "New York State Parks",
+        "travelerAppeal": "waterfalls, overlooks, iconic endpoint context",
+        "tb19Bounds": "inside Reston to Niagara corridor bounds",
+        "endpointContextCandidate": "Niagara Falls, New York"
+      }
+    }
+  ]
+}
