@@ -9,7 +9,7 @@ import { promoteCandidateHighlight, type PromotionReview } from './highlight-pro
 import { createTrip } from './trips';
 import { addTripStop, deriveLegs, listTripStops, type Leg } from './trip-stops';
 import { findRoutingPlaceBySearchLabel } from './routing-places';
-import { listRouteSearchesForTrip, startRouteSearch, type RouteSearch } from './route-searches';
+import { listRouteSearchesForTrip, startRouteSearch, type Directness, type RouteSearch } from './route-searches';
 import { saveRouteOption } from './saved-routes';
 
 let db: Client;
@@ -58,26 +58,70 @@ describe('two-region Route Search regressions', () => {
     expect(bostonSearch.options.some((option) => option.reasons.some((reason) => reason.kind === 'highlight' && reason.label === 'Park Loop Road' && reason.category === 'scenic_segment'))).toBe(true);
   });
 
+  it('exercises Directness-aware Route Options across both tracer regions', async () => {
+    await seedSecondRegionData();
+    vi.stubGlobal('fetch', vi.fn(async (_url: string, init?: RequestInit) => providerResponseFor(JSON.parse(String(init?.body ?? '{}')))));
+
+    const presentationDifferences: boolean[] = [];
+    const constrainedPersistenceChecks: boolean[] = [];
+
+    for (const [from, to] of [
+      ['Denver, Colorado', 'Moab, Utah'],
+      ['Boston, Massachusetts', 'Bar Harbor, Maine']
+    ] as const) {
+      const searches: Record<Directness, RouteSearch> = {
+        Direct: await routeSearchFor(from, to, 'Direct'),
+        Balanced: await routeSearchFor(from, to, 'Balanced'),
+        Adventurous: await routeSearchFor(from, to, 'Adventurous')
+      };
+
+      for (const directness of ['Direct', 'Balanced', 'Adventurous'] as const) {
+        const routeSearch = searches[directness];
+        expect(routeSearch.options[0]).toMatchObject({ name: 'Fastest baseline', source: 'ors-fastest' });
+        expect(routeSearch.options.every((option) => option.directnessConstraint.directness === directness)).toBe(true);
+        expect(routeSearch.options.every((option) => option.directnessConstraint.status !== 'omitted')).toBe(true);
+        constrainedPersistenceChecks.push(
+          routeSearch.options.some(
+            (option) =>
+              option.directnessConstraint.status === 'constrained' &&
+              option.directnessConstraint.reason.length > 0 &&
+              option.explanations.some((explanation) => explanation.includes('Constrained Route Option'))
+          )
+        );
+      }
+
+      const directPresentation = presentationSignature(searches.Direct);
+      const adventurousPresentation = presentationSignature(searches.Adventurous);
+      presentationDifferences.push(directPresentation !== adventurousPresentation);
+    }
+
+    expect(presentationDifferences).toContain(true);
+    expect(constrainedPersistenceChecks).toContain(true);
+  });
+
   it('uses fallback Corridors on provider failure and prevents fallback Route Options from being saved for Leg Handoff', async () => {
     await seedSecondRegionData();
     vi.stubGlobal('fetch', vi.fn(async () => new Response('quota exhausted', { status: 429 })));
     const { tripId, leg } = await tripLegFor('Boston, Massachusetts', 'Bar Harbor, Maine');
 
-    await startRouteSearch({ leg, directness: 'Balanced' });
-    const [routeSearch] = await listRouteSearchesForTrip(tripId);
+    for (const directness of ['Direct', 'Balanced', 'Adventurous'] as const) {
+      await startRouteSearch({ leg, directness });
+      const [routeSearch] = await listRouteSearchesForTrip(tripId);
 
-    expect(routeSearch.status).toBe('complete');
-    expect(routeSearch.diagnostics).toMatchObject({
-      outcome: 'fallback_complete',
-      routeSources: ['fallback-direct', 'fallback-anchor'],
-      usedFallback: true,
-      errorCategory: 'quota',
-      errorStatus: 429
-    });
-    expect(routeSearch.options.every((option) => option.source.startsWith('fallback-'))).toBe(true);
-    await expect(
-      saveRouteOption({ tripId, leg, routeSearch, routeOptionId: routeSearch.options[0].id })
-    ).rejects.toThrow('Approximate fallback Corridors cannot be saved for Leg Handoff.');
+      expect(routeSearch.status).toBe('complete');
+      expect(routeSearch.diagnostics).toMatchObject({
+        outcome: 'fallback_complete',
+        routeSources: ['fallback-direct', 'fallback-anchor'],
+        usedFallback: true,
+        errorCategory: 'quota',
+        errorStatus: 429
+      });
+      expect(routeSearch.options.every((option) => option.source.startsWith('fallback-'))).toBe(true);
+      expect(routeSearch.options.every((option) => option.directnessConstraint.directness === directness)).toBe(true);
+      await expect(
+        saveRouteOption({ tripId, leg, routeSearch, routeOptionId: routeSearch.options[0].id })
+      ).rejects.toThrow('Approximate fallback Corridors cannot be saved for Leg Handoff.');
+    }
   });
 });
 
@@ -93,9 +137,9 @@ async function seedSecondRegionData() {
   }
 }
 
-async function routeSearchFor(fromLabel: string, toLabel: string) {
+async function routeSearchFor(fromLabel: string, toLabel: string, directness: Directness = 'Balanced') {
   const { tripId, leg } = await tripLegFor(fromLabel, toLabel);
-  await startRouteSearch({ leg, directness: 'Balanced' });
+  await startRouteSearch({ leg, directness });
   const [routeSearch] = await listRouteSearchesForTrip(tripId);
   return routeSearch;
 }
@@ -196,6 +240,12 @@ function assertPersistedSearchShape(routeSearch: RouteSearch) {
 
 function optionNames(routeSearch: RouteSearch) {
   return routeSearch.options.map((option) => option.name);
+}
+
+function presentationSignature(routeSearch: RouteSearch) {
+  return routeSearch.options
+    .map((option) => `${option.name}:${option.directnessConstraint.status}:${option.explanations.join('|')}`)
+    .join('\n');
 }
 
 function near(left: number, right: number) {
